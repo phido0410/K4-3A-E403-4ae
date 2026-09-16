@@ -934,6 +934,29 @@
     }
 
     /* Ô soạn tin */
+    .cmd-sug {
+      margin: 0 16px 6px; border-radius: 8px; overflow: hidden;
+      background: var(--panel-3); border: 1px solid var(--divider);
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+    .cmd-sug .sug-cap {
+      padding: 7px 12px 5px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--faint); border-bottom: 1px solid var(--divider);
+    }
+    .cmd-sug .sug-row {
+      display: flex; align-items: baseline; gap: 9px; padding: 7px 12px; cursor: pointer;
+    }
+    .cmd-sug .sug-row[data-on="1"] { background: var(--hover-side); }
+    .cmd-sug .sug-row .k { font-family: var(--mono); font-size: 13px; color: var(--head); white-space: nowrap; }
+    .cmd-sug .sug-row .d { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cmd-sug .sug-foot {
+      padding: 5px 12px 7px; font-size: 10.5px; color: var(--faint); border-top: 1px solid var(--divider);
+    }
+    .cmd-sug kbd {
+      font-family: var(--mono); font-size: 10px; background: var(--chat); border: 1px solid var(--divider);
+      border-bottom-width: 2px; border-radius: 3px; padding: 0 4px;
+    }
+
     .cmd-out {
       margin: 0 16px 10px; padding: 11px 13px; border-radius: 8px;
       background: var(--embed); border-left: 3px solid var(--blurple);
@@ -1487,6 +1510,7 @@
           <button class="icon-btn" id="panel-toggle" type="button">Chi tiết câu hỏi</button>
         </header>
         <div class="scroller" id="scroller"></div>
+        <div class="cmd-sug" id="cmd-sug" hidden></div>
         <div class="cmd-out" id="cmd-out" hidden></div>
         <div class="composer" id="composer">
           <div class="reply-bar" id="reply-bar" hidden>
@@ -2000,7 +2024,7 @@
         const ta = $("msg-input");
         const text = ta.value.trim();
         if (!text) return;
-        if (text.charAt(0) === "/") { ta.value = ""; autosize(); runCommand(text); return; }
+        if (text.charAt(0) === "/") { ta.value = ""; autosize(); dongGoiY(); runCommand(text); return; }
         if (state.channel === DIGEST) { toast("Kênh bản tin chỉ nhận lệnh — gõ /question_unanswer"); return; }
         const last = msgs.filter((m) => m.local).length;
         const base = toDate("2026-09-15 07:30"); base.setMinutes(base.getMinutes() + last * 3);
@@ -2022,6 +2046,111 @@
         state.replyTo = null; state.highlight = m.id;
         renderAll(true);
       }
+
+      // ---------- Gợi ý lệnh (kiểu Discord) ----------
+      const LENH = [{ ten: "/question_unanswer", mo: "Liệt kê câu hỏi học viên chưa được trả lời" }];
+      const sug = { mo: false, items: [], idx: 0, cap: "" };
+
+      function kenhCoTin() {
+        const d = new Map();
+        msgs.forEach((m) => { if (!m.local) d.set(m.channel, (d.get(m.channel) || 0) + 1); });
+        return [...d.entries()].sort((a, b) => b[1] - a[1]);
+      }
+      function ngayCoTin() {
+        const d = new Map();
+        msgs.forEach((m) => { if (!m.local) { const k = m.at.slice(0, 10); d.set(k, (d.get(k) || 0) + 1); } });
+        return [...d.entries()].sort();
+      }
+
+      function tinhGoiY(text) {
+        if (text.charAt(0) !== "/") return null;
+        const tuCuoi = text.split(/\s+/).pop();
+        const daCoLenh = /^\/question[_-]unanswer\b/i.test(text);
+
+        if (!daCoLenh) {
+          const q = text.slice(1).toLowerCase();
+          const hop = LENH.filter((l) => l.ten.slice(1).indexOf(q) === 0);
+          return hop.length ? { cap: "Lệnh", items: hop.map((l) => ({ k: l.ten, d: l.mo, the: l.ten + " " })) } : null;
+        }
+        if (/^kenh:/i.test(tuCuoi)) {
+          const q = tuCuoi.slice(5).toLowerCase();
+          const items = kenhCoTin()
+            .map(([c, n]) => ({ ten: c.replace(/_/g, "-"), n }))
+            .filter((x) => x.ten.indexOf(q) === 0)
+            .slice(0, 6)
+            .map((x) => ({ k: "kenh:" + x.ten, d: x.n + " tin trong kênh này", the: "kenh:" + x.ten + " " }));
+          return items.length ? { cap: "Kênh", items } : null;
+        }
+        if (/^ngay:/i.test(tuCuoi)) {
+          const q = tuCuoi.slice(5);
+          const items = ngayCoTin()
+            .map(([d, n]) => ({ ten: d.slice(8) + "/" + d.slice(5, 7), n }))
+            .filter((x) => x.ten.indexOf(q) === 0)
+            .map((x) => ({ k: "ngay:" + x.ten, d: x.n + " tin trong ngày này", the: "ngay:" + x.ten + " " }));
+          return items.length ? { cap: "Ngày", items } : null;
+        }
+        if (tuCuoi === "") {
+          const co = (t) => new RegExp("\\b" + t + ":", "i").test(text);
+          const items = [];
+          if (!co("kenh")) items.push({ k: "kenh:", d: "giới hạn một kênh — ít câu hơn, chạy nhanh hơn", the: "kenh:" });
+          if (!co("ngay")) items.push({ k: "ngay:", d: "giới hạn một ngày", the: "ngay:" });
+          return items.length ? { cap: "Tham số", items } : null;
+        }
+        return null;
+      }
+
+      function veGoiY() {
+        const el = $("cmd-sug");
+        if (!sug.mo || !sug.items.length) { el.hidden = true; return; }
+        el.hidden = false;
+        let html = '<div class="sug-cap">' + sug.cap + "</div>";
+        sug.items.forEach((it, i) => {
+          html += '<div class="sug-row" data-i="' + i + '" data-on="' + (i === sug.idx ? 1 : 0) + '">' +
+                  '<span class="k">' + it.k + '</span><span class="d">' + it.d + "</span></div>";
+        });
+        html += '<div class="sug-foot"><kbd>Tab</kbd> chọn · <kbd>↑</kbd><kbd>↓</kbd> di chuyển · <kbd>Esc</kbd> đóng</div>';
+        el.innerHTML = html;
+        el.querySelectorAll(".sug-row").forEach((r) => {
+          r.addEventListener("mousedown", (e) => { e.preventDefault(); sug.idx = +r.dataset.i; chonGoiY(); });
+        });
+      }
+
+      function capNhatGoiY() {
+        const t = $("msg-input").value;
+        const g = tinhGoiY(t);
+        if (!g) { sug.mo = false; veGoiY(); return; }
+        sug.mo = true; sug.cap = g.cap; sug.items = g.items;
+        if (sug.idx >= sug.items.length) sug.idx = 0;
+        veGoiY();
+      }
+
+      function chonGoiY() {
+        const it = sug.items[sug.idx];
+        if (!it) return;
+        const ta = $("msg-input");
+        const tu = ta.value.split(/\s+/);
+        tu[tu.length - 1] = it.the;
+        ta.value = tu.join(" ").replace(/\s+$/, it.the.endsWith(" ") ? " " : "");
+        sug.idx = 0;
+        ta.focus();
+        capNhatGoiY();
+        autosize();
+      }
+
+      function dongGoiY() { sug.mo = false; sug.idx = 0; veGoiY(); }
+
+      $("composer").addEventListener("keydown", (e) => {
+        if (!sug.mo || !sug.items.length) return;
+        if (e.key === "Tab" || (e.key === "Enter" && !e.shiftKey && !e.isComposing)) {
+          e.preventDefault(); e.stopPropagation(); chonGoiY(); return;
+        }
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          e.preventDefault(); e.stopPropagation();
+          sug.idx = (sug.idx + (e.key === "ArrowDown" ? 1 : -1) + sug.items.length) % sug.items.length;
+          veGoiY(); return;
+        }
+        if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); dongGoiY(); }
+      }, true);
 
       // ---------- Lệnh gạch chéo: /question_unanswer ----------
       const CMD_MAU = { need: "var(--red)", check: "var(--yellow)", nogrounding: "var(--muted)", done: "var(--green)" };
@@ -2144,7 +2273,8 @@
       function autosize() { const ta = $("msg-input"); ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 200) + "px"; }
 
       $("msg-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
-      $("msg-input").addEventListener("input", autosize);
+      $("msg-input").addEventListener("input", () => { autosize(); capNhatGoiY(); });
+      $("msg-input").addEventListener("blur", () => setTimeout(dongGoiY, 120));
       $("reply-cancel").addEventListener("click", () => { state.replyTo = null; renderChat(false); });
       $("panel-close").addEventListener("click", () => { state.panelOpen = false; renderPanel(); });
       $("panel-toggle").addEventListener("click", () => { state.panelOpen = !state.panelOpen; renderPanel(); });

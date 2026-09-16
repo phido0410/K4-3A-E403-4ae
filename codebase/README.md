@@ -28,8 +28,26 @@ Repo chỉ giữ **nhãn** (`msg_id` + phán đoán của nhóm), không giữ n
 ## Chạy mock trên máy
 
 ```bash
-python codebase/build_local_data.py   # cần data pack tại data/discord-pack/
-open codebase/cp2-mock.html
+python -m venv .venv && .venv/bin/pip install -r codebase/requirements.txt
+.venv/bin/python codebase/build_local_data.py      # cần data pack
+.venv/bin/python codebase/serve.py                 # http://127.0.0.1:8765
+```
+
+| Đường dẫn | Nhãn hiển thị do ai quyết định |
+|---|---|
+| `http://127.0.0.1:8765/` | **người** gán tay (`labels.js`) — bản CP2 |
+| `http://127.0.0.1:8765/?ai=1` | **AI** sinh (`local-data/ai-labels.js`) — bản CP3 |
+
+Góc phải màn hình có bảng **Hỏi AI trực tiếp**: nhập mã tin rồi bấm Hỏi, server gọi model thật
+và trả kết quả kèm thời gian và số token. **API key nằm ở `.env` phía server, không bao giờ
+ra tới trình duyệt.**
+
+## Chạy kiểm thử
+
+```bash
+.venv/bin/python codebase/run_eval.py --run run-05     # chạy trọn golden set
+.venv/bin/python codebase/run_eval.py --run run-04 --from-logs   # dựng lại báo cáo, không tốn API
+.venv/bin/python codebase/export_ai_labels.py --run run-04       # kết quả AI -> nhãn cho mock
 ```
 
 ## Phần nào thật, phần nào mock

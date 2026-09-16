@@ -112,6 +112,18 @@ AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một b�
 
 Chi tiết từng lượt và từng case: [`eval/README.md`](eval/README.md) · [`eval/runs/`](eval/runs/)
 
+### Recall của bước lọc — đo riêng
+
+Quyết định AI chỉ nhìn thấy những tin mà **rule lọc** đưa vào. Nếu bước này bỏ sót thì AI không có cơ hội đúng, nên nó phải được đo riêng.
+
+| | Bắt được / tổng |
+|---|---|
+| `need` | **21/21** |
+| `check` | **8/8** |
+| `nogrounding` | **3/3** |
+
+Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không có dấu hỏi (*"Cách nộp daily stand up"*, *"Hạn nộp Lab02"*), `gì` đứng một mình, và tiểu từ `hả`. Rule đã nới theo hướng **thà bắt thừa còn hơn bỏ sót**: bắt thừa tốn thêm một lời gọi AI (rẻ), bỏ sót thì câu hỏi không bao giờ đến tay AI (đắt).
+
 ### Ba nguyên nhân đã truy được
 
 1. **`nogrounding` không được dùng (run-01: 0/25 lần).** Model lập luận đúng rồi gán sai nhãn — `M80884` viết *"không thể kết luận…"* nhưng xuất `need`. Sửa bằng thứ tự quyết định trong prompt → run-02 dùng nhãn này 4 lần.

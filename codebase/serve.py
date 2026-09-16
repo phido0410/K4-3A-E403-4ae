@@ -36,10 +36,20 @@ def data():
     return _DATA
 
 
+# Rule loc — uu tien KHONG BO SOT. Bat thua thi ton them mot loi goi AI (re);
+# bo sot thi cau hoi khong bao gio den tay AI (dat). Xem eval/runs/ luot run-05.
 QUESTION = re.compile(
-    r"\?|^\s*(\[@[^\]]+\]\s*)*(cho|ch)\s*(em|mình|e|m|tôi)?\s*hỏi"
-    r"|\b(khi nào|bao giờ|ở đâu|làm sao|như thế nào|thế nào|bao nhiêu|được không"
-    r"|đc ko|có được|có phải|mấy giờ|mấy bạn|sao lại|là gì|nào ạ)\b", re.I)
+    r"\?"                                                    # co dau hoi
+    r"|^\s*(\[@[^\]]+\]\s*)*(cho|ch)\s*(em|mình|e|m|tôi)?\s*(hỏi|xin)"   # "cho minh hoi/xin"
+    r"|\b(gì|sao|đâu|nào|mấy|ai|bao giờ|bao lâu|bao nhiêu|khi nào|thế nào"
+    r"|làm sao|như thế nào|được không|đc ko|có được|có phải|mấy giờ|sao lại)\b"
+    r"|^\s*(cách|quy cách|hướng dẫn|cú pháp|link)\b"          # dang yeu cau: "Cach nop..."
+    r"|\b(ai biết|có ai|giúp (mình|em|tôi) với|cho (mình|em|tôi) hỏi)\b"
+    r"|\b(hả|hở)\b"                                           # "co diem danh ha mn"
+    r"|^\s*(\[@[^\]]+\]\s*)*(hạn nộp|deadline|danh sách|lịch|cú pháp|mã đội|mã nhóm)\b"  # cum danh tu tran
+    r"|(nhé|nhỉ|ạ)\s*[.!?]*\s*$",                            # ket cau bang tu hoi/nho va
+    re.I)
+
 THANKS = re.compile(
     r"^\W*(dạ|vâng|ok|oke|okey)?\W*(e|em|mình|tôi)?\W*(xin)?\s*(cảm ơn|cám ơn|thanks|tks)", re.I)
 

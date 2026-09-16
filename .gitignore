@@ -1,0 +1,67 @@
+# ============================================================
+#  CHẶN DATA PACK — vi phạm là bị LOẠI
+#  Repo nộp bài bắt buộc public. Data trong Turtorial/data/ là
+#  dữ liệu thật của khoá (chatlog học viên, tin nhắn Discord của
+#  bạn cùng khoá). Push lên = lộ ra mạng = loại.
+#  Xem README.md mục "Bảo mật dữ liệu được cung cấp", điều 2 và 3.
+# ============================================================
+
+# Toàn bộ thư mục tài liệu đề bài (chứa data/)
+Turtorial/
+Tutorial/
+
+# Chặn theo TÊN GÓI — phòng khi copy data ra chỗ khác trong repo
+**/vlearn-pack/
+**/discord-pack/
+**/studio-pack/
+**/data-pack/
+
+# Chặn theo TÊN FILE — lớp bảo vệ cuối cùng
+k4_messages.csv
+k4_daily_reports.md
+tutor_turns.csv
+transcript-*-clean.md
+DATA_DICTIONARY.md
+
+# ============================================================
+#  API KEY — README "Luật chung" điều 4: không commit API key
+# ============================================================
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+credentials.json
+service-account*.json
+
+# ============================================================
+#  Rác hệ thống & build
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+node_modules/
+dist/
+build/
+.next/
+.cache/
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+.vscode/
+.idea/
+*.log
+
+# ============================================================
+#  KHÔNG chặn khung repo nộp bài (R7 · 2 điểm)
+#  codebase/ eval/ validation/ reflection/ và .gitkeep phải được
+#  commit. Đừng thêm luật nào chặn mấy thư mục này.
+# ============================================================
+!.gitkeep

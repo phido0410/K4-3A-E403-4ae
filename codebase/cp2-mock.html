@@ -2053,8 +2053,12 @@
 
       function kenhCoTin() {
         const d = new Map();
-        msgs.forEach((m) => { if (!m.local) d.set(m.channel, (d.get(m.channel) || 0) + 1); });
-        return [...d.entries()].sort((a, b) => b[1] - a[1]);
+        msgs.forEach((m) => {
+          if (m.local) return;
+          const cur = d.get(m.channel) || { n: 0, guild: m.guild };
+          cur.n++; d.set(m.channel, cur);
+        });
+        return [...d.entries()].sort((a, b) => b[1].n - a[1].n);
       }
       function ngayCoTin() {
         const d = new Map();
@@ -2075,10 +2079,12 @@
         if (/^kenh:/i.test(tuCuoi)) {
           const q = tuCuoi.slice(5).toLowerCase();
           const items = kenhCoTin()
-            .map(([c, n]) => ({ ten: c.replace(/_/g, "-"), n }))
+            .map(([c, v]) => ({ ten: c.replace(/_/g, "-"), n: v.n, g: v.guild }))
             .filter((x) => x.ten.indexOf(q) === 0)
             .slice(0, 6)
-            .map((x) => ({ k: "kenh:" + x.ten, d: x.n + " tin trong kênh này", the: "kenh:" + x.ten + " " }));
+            .map((x) => ({ k: "kenh:" + x.ten,
+                           d: x.n + " tin · " + x.g.replace("K4-", ""),
+                           the: "kenh:" + x.ten + " " }));
           return items.length ? { cap: "Kênh", items } : null;
         }
         if (/^ngay:/i.test(tuCuoi)) {
@@ -2214,6 +2220,8 @@
             labels[it.msg_id] = { status: it.status, ai: it.status, reason: it.reason,
                                   ev: it.ev || [], nguon: "AI" };
           });
+          const coTin = d.items.find((i) => byId.has(i.msg_id));
+          if (coTin) state.guild = byId.get(coTin.msg_id).guild;
           const dau = d.items.find((i) => i.status === "need" && byId.has(i.msg_id));
           state.selected = dau ? dau.msg_id : null;
           state.panelOpen = !!dau;

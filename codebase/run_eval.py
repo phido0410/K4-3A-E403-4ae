@@ -14,11 +14,14 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from decide import ROOT, MODEL, build_context, decide, load_messages
+from decide import ROOT, MODEL, PROMPT_VERSION, build_context, decide, load_messages
 
 LABELS = ["need", "check", "nogrounding", "done"]
 LOP_TEN = {"①": "① Nguon su that", "②": "② Mo ho / thieu thong tin",
            "③": "③ Ngoai pham vi / tham quyen", "④": "④ Dac thu domain"}
+
+
+GT_EV = {}
 
 
 def load_ground_truth() -> dict:
@@ -32,6 +35,9 @@ def load_ground_truth() -> dict:
         st = re.search(r'status:\s*"(\w+)"', src[m.end():i - 1])
         if st:
             gt[mid] = st.group(1)
+        ev = re.search(r'ev:\s*\[([^\]]*)\]', src[m.end():i - 1])
+        if ev:
+            GT_EV[mid] = re.findall(r'M\d{5}', ev.group(1))
     return gt
 
 
@@ -39,6 +45,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", default="run-01")
     ap.add_argument("--dry", action="store_true", help="khong goi API, dung nhan tay lam dau ra gia")
+    ap.add_argument("--from-logs", action="store_true",
+                    help="dung lai bao cao tu log da luu, khong goi API")
     args = ap.parse_args()
 
     gs = json.loads((ROOT / "eval" / "golden_set.json").read_text(encoding="utf-8"))
@@ -46,12 +54,21 @@ def main() -> None:
     _, by_id, replies, by_ch = load_messages()
 
     rows, tokens = [], 0
+    meta = {"model": MODEL, "prompt": PROMPT_VERSION}
     for c in gs["cases"]:
         mid = c["msg_id"]
         ctx = build_context(mid, by_id, replies, by_ch)
         if args.dry:
             got = {"status": gt.get(mid, "?"), "reason": "(dry-run, khong goi API)",
                    "evidence_msg_ids": []}
+        elif args.from_logs:
+            lg = ROOT / "eval" / "logs" / args.run / f"{mid}.json"
+            if not lg.exists():
+                print(f"  (bo qua {mid}: khong co log)")
+                continue
+            raw = json.loads(lg.read_text(encoding="utf-8"))
+            meta = {"model": raw.get("model", "?"), "prompt": raw.get("prompt_version", "v1")}
+            got = json.loads(raw["response_tho"])
         else:
             got = decide(ctx, run=args.run)
             tokens += got.pop("_tokens", 0)
@@ -79,7 +96,7 @@ def main() -> None:
     L = []
     A = L.append
     A(f"# Ket qua chay golden set — luot `{args.run}`\n")
-    A(f"- **Model:** `{MODEL}`" + ("  *(DRY RUN — chua goi API)*" if args.dry else ""))
+    A(f"- **Model:** `{meta['model']}` · prompt `{meta['prompt']}`" + ("  *(DRY RUN — chua goi API)*" if args.dry else ""))
     A(f"- **Luc chay:** {dt.datetime.now():%d/%m/%Y %H:%M}")
     A(f"- **Bo test:** `eval/golden_set.json` — {tong} case")
     A(f"- **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)")
@@ -131,7 +148,7 @@ def main() -> None:
     else:
         for r in truot:
             A(f"**{r['case_id']} · `{r['msg_id']}`** — ky vong `{r['expected']}`, AI tra ve `{r['got']}`  ")
-            A(f"Nhom gan nhan vi: *{r['nhan_goc']}*  ")
+            A(f"Nhom gan nhan vi: *{r['nhan_goc'] or '(nhan chi ghi tin lam can cu: ' + ', '.join(GT_EV.get(r['msg_id'], [])) + ')'}*  ")
             A(f"AI lap luan: *{r['reason']}*  ")
             A(f"Huong xu ly: _(dien tay sau khi doc log `eval/logs/{args.run}/{r['msg_id']}.json`)_\n")
 
@@ -143,8 +160,12 @@ def main() -> None:
     A(f"- Bao thua: **{thua_pct:.1f}%** — {'DAT' if thua_pct <= 30 else 'CHUA DAT'}")
     A("- Lo ten nguoi: **0** — ban tin chi xuat `msg_id` va link, khong xuat tac gia\n")
 
+    text = "\n".join(L)
+    archive = ROOT / "eval" / "runs"
+    archive.mkdir(exist_ok=True)
+    (archive / f"{args.run}.md").write_text(text, encoding="utf-8")
     out = ROOT / "eval" / "run_results.md"
-    out.write_text("\n".join(L), encoding="utf-8")
+    out.write_text(text, encoding="utf-8")
     print(f"\n{dat}/{tong} = {pct:.1f}% · recall {recall:.1f}% · bo sot {len(bo_sot)}")
     print(f"-> {out.relative_to(ROOT)}")
 

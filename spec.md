@@ -97,10 +97,36 @@ AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một b�
 
 ## §7. Kiểm thử
 - **Đơn vị một case:** một câu hỏi + ngữ cảnh quanh nó → nhãn `need` / `check` / `nogrounding` / `done`.
-- **Bộ nhãn đã có (CP2):** `codebase/labels.js` — **142 tin đã gán nhãn tay** trên 1.092 tin thật: 21 `need` · 8 `check` · 3 `nogrounding` · 110 `done`. Vượt yêu cầu ≥20 case, và **≥2 case cho mỗi lớp chỗ khó**.
-- Ở CP2 bộ nhãn này **đứng thay quyết định AI**. Ở CP3 AI thật chạy trên cùng dữ liệu, kết quả **so với chính bộ nhãn này** → ra bảng % đầu tiên.
-- **Quality bar (dự kiến, chốt tại CP4):** *"Đạt khi bỏ sót ≤1/20 câu thật sự bỏ ngỏ (recall ≥95%), và ≤30% mục trong bản tin là báo thừa, và 0 mục lộ tên người."*
-- Cần làm trước CP4: 2 người gán nhãn độc lập trên cùng 20 case để đo độ lệch (guide §2.6 bước 4); chuyển `labels.js` sang `eval/` kèm phương pháp gán nhãn.
+- **Golden set:** [`eval/golden_set.json`](eval/golden_set.json) — **25 case**, 3 case mỗi lớp chỗ khó ①②③④, 10 case thường, 4 case hiếm, **100% lấy từ data thật**.
+- **Ground truth:** `codebase/labels.js` — 142 tin nhóm đọc và gán nhãn tay.
+- **Mô hình:** `gpt-4o-mini` qua OpenAI API, Structured Outputs. Mỗi lần gọi chỉ gửi **một câu hỏi + tối đa 8 tin ngữ cảnh**, không đổ cả pack. Log prompt + response thô của từng case trong `eval/logs/<run>/`.
+
+### Kết quả các lượt chạy
+
+| Lượt | Đổi gì | Đạt | Tỷ lệ | Recall | Bỏ sót |
+|---|---|---|---|---|---|
+| `run-01` | Lượt đầu, prompt v1 | 10/25 | 40% | 88,2% | 2 |
+| `run-02` | Prompt v2 — thêm thứ tự quyết định 3 bước | 10/25 | 40% | 88,2% | 2 |
+| `run-03` | Prompt v3 — sửa ranh giới `need`/`check` | 11/25 | 44% | 88,2% | 2 |
+| `run-04` | Ngữ cảnh v4 — quét cả 30 phút trước câu hỏi | **13/25** | **52%** | 88,2% | 2 |
+
+Chi tiết từng lượt và từng case: [`eval/README.md`](eval/README.md) · [`eval/runs/`](eval/runs/)
+
+### Ba nguyên nhân đã truy được
+
+1. **`nogrounding` không được dùng (run-01: 0/25 lần).** Model lập luận đúng rồi gán sai nhãn — `M80884` viết *"không thể kết luận…"* nhưng xuất `need`. Sửa bằng thứ tự quyết định trong prompt → run-02 dùng nhãn này 4 lần.
+2. **Ranh giới `need`/`check` trong prompt khác với trong `labels.js`.** Nhóm coi *"có người đụng vào nhưng chưa xong"* (lời hẹn, trỏ sang ticket, né câu hỏi) là `check`; prompt v2 xếp hết vào `need`. Sửa ở v3.
+3. **Cửa sổ ngữ cảnh chỉ nhìn tới trước.** `M18676` có câu trả lời mâu thuẫn ở `M19404`, **4 phút trước** câu hỏi — chưa bao giờ được gửi cho model. Sửa ở v4 (quét hai chiều) → +2 case.
+
+### Quality bar — **chốt tại CP4, giữ nguyên sau đó**
+
+> Đạt khi **bỏ sót ≤1/20 câu thật sự còn bỏ ngỏ (recall ≥95%)**, **báo thừa ≤30%**, và **0 mục lộ tên người**.
+
+Đối chiếu `run-04`: recall **88,2% — chưa đạt** (bỏ sót 2) · báo thừa **12% — đạt** · lộ tên **0 — đạt**.
+
+### Còn phải làm trước CP4
+- Hai người gán nhãn độc lập trên cùng 20 case để đo độ lệch (guide §2.6 bước 4).
+- Xử lý case `M36687`: câu trả lời đến sau **705 phút** qua câu hỏi "ké" của người khác — nằm ngoài mọi cửa sổ thời gian hợp lý. Đây là **giới hạn thiết kế**, cần tìm kiếm theo ngữ nghĩa thay vì theo thời gian.
 
 ## §8. Phân công & kế hoạch
 *(điền tên — bắt buộc cho R7)* spec · evidence/mining · prompt + AI call · flow/UI · golden set + eval · demo

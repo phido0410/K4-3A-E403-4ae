@@ -1,0 +1,644 @@
+{
+  "_ghi_chu": "Ban da luoc cua eval/logs/run-02. Prompt he thong nam trong codebase/decide.py (doi chieu bang system_prompt_sha256). Prompt nguoi dung khong dua vao day vi chua nguyen van tin nhan that; chay lai codebase/run_eval.py tren may co data pack de dung lai day du.",
+  "so_case": 25,
+  "cases": [
+    {
+      "msg_id": "M00553",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:41:58",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 1,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M00553",
+          "M78667",
+          "M54372",
+          "M78683",
+          "M28576",
+          "M25574",
+          "M71126"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Câu hỏi chưa có câu trả lời nào phù hợp. Tin nhắn 'Mai hỏi luôn nhé [HV]' không phải là câu trả lời cho câu hỏi này mà chỉ là một lời hẹn. Do đó, cần thêm thông tin hoặc câu trả lời từ người khác.\",\"evidence_msg_ids\":[\"M00553\",\"M78667\"]}",
+      "token": {
+        "vao": 1618,
+        "ra": 77
+      }
+    },
+    {
+      "msg_id": "M03948",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:20",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 2,
+          "tin_sau_do_cua_nguoi_hoi": 2
+        },
+        "msg_id_trong_ngu_canh": [
+          "M03948",
+          "M67216",
+          "M17750",
+          "M79611",
+          "M01578"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi về việc không thấy lịch sử bên activity ở kênh Discord. Các tin nhắn từ BOT không liên quan trực tiếp đến câu hỏi này.\",\"evidence_msg_ids\":[\"M03948\",\"M67216\",\"M17750\"]}",
+      "token": {
+        "vao": 1542,
+        "ra": 66
+      }
+    },
+    {
+      "msg_id": "M04392",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:19",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 0,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M04392"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi của học viên, vì không có tin nhắn nào trong 'tin_cung_kenh_trong_30_phut' và 'reply_truc_tiep'.\",\"evidence_msg_ids\":[\"M04392\"]}",
+      "token": {
+        "vao": 1265,
+        "ra": 63
+      }
+    },
+    {
+      "msg_id": "M15562",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:29",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 1,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M15562",
+          "M45489",
+          "M40821",
+          "M90319",
+          "M45489",
+          "M59772",
+          "M83398"
+        ]
+      },
+      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi của học viên về việc hợp tác giữa hai team có thể đã được trả lời nhưng chưa rõ ràng. Câu trả lời từ D3694 không trực tiếp giải quyết câu hỏi về việc bắt tay giữa hai team mà chỉ đưa ra ý kiến về việc tìm đồng đội. Cần kiểm tra thêm để xác định có câu trả lời nào khác rõ ràng hơn không.\",\"evidence_msg_ids\":[\"M45489\"]}",
+      "token": {
+        "vao": 1818,
+        "ra": 96
+      }
+    },
+    {
+      "msg_id": "M17206",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:24",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 0,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M17206"
+        ]
+      },
+      "response_tho": "{\"status\":\"nogrounding\",\"reason\":\"Câu hỏi không có thông tin rõ ràng về việc đã có ai đó trả lời hay không, và không có nội dung nào trong ngữ cảnh đề cập đến câu hỏi này. Không thể kết luận được câu hỏi đã được giải đáp hay chưa.\",\"evidence_msg_ids\":[\"M17206\"]}",
+      "token": {
+        "vao": 1289,
+        "ra": 71
+      }
+    },
+    {
+      "msg_id": "M18056",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:26",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 1
+        },
+        "msg_id_trong_ngu_canh": [
+          "M18056",
+          "M37242",
+          "M55412",
+          "M59182",
+          "M59504",
+          "M21731",
+          "M50414"
+        ]
+      },
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi 'xem xp ở đâu' đã được trả lời trong tin nhắn của BOT với nội dung hướng dẫn cách theo dõi hoặc tìm kiếm điểm XP. Tin nhắn này nằm trong 'tin_cung_kenh_trong_30_phut'.\",\"evidence_msg_ids\":[\"M59504\"]}",
+      "token": {
+        "vao": 1659,
+        "ra": 73
+      }
+    },
+    {
+      "msg_id": "M18676",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:09",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M18676",
+          "M60614",
+          "M10804",
+          "M06137",
+          "M50070",
+          "M60122"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi 'có điểm danh hả mn :v' trong các tin nhắn trong kênh trong 30 phút qua. Tin nhắn 'không lmao' không liên quan đến câu hỏi này.\",\"evidence_msg_ids\":[\"M18676\",\"M10804\"]}",
+      "token": {
+        "vao": 1538,
+        "ra": 75
+      }
+    },
+    {
+      "msg_id": "M19124",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:16",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 1,
+          "tin_cung_kenh_trong_30_phut": 0,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M19124",
+          "M04816"
+        ]
+      },
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời bởi một học viên khác trong cùng kênh, nội dung trả lời liên quan trực tiếp đến câu hỏi về deadline ghép đội tự do. Căn cứ vào bước 2, có câu trả lời phù hợp.\",\"evidence_msg_ids\":[\"M04816\"]}",
+      "token": {
+        "vao": 1340,
+        "ra": 69
+      }
+    },
+    {
+      "msg_id": "M20982",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:31",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 1
+        },
+        "msg_id_trong_ngu_canh": [
+          "M20982",
+          "M09813",
+          "M47322",
+          "M85321",
+          "M92726",
+          "M13014",
+          "M65820"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi về việc điền hồ sơ năng lực và khả năng bị xem xét kết thúc đào tạo sớm. Các tin nhắn trong 30 phút không liên quan đến câu hỏi này.\",\"evidence_msg_ids\":[\"M20982\",\"M09813\",\"M47322\",\"M85321\",\"M92726\",\"M13014\"]}",
+      "token": {
+        "vao": 1662,
+        "ra": 85
+      }
+    },
+    {
+      "msg_id": "M27566",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:04",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 1,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M27566",
+          "M70525"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi của học viên về việc cấp giấy chứng nhận sinh viên. Tin nhắn trong 30 phút chỉ đề cập đến số lượng người mà không liên quan đến câu hỏi. Quyết định dựa trên bước 2.\",\"evidence_msg_ids\":[\"M27566\",\"M70525\"]}",
+      "token": {
+        "vao": 1327,
+        "ra": 76
+      }
+    },
+    {
+      "msg_id": "M30201",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:12",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 1,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 1
+        },
+        "msg_id_trong_ngu_canh": [
+          "M30201",
+          "M29136",
+          "M84013",
+          "M19574",
+          "M29136",
+          "M12345",
+          "M23126",
+          "M52725"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Câu hỏi về điểm chuyên cần chưa có câu trả lời nào phù hợp trong các tin nhắn gần đây. Tin nhắn trả lời gần nhất không liên quan đến câu hỏi này.\",\"evidence_msg_ids\":[\"M29136\",\"M84013\",\"M19574\",\"M12345\",\"M23126\"]}",
+      "token": {
+        "vao": 1691,
+        "ra": 71
+      }
+    },
+    {
+      "msg_id": "M30246",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:02",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 0,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M30246"
+        ]
+      },
+      "response_tho": "{\"status\":\"nogrounding\",\"reason\":\"Câu hỏi không rõ ràng vì không có thông tin về việc đã gửi mail hay chưa, và không có ai trả lời trước đó. Không có nội dung nào trong ngữ cảnh để xác định câu hỏi đã được giải đáp hay chưa.\",\"evidence_msg_ids\":[\"M30246\"]}",
+      "token": {
+        "vao": 1270,
+        "ra": 69
+      }
+    },
+    {
+      "msg_id": "M33885",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:41:57",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M33885",
+          "M19404",
+          "M74716",
+          "M91265",
+          "M40002",
+          "M18676"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi về việc bị out ra, chỉ có các câu hỏi và thông tin không liên quan đến vấn đề này.\",\"evidence_msg_ids\":[\"M19404\",\"M74716\",\"M91265\",\"M40002\",\"M18676\"]}",
+      "token": {
+        "vao": 1570,
+        "ra": 66
+      }
+    },
+    {
+      "msg_id": "M36687",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:14",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 1,
+          "tin_cung_kenh_trong_30_phut": 0,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M36687",
+          "M19479"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi của học viên. Tin nhắn 'em ké câu hỏi ạ' không phải là câu trả lời cho câu hỏi về group tập gym hay bơi. Cần thêm thông tin từ người khác.\",\"evidence_msg_ids\":[\"M36687\",\"M19479\"]}",
+      "token": {
+        "vao": 1312,
+        "ra": 73
+      }
+    },
+    {
+      "msg_id": "M49586",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:33",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 0,
+          "tin_sau_do_cua_nguoi_hoi": 1
+        },
+        "msg_id_trong_ngu_canh": [
+          "M49586",
+          "M85072"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Câu hỏi không có nội dung cụ thể để trả lời, chỉ là một câu hỏi về việc không có câu hỏi nào để hỏi. Không có câu trả lời nào nhắm đúng vào câu hỏi này trong kênh.\",\"evidence_msg_ids\":[\"M49586\"]}",
+      "token": {
+        "vao": 1307,
+        "ra": 63
+      }
+    },
+    {
+      "msg_id": "M51326",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:41:55",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 1,
+          "tin_cung_kenh_trong_30_phut": 0,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M51326",
+          "M12802"
+        ]
+      },
+      "response_tho": "{\"status\":\"nogrounding\",\"reason\":\"Câu hỏi có nhắc đến lỗi cụ thể nhưng không có thông tin chi tiết về lỗi đó trong ngữ cảnh. Hơn nữa, có ảnh đính kèm nhưng không rõ nội dung. Do đó không thể xác định được câu hỏi đã được giải đáp hay chưa.\",\"evidence_msg_ids\":[\"M51326\"]}",
+      "token": {
+        "vao": 1373,
+        "ra": 76
+      }
+    },
+    {
+      "msg_id": "M54679",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:01",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 2,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M54679",
+          "M18313",
+          "M55373"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi về thời gian demo và QnA. Các tin nhắn trong 30 phút không liên quan đến câu hỏi này.\",\"evidence_msg_ids\":[\"M54679\",\"M18313\",\"M55373\"]}",
+      "token": {
+        "vao": 1369,
+        "ra": 61
+      }
+    },
+    {
+      "msg_id": "M60122",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:17",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 2,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M60122",
+          "M94349",
+          "M33002"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi về daily-standup. Các tin nhắn trong kênh không liên quan đến câu hỏi này.\",\"evidence_msg_ids\":[\"M60122\",\"M94349\",\"M33002\"]}",
+      "token": {
+        "vao": 1388,
+        "ra": 58
+      }
+    },
+    {
+      "msg_id": "M67980",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:11",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 2,
+          "tin_cung_kenh_trong_30_phut": 2,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M67980",
+          "M84013",
+          "M19574",
+          "M10991",
+          "M32239"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Câu hỏi chưa được giải đáp vì không có câu trả lời nào phù hợp trong các tin nhắn gần đây. Tin nhắn từ người hỏi không có phản hồi nào rõ ràng về cách xử lý thẻ ra vào. Cần thêm thông tin từ người khác.\",\"evidence_msg_ids\":[\"M84013\",\"M19574\"]}",
+      "token": {
+        "vao": 1543,
+        "ra": 77
+      }
+    },
+    {
+      "msg_id": "M72484",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:07",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 1
+        },
+        "msg_id_trong_ngu_canh": [
+          "M72484",
+          "M28485",
+          "M20574",
+          "M75012",
+          "M77155",
+          "M92484",
+          "M07416"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Câu hỏi về hạn nộp Lab02 chưa được giải đáp cụ thể trong các tin nhắn trước đó. BOT đã hướng dẫn kiểm tra các nguồn thông tin khác nhưng không cung cấp thông tin cụ thể nào. Do đó, cần thêm thông tin từ người khác hoặc từ BTC.\",\"evidence_msg_ids\":[\"M28485\",\"M20574\",\"M75012\",\"M77155\",\"M92484\"]}",
+      "token": {
+        "vao": 1951,
+        "ra": 92
+      }
+    },
+    {
+      "msg_id": "M80884",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:41:52",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M80884",
+          "M38839",
+          "M40040",
+          "M30201",
+          "M84013",
+          "M19574"
+        ]
+      },
+      "response_tho": "{\"status\":\"nogrounding\",\"reason\":\"Câu hỏi không rõ ràng vì nó yêu cầu một người cụ thể ([@D9617]) trả lời tin nhắn mà không có thông tin nào về nội dung tin nhắn đó. Không có thông tin nào trong ngữ cảnh để xác định nội dung cần trả lời.\",\"evidence_msg_ids\":[\"M80884\"]}",
+      "token": {
+        "vao": 1569,
+        "ra": 77
+      }
+    },
+    {
+      "msg_id": "M83358",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:28",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 1,
+          "tin_cung_kenh_trong_30_phut": 5,
+          "tin_sau_do_cua_nguoi_hoi": 2
+        },
+        "msg_id_trong_ngu_canh": [
+          "M83358",
+          "M43101",
+          "M43101",
+          "M20982",
+          "M09813",
+          "M47322",
+          "M65820",
+          "M99769",
+          "M36494"
+        ]
+      },
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ bởi D3694 với thông tin rõ ràng về số lượng thành viên trong team. Không có câu hỏi nào khác liên quan đến nội dung này trong 30 phút sau đó.\",\"evidence_msg_ids\":[\"M83358\",\"M43101\"]}",
+      "token": {
+        "vao": 1752,
+        "ra": 67
+      }
+    },
+    {
+      "msg_id": "M83711",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:35",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 2,
+          "tin_cung_kenh_trong_30_phut": 2,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M83711",
+          "M81490",
+          "M96607",
+          "M68891",
+          "M81490"
+        ]
+      },
+      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi chưa được giải đáp rõ ràng. Có hai tin nhắn trả lời, nhưng không có câu trả lời trực tiếp nào xác nhận việc bài mới đã được up hay chưa. Tin nhắn từ D7688 chỉ hướng dẫn hỏi labcoach, không trả lời trực tiếp câu hỏi. Tin nhắn từ D6604 có thể là câu trả lời nhưng không rõ ràng vì không có thông tin cụ thể về bài mới. Cần kiểm tra thêm để xác nhận.\",\"evidence_msg_ids\":[\"M83711\",\"M81490\",\"M96607\"]}",
+      "token": {
+        "vao": 1521,
+        "ra": 124
+      }
+    },
+    {
+      "msg_id": "M88027",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:42:05",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 4,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M88027",
+          "M92861",
+          "M24366",
+          "M59723",
+          "M36687"
+        ]
+      },
+      "response_tho": "{\"status\":\"need\",\"reason\":\"Không có câu trả lời nào nhắm đúng câu hỏi về việc gia hạn thời gian nộp Lab2. Các tin nhắn trong kênh không liên quan đến câu hỏi này.\",\"evidence_msg_ids\":[\"M88027\",\"M92861\",\"M24366\",\"M59723\",\"M36687\"]}",
+      "token": {
+        "vao": 1498,
+        "ra": 72
+      }
+    },
+    {
+      "msg_id": "M97637",
+      "model": "gpt-4o-mini",
+      "prompt_version": "v2",
+      "luc_chay": "2026-09-16T23:41:53",
+      "system_prompt_sha256": "b8b33b8f864f7efd",
+      "ngu_canh": {
+        "so_tin_moi_phan": {
+          "reply_truc_tiep": 0,
+          "tin_cung_kenh_trong_30_phut": 3,
+          "tin_sau_do_cua_nguoi_hoi": 0
+        },
+        "msg_id_trong_ngu_canh": [
+          "M97637",
+          "M08439",
+          "M56148",
+          "M98470"
+        ]
+      },
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ bởi BOT trong tin nhắn M08439, cung cấp thông tin chi tiết về quy trình và các link cần thiết. Không có thông tin nào mâu thuẫn và câu hỏi đã được giải đáp rõ ràng.\",\"evidence_msg_ids\":[\"M97637\",\"M08439\"]}",
+      "token": {
+        "vao": 2129,
+        "ra": 75
+      }
+    }
+  ]
+}

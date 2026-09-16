@@ -32,6 +32,10 @@ DATA_DICTIONARY.md
 codebase/local-data/
 **/local-data/
 k4-data.js
+
+# Log tho cua tung lan goi LLM: phan "prompt.user" chua NGUYEN VAN tin nhan that.
+# Giu tren may de xac minh; repo chi chua ban da luoc o eval/audit/.
+eval/logs/
 **/*k4_messages*.js
 **/*k4_messages*.json
 

@@ -43,18 +43,24 @@ PANEL = """
   <div style="padding:9px 12px;background:#2B2D31;border-bottom:1px solid #3F4147;
     display:flex;align-items:center;gap:8px">
     <span style="width:7px;height:7px;border-radius:50%;background:#23A55A"></span>
-    <b style="font-size:12px">Hoi AI truc tiep</b>
+    <b style="font-size:12px">Phan loai lai bang AI that</b>
     <span id="ai-model" style="margin-left:auto;font-size:10px;color:#949BA4"></span>
   </div>
   <div style="padding:12px">
+    <div style="font-size:11.5px;color:#949BA4;margin-bottom:7px">
+      Nhap <b style="color:#DBDEE1">ma tin nhan</b> (khong phai cau hoi) — AI se doc lai ngu canh
+      quanh tin do va phan loai ngay.</div>
     <div style="display:flex;gap:6px">
-      <input id="ai-id" value="M18056" spellcheck="false" style="flex:1;min-width:0;background:#383A40;
-        border:1px solid #3F4147;color:#DBDEE1;border-radius:6px;padding:6px 9px;font:inherit">
+      <input id="ai-id" value="M18056" placeholder="M18056" spellcheck="false"
+        style="flex:1;min-width:0;background:#383A40;border:1px solid #3F4147;color:#DBDEE1;
+        border-radius:6px;padding:6px 9px;font:inherit;font-family:ui-monospace,monospace">
       <button id="ai-go" style="background:#5865F2;color:#fff;border:0;border-radius:6px;
         padding:6px 13px;font:inherit;font-weight:600;cursor:pointer">Hoi</button>
     </div>
+    <div style="margin-top:8px;font-size:11px;color:#6D6F78">Thu nhanh:</div>
+    <div id="ai-quick" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px"></div>
     <div id="ai-out" style="margin-top:10px;font-size:12.5px;color:#949BA4">
-      Nhap ma tin roi bam Hoi — se goi model that.</div>
+      Bam mot ma o tren, hoac go ma tin roi bam Hoi.</div>
   </div>
 </div>
 <script>
@@ -62,10 +68,27 @@ PANEL = """
   var COLOR={need:"#F23F43",check:"#F0B232",nogrounding:"#949BA4",done:"#23A55A"};
   var TEN={need:"Can tra loi",check:"Can kiem tra",nogrounding:"Khong co can cu",done:"Da duoc tra loi"};
   var out=document.getElementById("ai-out"), btn=document.getElementById("ai-go");
+  var QUICK=[["M18056","da co dap an trong kenh"],["M18676","hai cau tra loi mau thuan"],
+             ["M80884","can cu nam ngoai tam quan sat"],["M00553","chi duoc hen tra loi"]];
+  var qbox=document.getElementById("ai-quick");
+  QUICK.forEach(function(q){
+    var b=document.createElement("button");
+    b.textContent=q[0]; b.title=q[1];
+    b.style.cssText="background:#383A40;border:1px solid #3F4147;color:#DBDEE1;border-radius:5px;"+
+      "padding:3px 7px;font:inherit;font-size:11px;font-family:ui-monospace,monospace;cursor:pointer";
+    b.onclick=function(){document.getElementById("ai-id").value=q[0];ask();};
+    qbox.appendChild(b);
+  });
   fetch("/api/info").then(r=>r.json()).then(d=>{
     document.getElementById("ai-model").textContent=d.model+" · "+d.prompt;});
   function ask(){
     var id=document.getElementById("ai-id").value.trim().toUpperCase();
+    if(!/^M[0-9]{5}$/.test(id)){
+      out.innerHTML="<span style='color:#F0B232'>O nay nhan <b>ma tin nhan</b> dang M kem 5 chu so "+
+        "(vi du M18056), khong nhan cau hoi. Bam mot ma o tren de thu.</span>";
+      return;
+    }
+    document.getElementById("ai-id").value=id;
     btn.disabled=true; out.innerHTML="<span style='color:#949BA4'>dang goi model...</span>";
     var t0=Date.now();
     fetch("/api/decide",{method:"POST",headers:{"Content-Type":"application/json"},
@@ -96,7 +119,9 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*a, directory=str(BASE), **kw)
 
     def log_message(self, fmt, *args):
-        if "/api/" in (args[0] if args else ""):
+        # Chi in dong lien quan toi /api/ cho do roi terminal luc quay video.
+        # Luu y: log_error truyen HTTPStatus chu khong phai chuoi -> phai ep str().
+        if args and "/api/" in str(args[0]):
             super().log_message(fmt, *args)
 
     def _json(self, obj, code=200):
@@ -109,6 +134,10 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.split("?")[0]
+        if path == "/favicon.ico":
+            self.send_response(204)
+            self.end_headers()
+            return
         if path == "/api/info":
             return self._json({"model": MODEL, "prompt": PROMPT_VERSION})
         if path in ("/", "/cp2-mock.html"):

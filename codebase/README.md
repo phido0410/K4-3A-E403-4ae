@@ -4,7 +4,7 @@ Lát cắt: **Một TA · cuối ngày muốn biết còn câu nào bỏ ngỏ �
 
 ## ▶ Video đi hết luồng
 
-> **Link:** `<DÁN LINK VÀO ĐÂY>`
+> **Link:** `https://youtu.be/NdsaCmuDQBQ`
 >
 > *(Quay màn hình, đi hết một vòng: mở bản tin → 4 trạng thái → bấm sửa một mục → đóng bản tin.)*
 

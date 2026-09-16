@@ -24,6 +24,18 @@ transcript-*-clean.md
 DATA_DICTIONARY.md
 
 # ============================================================
+#  DỮ LIỆU THẬT SINH RA TẠI MÁY — KHÔNG BAO GIỜ PUSH
+#  build_local_data.py đọc data pack rồi sinh file .js chứa
+#  NGUYÊN VĂN tin nhắn thật. .gitignore chặn CSV nhưng không
+#  chặn được bản sao đã đổi định dạng — nên chặn thẳng ở đây.
+# ============================================================
+codebase/local-data/
+**/local-data/
+k4-data.js
+**/*k4_messages*.js
+**/*k4_messages*.json
+
+# ============================================================
 #  API KEY — README "Luật chung" điều 4: không commit API key
 # ============================================================
 .env

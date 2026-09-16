@@ -41,13 +41,16 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới *(cải tiế
 5. Không làm bản tin đa ngôn ngữ, không làm app di động.
 
 ### Mức prototype
-**Mock.** Flow bấm hết được, dữ liệu là fixture tự sinh.
-| Phần | CP2 | CP3 |
+**Mock** — flow bấm hết được, **chạy trên 1.092 tin thật** của data pack tại máy cá nhân.
+
+| Phần | CP2 (đang có) | CP3 (sẽ làm) |
 |---|---|---|
-| Flow 4 màn, phân nhóm, panel giải thích, nút sửa | thật (đã chạy) | giữ nguyên |
-| **Quyết định "đã được giải đáp chưa"** | **mock — kịch bản dựng sẵn** | **lời gọi AI thật**, log trong `eval/` |
-| Đọc tin từ Discord | fixture | đọc từ `k4_messages.csv` tại máy cá nhân |
-| Link tới tin gốc | mock (alert) | link thật |
+| Giao diện Discord, phân nhóm 4 trạng thái, panel căn cứ, nút sửa | **thật, chạy được** | giữ nguyên |
+| Dữ liệu tin nhắn | **thật** — `local-data/k4-data.js` sinh từ `k4_messages.csv` | giữ nguyên |
+| **Quyết định "đã được giải đáp chưa"** | **mock — nhãn người đọc tay** trong `codebase/labels.js` | **lời gọi AI thật**, so kết quả với chính bộ nhãn này |
+| Link tới tin gốc | cuộn tới tin trong mock | link Discord thật |
+
+**Ranh giới data:** `local-data/k4-data.js` chứa nguyên văn tin nhắn thật → **nằm trong `.gitignore`, không bao giờ push**. Repo chỉ chứa `cp2-mock.html` + `labels.js` (chỉ `msg_id` + nhãn + lý do do nhóm viết, **không có nội dung tin**) + `build_local_data.py` để dựng lại data trên máy.
 
 ### Automation: **augment**
 AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một bên:
@@ -59,14 +62,14 @@ AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một b�
 ### §4b. Nguyên tắc đã áp dụng
 | Nguyên tắc | Áp cụ thể vào đâu trong prototype |
 |---|---|
-| **G1** · Làm rõ hệ thống làm được gì | Dòng phạm vi ngay dưới tên sản phẩm: nói rõ bản tin làm gì và **không** nhắn cho học viên |
-| **G2** · Làm rõ nó làm tốt đến đâu | Chân bản tin khai trước: bản tin bỏ sót được vì chỉ đọc kênh công khai |
-| **G10** · Thu hẹp phạm vi khi nghi ngờ | Hai nhóm riêng "Cần bạn xác nhận" và "Không đủ căn cứ" — máy không chắc thì nói không chắc, không xếp bừa vào nhóm bỏ ngỏ |
-| **G11** · Giải thích vì sao | Panel "Vì sao câu này ở đây": liệt kê đúng căn cứ đã dùng + mức chắc chắn |
-| **G9** · Sửa dễ dàng | Nút "Có người trả lời rồi" / "Không phải câu hỏi" ngay trên từng mục, một cú bấm |
-| **G17** · Quyền kiểm soát tổng | Màn đóng bản tin đếm rõ **0 tin đã gửi học viên** |
+| **G1** · Làm rõ hệ thống làm được gì | Dòng mô tả đầu bản tin: nói rõ chỉ liệt kê câu tồn cho TA, **không tự nhắn cho học viên** |
+| **G2** · Làm rõ nó làm tốt đến đâu | Bản tin khai trước phạm vi quét (kênh công khai, 3 ngày) và nhận là có thể bỏ sót |
+| **G10** · Thu hẹp phạm vi khi nghi ngờ | Ba trạng thái tách riêng: `Cần trả lời` · `Cần kiểm tra` (không chắc) · `Không có căn cứ` — máy không chắc thì nói không chắc, không xếp bừa |
+| **G11** · Giải thích vì sao | Mỗi mục kèm lý do cụ thể, ví dụ *"Có reply sau 3 phút nhưng reply nói về nhận role, không trả lời câu hỏi"* |
+| **G9** · Sửa dễ dàng | 5 lý do sửa bấm một nút: đã trả lời ở kênh khác · không phải câu hỏi · trùng câu khác · vẫn chưa trả lời · cần BTC xử lý |
+| **G17** · Quyền kiểm soát tổng | Bản tin không gửi tin nào cho học viên; TA tự trả lời trong Discord |
 
-*Bật nút "Hiện chú thích nguyên tắc" trong bản mock để thấy vị trí từng nguyên tắc trên giao diện.*
+*4 trạng thái trong mock (`need` / `check` / `nogrounding` / `done`) ánh xạ thẳng sang 4 đường đi ở §6.*
 
 ---
 
@@ -83,19 +86,21 @@ AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một b�
 ## §6. Bốn đường đi của trải nghiệm  ← **chốt tại CP2**
 | Đường đi | Hành vi trong prototype |
 |---|---|
-| **Happy path** | Nhóm "Chắc chắn còn bỏ ngỏ" — mức chắc chắn 85–92%, kèm căn cứ và thời gian đã trôi. TA bấm "Tôi nhận trả lời câu này". |
-| **Low-confidence (②)** | Nhóm riêng "Cần bạn xác nhận" — ví dụ reply là *"em ké câu hỏi ạ"*, chắc chắn 38%. Máy **nói ra chỗ nó phân vân** thay vì xếp bừa. |
-| **Failure / không căn cứ (①)** | Nhóm "Không đủ căn cứ để kết luận" — tin nhắc tới tin ngoài phạm vi thu thập. Máy ghi *"không kết luận được"*, **không đoán**, đẩy sang cho người xem. |
-| **Correction (user sửa)** | Hai nút "Có người trả lời rồi" / "Không phải câu hỏi" trên từng mục; mục biến khỏi bản tin và được đếm vào "bạn sửa lại máy" ở màn đóng. |
-| **Bị đòi ngoài phạm vi (③)** | Câu hỏi cá nhân vẫn được liệt kê, nhưng bản tin không tra cứu hộ — TA tự xử lý ở Discord. |
-| **Case đặc thù domain (④)** | Bản tin **không hiện tên người hỏi**, chỉ mã tin + link. Bản tin gửi vào kênh riêng của TA, không đăng công khai. |
+| **Happy path** | Trạng thái `need` — *Cần trả lời*, mức chắc chắn cao. **21 case** trong bộ nhãn. TA bấm trả lời. |
+| **Low-confidence (②)** | Trạng thái `check` — *Cần kiểm tra*. **8 case**, ví dụ *"Có reply sau 3 phút nhưng reply nói về nhận role, không trả lời câu hỏi"*. Máy nói ra chỗ phân vân thay vì xếp bừa. |
+| **Failure / không căn cứ (①)** | Trạng thái `nogrounding` — *Không có căn cứ*. **3 case**, tin nhắc tới thứ nằm ngoài phạm vi thu thập. Máy **không đoán**. |
+| **Correction (user sửa)** | 5 lý do sửa trên từng mục; mục đổi trạng thái và được ghi lại làm dữ liệu cho lần sau. |
+| **Bị đòi ngoài phạm vi (③)** | Nhãn `personal` — việc cá nhân (giấy tờ, điểm danh của tôi): bản tin vẫn liệt kê nhưng **không soạn câu trả lời**, chuyển cho BTC. |
+| **Case đặc thù domain (④)** | Bản tin **không hiện tên người hỏi** · **không tự soạn nội dung trả lời** (tránh bịa chính sách deadline) · gửi kênh riêng của TA. |
 
 ---
 
 ## §7. Kiểm thử
-- **Đơn vị một case:** một câu hỏi + ngữ cảnh quanh nó → nhãn `còn bỏ ngỏ / đã được trả lời / không phải câu hỏi`.
+- **Đơn vị một case:** một câu hỏi + ngữ cảnh quanh nó → nhãn `need` / `check` / `nogrounding` / `done`.
+- **Bộ nhãn đã có (CP2):** `codebase/labels.js` — **142 tin đã gán nhãn tay** trên 1.092 tin thật: 21 `need` · 8 `check` · 3 `nogrounding` · 110 `done`. Vượt yêu cầu ≥20 case, và **≥2 case cho mỗi lớp chỗ khó**.
+- Ở CP2 bộ nhãn này **đứng thay quyết định AI**. Ở CP3 AI thật chạy trên cùng dữ liệu, kết quả **so với chính bộ nhãn này** → ra bảng % đầu tiên.
 - **Quality bar (dự kiến, chốt tại CP4):** *"Đạt khi bỏ sót ≤1/20 câu thật sự bỏ ngỏ (recall ≥95%), và ≤30% mục trong bản tin là báo thừa, và 0 mục lộ tên người."*
-- Golden set ≥20 case trong `eval/` — hạt giống là 27 câu đã lọc, gán nhãn tay bởi 2 người độc lập.
+- Cần làm trước CP4: 2 người gán nhãn độc lập trên cùng 20 case để đo độ lệch (guide §2.6 bước 4); chuyển `labels.js` sang `eval/` kèm phương pháp gán nhãn.
 
 ## §8. Phân công & kế hoạch
 *(điền tên — bắt buộc cho R7)* spec · evidence/mining · prompt + AI call · flow/UI · golden set + eval · demo
@@ -103,4 +108,6 @@ AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một b�
 ## §9. Changelog
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
-| 16/9 CP2 | Chốt §4 + §6, dựng bản mock 4 màn | Phát hiện "không có reply ≠ chưa được trả lời" khi mining → tách riêng nhóm "cần xác nhận" và "không đủ căn cứ" thay vì một danh sách phẳng |
+| 16/9 CP2 | Chốt §4 + §6; dựng bản mock chạy trên data thật tại máy | Phát hiện "không có reply ≠ chưa được trả lời" khi mining → tách 4 trạng thái thay vì một danh sách phẳng |
+| 16/9 CP2 | Tách `local-data/` ra khỏi repo, chỉ commit `labels.js` (msg_id + nhãn) | Repo nộp bài là repo công khai; nguyên văn tin nhắn của bạn cùng khoá không được lên mạng |
+| 16/9 CP2 | Bỏ phương án bot soạn sẵn câu trả lời cho TA | Bản thử đầu điền sẵn câu như *"BTC có hỗ trợ nới deadline"* — không có nguồn nào trong data nói vậy; Track B yêu cầu deadline chỉ lấy từ nguồn chính thức |

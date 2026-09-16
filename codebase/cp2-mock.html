@@ -1,0 +1,2046 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bản tin câu hỏi tồn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    /* Một giao diện tối duy nhất, mô phỏng ứng dụng chat mà TA dùng hằng ngày. */
+    :root {
+      --rail: #1E1F22;
+      --side: #2B2D31;
+      --chat: #313338;
+      --raised: #383A40;
+      --hover: #2E3035;
+      --hover-side: #35373C;
+      --active-side: #404249;
+      --text: #DBDEE1;
+      --muted: #949BA4;
+      --faint: #6D6F78;
+      --head: #F2F3F5;
+      --divider: #3F4147;
+      --blurple: #5865F2;
+      --blurple-hover: #4752C4;
+      --mention-bg: rgba(88, 101, 242, .3);
+      --mention-text: #C9CDFB;
+      --link: #00A8FC;
+      --green: #23A55A;
+      --yellow: #F0B232;
+      --red: #F23F43;
+      --hl-bg: rgba(240, 178, 50, .1);
+      --embed: #2B2D31;
+      --code-bg: #2B2D31;
+      --font: "Noto Sans", "gg sans", "Segoe UI", system-ui, sans-serif;
+      --mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: var(--chat);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.375;
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--link);
+      outline-offset: 2px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #1A1B1E;
+      border-radius: 8px;
+      border: 3px solid transparent;
+      background-clip: padding-box;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .shell {
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    /* Thanh thông báo trên cùng */
+    .notice {
+      background: var(--blurple);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 500;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 4px 16px;
+      padding: 6px 16px;
+      padding-top: calc(6px + env(safe-area-inset-top, 0px));
+    }
+
+    .notice .steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 6px;
+      align-items: center;
+    }
+
+    .notice .st {
+      padding: 1px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .14);
+      color: rgba(255, 255, 255, .75);
+      white-space: nowrap;
+    }
+
+    .notice .st[data-state="active"] {
+      background: #fff;
+      color: var(--blurple);
+      font-weight: 700;
+    }
+
+    .notice .st[data-state="done"] {
+      color: #fff;
+    }
+
+    .notice .st[data-state="done"]::before {
+      content: "✓ ";
+    }
+
+    .notice .sep {
+      opacity: .6;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 72px 240px minmax(0, 1fr) 400px;
+      min-height: 0;
+    }
+
+    .app.no-panel {
+      grid-template-columns: 72px 240px minmax(0, 1fr) 0;
+    }
+
+    /* Cột server */
+    .rail {
+      background: var(--rail);
+      padding: 12px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      overflow-y: auto;
+    }
+
+    .srv {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--chat);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      display: grid;
+      place-items: center;
+      transition: border-radius .15s, background-color .15s;
+    }
+
+    .srv:hover,
+    .srv[aria-current="true"] {
+      border-radius: 16px;
+      background: var(--blurple);
+      color: #fff;
+    }
+
+    .srv::before {
+      content: "";
+      position: absolute;
+      left: -16px;
+      width: 8px;
+      border-radius: 0 4px 4px 0;
+      background: #fff;
+      height: 0;
+      transition: height .15s;
+    }
+
+    .srv:hover::before {
+      height: 20px;
+    }
+
+    .srv[aria-current="true"]::before {
+      height: 40px;
+    }
+
+    .srv .ping {
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      border: 3px solid var(--rail);
+      box-sizing: content-box;
+    }
+
+    .rail .line {
+      width: 32px;
+      height: 2px;
+      background: var(--divider);
+      border-radius: 1px;
+    }
+
+    /* Danh sách kênh */
+    .side {
+      background: var(--side);
+      display: grid;
+      grid-template-rows: 48px minmax(0, 1fr) auto;
+      min-width: 0;
+    }
+
+    .side-head {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      font-weight: 700;
+      color: var(--head);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .25);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chan-list {
+      overflow-y: auto;
+      padding: 8px 8px 12px;
+    }
+
+    .cat {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 16px 8px 4px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .cat::before {
+      content: "⌄";
+      font-size: 12px;
+      transform: translateY(-2px);
+    }
+
+    .chan {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 4px;
+      padding: 6px 8px;
+      margin: 1px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .chan:hover {
+      background: var(--hover-side);
+      color: var(--text);
+    }
+
+    .chan[aria-current="true"] {
+      background: var(--active-side);
+      color: #fff;
+    }
+
+    .chan .hash {
+      font-size: 20px;
+      line-height: 1;
+      color: var(--faint);
+      width: 20px;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    .chan .name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chan.unread {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .badge {
+      min-width: 16px;
+      height: 16px;
+      padding: 0 5px;
+      border-radius: 8px;
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+
+    .lock {
+      font-size: 11px;
+    }
+
+    .me {
+      background: #232428;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .me .who {
+      display: grid;
+      line-height: 1.2;
+      min-width: 0;
+    }
+
+    .me .who b {
+      color: var(--head);
+      font-size: 14px;
+    }
+
+    .me .who span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .av {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .av.sm {
+      width: 32px;
+      height: 32px;
+      font-size: 12px;
+    }
+
+    .av.xs {
+      width: 16px;
+      height: 16px;
+      font-size: 8px;
+    }
+
+    .av .dot {
+      position: absolute;
+      right: -2px;
+      bottom: -2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 3px solid #232428;
+    }
+
+    /* Khung chat */
+    .chat {
+      background: var(--chat);
+      display: grid;
+      grid-template-rows: 48px minmax(0, 1fr) auto;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .chat-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .2);
+      min-width: 0;
+    }
+
+    .chat-head .hash {
+      font-size: 24px;
+      color: var(--faint);
+    }
+
+    .chat-head b {
+      color: var(--head);
+      white-space: nowrap;
+    }
+
+    .chat-head .topic {
+      color: var(--muted);
+      font-size: 14px;
+      border-left: 1px solid var(--divider);
+      padding-left: 10px;
+      margin-left: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-head .grow {
+      flex: 1;
+    }
+
+    .icon-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .icon-btn:hover {
+      color: var(--head);
+      background: var(--hover);
+    }
+
+    .mobile-nav {
+      display: none;
+    }
+
+    .scroller {
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 16px 0 24px;
+    }
+
+    .welcome {
+      padding: 16px 16px 8px;
+    }
+
+    .welcome .big {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--raised);
+      display: grid;
+      place-items: center;
+      font-size: 40px;
+      color: #fff;
+    }
+
+    .welcome h2 {
+      color: var(--head);
+      font-size: 28px;
+      margin: 8px 0 4px;
+      font-weight: 800;
+    }
+
+    .welcome p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 16px 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--divider);
+    }
+
+    .msg {
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      column-gap: 16px;
+      padding: 2px 48px 2px 16px;
+      margin-top: 17px;
+    }
+
+    .msg.cont {
+      margin-top: 0;
+    }
+
+    .msg:hover {
+      background: var(--hover);
+    }
+
+    .msg.hl {
+      background: var(--hl-bg);
+      box-shadow: inset 2px 0 0 var(--yellow);
+    }
+
+    .msg.replying {
+      background: var(--mention-bg);
+      box-shadow: inset 2px 0 0 var(--blurple);
+    }
+
+    .msg .gutter {
+      display: flex;
+      justify-content: center;
+      padding-top: 2px;
+    }
+
+    .msg .gutter .av {
+      width: 40px;
+      height: 40px;
+    }
+
+    .msg .ts-hover {
+      visibility: hidden;
+      font-size: 11px;
+      color: var(--muted);
+      padding-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .msg.cont:hover .ts-hover {
+      visibility: visible;
+    }
+
+    .msg .headline {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0 8px;
+    }
+
+    .msg .uname {
+      font-weight: 600;
+      color: var(--head);
+    }
+
+    .msg .time {
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tag-bot {
+      background: var(--blurple);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      transform: translateY(-1px);
+      letter-spacing: .02em;
+    }
+
+    .body {
+      color: var(--text);
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      background: var(--code-bg);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+
+    .body pre {
+      background: var(--code-bg);
+      border: 1px solid #1E1F22;
+      border-radius: 4px;
+      padding: 8px;
+      overflow-x: auto;
+      margin: 4px 0;
+      max-width: 100%;
+    }
+
+    .body pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .mention {
+      background: var(--mention-bg);
+      color: var(--mention-text);
+      border-radius: 3px;
+      padding: 0 2px;
+      font-weight: 500;
+    }
+
+    .link {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a.link:hover {
+      text-decoration: underline;
+    }
+
+    .mask {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      background: rgba(255, 255, 255, .06);
+      border-radius: 3px;
+      padding: 0 3px;
+    }
+
+    .reply-ref {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 2px;
+      position: relative;
+      min-width: 0;
+    }
+
+    .reply-ref::before {
+      content: "";
+      position: absolute;
+      left: -38px;
+      top: 50%;
+      width: 32px;
+      height: 12px;
+      border-left: 2px solid #4E5058;
+      border-top: 2px solid #4E5058;
+      border-top-left-radius: 6px;
+    }
+
+    .reply-ref button {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: var(--muted);
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .reply-ref button:hover .snip {
+      color: var(--head);
+    }
+
+    .reply-ref .rn {
+      color: var(--head);
+      font-weight: 600;
+      opacity: .85;
+    }
+
+    .reply-ref .snip {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .reply-ref.missing {
+      font-style: italic;
+    }
+
+    .attach {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .attach span {
+      width: 220px;
+      max-width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      background: repeating-linear-gradient(135deg, #2B2D31 0 10px, #303237 10px 20px);
+      border: 1px solid var(--divider);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 12.5px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 999px;
+      border: 0;
+    }
+
+    .pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pill.need {
+      background: rgba(242, 63, 67, .16);
+      color: #FF7B7E;
+    }
+
+    .pill.check {
+      background: rgba(240, 178, 50, .16);
+      color: var(--yellow);
+    }
+
+    .pill.nog {
+      background: rgba(148, 155, 164, .16);
+      color: #B5BAC1;
+    }
+
+    .pill.done {
+      background: rgba(35, 165, 90, .16);
+      color: #4CD383;
+    }
+
+    button.pill:hover {
+      filter: brightness(1.2);
+    }
+
+    .hover-actions {
+      position: absolute;
+      right: 16px;
+      top: -14px;
+      display: none;
+      background: var(--chat);
+      border: 1px solid #26272B;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+    }
+
+    .msg:hover .hover-actions,
+    .msg:focus-within .hover-actions {
+      display: flex;
+    }
+
+    .hover-actions button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .hover-actions button:hover {
+      color: var(--head);
+      background: var(--hover);
+    }
+
+    /* Embed bản tin */
+    .embed {
+      margin-top: 6px;
+      max-width: 620px;
+      background: var(--embed);
+      border-radius: 4px;
+      border-left: 4px solid var(--blurple);
+      padding: 10px 14px 14px 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .embed .e-title {
+      color: var(--head);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .embed .e-desc {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .embed .e-desc b {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .field-name {
+      color: var(--head);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .q-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 2px 10px;
+      align-items: center;
+      padding: 6px 8px;
+      margin: 0 -8px;
+      border-radius: 4px;
+    }
+
+    .q-row:hover {
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .q-row[aria-current="true"] {
+      background: rgba(88, 101, 242, .16);
+    }
+
+    .q-row .q-text {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      text-align: left;
+      color: var(--text);
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .q-row .q-text:hover {
+      text-decoration: underline;
+    }
+
+    .q-row .q-meta {
+      grid-column: 1;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .q-row .q-meta .wait {
+      color: #FF9A9C;
+    }
+
+    .q-row .q-meta .late {
+      color: var(--yellow);
+    }
+
+    .q-row .jump {
+      grid-row: 1 / span 2;
+      grid-column: 2;
+    }
+
+    .btn-sm {
+      border: 0;
+      border-radius: 3px;
+      background: var(--raised);
+      color: var(--head);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
+    .btn-sm:hover {
+      background: #4E5058;
+    }
+
+    .embed details summary {
+      cursor: pointer;
+      color: var(--link);
+      font-size: 14px;
+    }
+
+    .embed details[open] summary {
+      margin-bottom: 4px;
+    }
+
+    .e-foot {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px 8px;
+    }
+
+    .e-empty {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Ô soạn tin */
+    .composer {
+      padding: 0 16px 24px;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .reply-bar {
+      background: #2B2D31;
+      border-radius: 8px 8px 0 0;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reply-bar b {
+      color: var(--head);
+    }
+
+    .reply-bar .x {
+      margin-left: auto;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1;
+      padding: 0 4px;
+    }
+
+    .reply-bar .x:hover {
+      color: var(--head);
+    }
+
+    .input-wrap {
+      background: var(--raised);
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 0 16px;
+    }
+
+    .reply-bar+.input-wrap {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .input-wrap .plus {
+      width: 24px;
+      height: 24px;
+      margin-top: 11px;
+      border-radius: 50%;
+      background: #B5BAC1;
+      color: var(--raised);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      flex: none;
+    }
+
+    .input-wrap textarea {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      resize: none;
+      padding: 11px 0;
+      color: var(--text);
+      max-height: 200px;
+      min-height: 44px;
+    }
+
+    .input-wrap textarea:focus {
+      outline: none;
+    }
+
+    .input-wrap textarea::placeholder {
+      color: var(--faint);
+    }
+
+    .input-wrap textarea:disabled {
+      cursor: not-allowed;
+    }
+
+    .composer .hint {
+      font-size: 12px;
+      color: var(--faint);
+      margin: 4px 2px 0;
+    }
+
+    /* Bảng chi tiết bên phải */
+    .panel {
+      background: var(--side);
+      border-left: 1px solid #1F2023;
+      display: grid;
+      grid-template-rows: 48px minmax(0, 1fr);
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .app.no-panel .panel {
+      display: none;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px 0 16px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .25);
+    }
+
+    .panel-head b {
+      color: var(--head);
+    }
+
+    .panel-head .grow {
+      flex: 1;
+    }
+
+    .panel-body {
+      overflow-y: auto;
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .p-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+
+    .p-path {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .p-path b {
+      color: var(--text);
+    }
+
+    .p-card {
+      background: var(--chat);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .p-card .headline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .p-card .uname {
+      color: var(--head);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .p-card .time {
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .p-card .body {
+      font-size: 14px;
+    }
+
+    .p-card .jumplink {
+      justify-self: start;
+      border: 0;
+      background: none;
+      color: var(--link);
+      padding: 0;
+      font-size: 13px;
+    }
+
+    .p-card .jumplink:hover {
+      text-decoration: underline;
+    }
+
+    .p-wait {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .p-wait b {
+      color: var(--head);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ai-box {
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: rgba(88, 101, 242, .12);
+      border: 1px solid rgba(88, 101, 242, .35);
+      display: grid;
+      gap: 6px;
+    }
+
+    .ai-box.nog {
+      background: rgba(148, 155, 164, .08);
+      border: 1px dashed #4E5058;
+    }
+
+    .ai-box .h {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--head);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .ai-box .conf {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, .08);
+      color: var(--text);
+    }
+
+    .ai-box p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .ai-box .src {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .guard {
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: rgba(240, 178, 50, .1);
+      border: 1px solid rgba(240, 178, 50, .35);
+      font-size: 13.5px;
+      margin: 0;
+    }
+
+    .guard b {
+      color: var(--yellow);
+    }
+
+    .ev-none {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .ev-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 3px;
+      padding: 8px 14px;
+      font-weight: 500;
+      font-size: 14px;
+      background: var(--raised);
+      color: var(--head);
+    }
+
+    .btn:hover {
+      background: #4E5058;
+    }
+
+    .btn.primary {
+      background: var(--blurple);
+      color: #fff;
+    }
+
+    .btn.primary:hover {
+      background: var(--blurple-hover);
+    }
+
+    .fix {
+      border: 1px solid var(--divider);
+      border-radius: 8px;
+      padding: 10px 12px 12px;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .fix legend {
+      padding: 0 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .seg {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .seg input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    .seg label {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--raised);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .seg input:checked+label {
+      background: var(--blurple);
+      color: #fff;
+    }
+
+    .seg input:focus-visible+label {
+      outline: 2px solid var(--link);
+      outline-offset: 2px;
+    }
+
+    .fix select {
+      background: #1E1F22;
+      border: 0;
+      border-radius: 3px;
+      padding: 8px;
+      width: 100%;
+    }
+
+    .fix .row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .fix .row select {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      background: #111214;
+      color: var(--head);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+      z-index: 20;
+      max-width: calc(100vw - 32px);
+    }
+
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: var(--rail);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      z-index: 30;
+    }
+
+    .loader .card {
+      background: var(--side);
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 520px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .loader h1 {
+      margin: 0;
+      color: var(--head);
+      font-size: 20px;
+    }
+
+    .loader p {
+      margin: 0;
+      color: var(--text);
+    }
+
+    .loader code {
+      font-family: var(--mono);
+      background: var(--rail);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+
+    .loader label.btn {
+      justify-self: start;
+    }
+
+    .loader input[type=file] {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    @media (max-width: 1280px) {
+      .app {
+        grid-template-columns: 72px 240px minmax(0, 1fr) 0;
+      }
+
+      .panel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: min(400px, 100vw);
+        z-index: 10;
+        box-shadow: -8px 0 24px rgba(0, 0, 0, .35);
+      }
+    }
+
+    @media (max-width: 820px) {
+
+      .app,
+      .app.no-panel {
+        grid-template-columns: minmax(0, 1fr) 0;
+      }
+
+      .rail,
+      .side {
+        display: none;
+      }
+
+      .app.nav-open .side {
+        display: grid;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: min(280px, 85vw);
+        z-index: 11;
+        box-shadow: 8px 0 24px rgba(0, 0, 0, .35);
+      }
+
+      .mobile-nav {
+        display: inline-block;
+      }
+
+      .msg {
+        padding-right: 16px;
+        grid-template-columns: 40px minmax(0, 1fr);
+        column-gap: 10px;
+      }
+
+      .reply-ref::before {
+        left: -28px;
+        width: 24px;
+      }
+
+      .chat-head .topic {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <div class="notice" role="note">
+      <span>Bản thử CP2 · Dữ liệu thật từ data pack (chỉ trên máy) · Phân loại = nhãn đọc tay, chưa gọi AI</span>
+      <span class="steps" aria-label="Luồng sử dụng">
+        <span class="st" id="st-1" data-state="done">1 · Mở bản tin</span><span class="sep">→</span>
+        <span class="st" id="st-2" data-state="active">2 · Chọn câu hỏi</span><span class="sep">→</span>
+        <span class="st" id="st-3" data-state="todo">3 · Trả lời tại tin gốc</span>
+      </span>
+    </div>
+
+    <div class="app" id="app">
+      <nav class="rail" id="rail" aria-label="Server"></nav>
+
+      <aside class="side" aria-label="Kênh">
+        <div class="side-head" id="side-head"></div>
+        <div class="chan-list" id="chan-list"></div>
+        <div class="me">
+          <span class="av sm" style="background:#3BA55C">TA<span class="dot"></span></span>
+          <span class="who"><b>Bạn (TA)</b><span>Đang trực</span></span>
+        </div>
+      </aside>
+
+      <main class="chat" aria-label="Tin nhắn">
+        <header class="chat-head">
+          <button class="icon-btn mobile-nav" id="nav-btn" type="button" aria-label="Mở danh sách kênh">☰</button>
+          <span class="hash" aria-hidden="true">#</span>
+          <b id="chan-title"></b>
+          <span class="topic" id="chan-topic"></span>
+          <span class="grow"></span>
+          <button class="icon-btn" id="panel-toggle" type="button">Chi tiết câu hỏi</button>
+        </header>
+        <div class="scroller" id="scroller"></div>
+        <div class="composer" id="composer">
+          <div class="reply-bar" id="reply-bar" hidden>
+            <span>Đang trả lời <b id="reply-name"></b></span>
+            <button class="x" id="reply-cancel" type="button" aria-label="Huỷ trả lời">×</button>
+          </div>
+          <div class="input-wrap">
+            <span class="plus" aria-hidden="true">+</span>
+            <textarea id="msg-input" rows="1" aria-label="Soạn tin nhắn"></textarea>
+          </div>
+          <p class="hint" id="composer-hint">Enter để gửi · Shift + Enter để xuống dòng · Tin chỉ lưu trong trang này,
+            không gửi đi đâu.</p>
+        </div>
+      </main>
+
+      <aside class="panel" id="panel" aria-label="Chi tiết câu hỏi">
+        <div class="panel-head">
+          <b>Câu hỏi</b><span class="grow"></span>
+          <button class="icon-btn" id="panel-close" type="button" aria-label="Đóng bảng chi tiết">✕</button>
+        </div>
+        <div class="panel-body" id="panel-body"></div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <div class="loader" id="loader" hidden>
+    <div class="card">
+      <h1>Chưa có dữ liệu tin nhắn</h1>
+      <p>Bản thử đọc tin nhắn thật từ data pack. Dữ liệu này bảo mật nên không đi kèm mã nguồn.</p>
+      <p>Cách 1: chạy <code>python codebase/build_local_data.py</code> rồi mở lại trang.</p>
+      <p>Cách 2: chọn thẳng file <code>data/discord-pack/k4_messages.csv</code>. File chỉ được đọc trong trình duyệt của
+        bạn.</p>
+      <label class="btn primary" for="csv-input">Chọn file k4_messages.csv</label>
+      <input type="file" id="csv-input" accept=".csv,text/csv">
+    </div>
+  </div>
+
+  <script src="labels.js"></script>
+  <script src="local-data/k4-data.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+      const GUILDS = [
+        { id: "K4-L2-3", short: "L2-3", name: "Cộng đồng K4 · L2–3" },
+        { id: "K4-L3-4", short: "L3-4", name: "Cộng đồng K4 · L3–4" }
+      ];
+      const DIGEST = "__digest__";
+      const TOPICS = { channel_10: "Kênh hỏi bot Trợ lý — phần lớn tin là hỏi và đáp với bot" };
+      const ST = {
+        need: { label: "Cần trả lời", cls: "need", conf: "Chắc chắn", path: "AI tự tin cao (happy path)" },
+        check: { label: "Cần kiểm tra", cls: "check", conf: "Không chắc", path: "AI không chắc (low-confidence)" },
+        nogrounding: { label: "Không có căn cứ", cls: "nog", conf: "Không có căn cứ", path: "Không có căn cứ (no-grounding)" },
+        done: { label: "Đã được trả lời", cls: "done", conf: "Chắc chắn", path: "AI tự tin cao (happy path)" }
+      };
+      const FIX_REASONS = [
+        "Đã được trả lời ở kênh hoặc thread khác",
+        "Không phải câu hỏi cần người trả lời",
+        "Trùng với một câu hỏi khác",
+        "Câu hỏi vẫn chưa được trả lời",
+        "Cần BTC hoặc giảng viên xử lý"
+      ];
+      const AV_COLORS = ["#5865F2", "#3BA55C", "#C27C0E", "#ED4245", "#EB459E", "#1F8B4C", "#9B59B6", "#206694", "#747F8D"];
+
+      const state = {
+        guild: "K4-L2-3", channel: DIGEST, selected: null, highlight: null, replyTo: null,
+        corrections: 0, step: 2, panelOpen: true
+      };
+      let msgs = [], byId = new Map(), labels = {}, localSeq = 0;
+
+      // ---------- Dữ liệu ----------
+      function boot(rows) {
+        msgs = rows.map((r) => ({
+          id: r[0], guild: r[1], channel: r[2], author: r[3], bot: !!r[4],
+          replyTo: r[5] || "", at: r[6], att: r[7] || 0, content: r[8] || ""
+        }));
+        msgs.sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+        byId = new Map(msgs.map((m) => [m.id, m]));
+        labels = {};
+        Object.entries(window.K4_LABELS || {}).forEach(([id, l]) => {
+          if (byId.has(id)) labels[id] = Object.assign({ ai: l.status }, l);
+        });
+        const firstNeed = Object.keys(labels).map((id) => byId.get(id))
+          .filter((m) => m.guild === state.guild && labels[m.id].status === "need")
+          .sort((a, b) => (a.at < b.at ? 1 : -1))[0];
+        state.selected = firstNeed ? firstNeed.id : null;
+        $("loader").hidden = true;
+        renderAll(true);
+      }
+
+      function parseCSV(text) {
+        const out = []; let row = [], field = "", q = false;
+        for (let i = 0; i < text.length; i++) {
+          const c = text[i];
+          if (q) {
+            if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
+            else field += c;
+          } else if (c === '"') q = true;
+          else if (c === ",") { row.push(field); field = ""; }
+          else if (c === "\n") { row.push(field); out.push(row); row = []; field = ""; }
+          else if (c !== "\r") field += c;
+        }
+        if (field || row.length) { row.push(field); out.push(row); }
+        const head = out.shift();
+        const ix = (k) => head.indexOf(k);
+        return out.filter((r) => r.length >= head.length).map((r) => [
+          r[ix("msg_id")], r[ix("guild")], r[ix("channel")], r[ix("author")], r[ix("is_bot")] === "True",
+          r[ix("reply_to")], r[ix("created_at_vn")], parseInt(r[ix("n_attachments")] || "0", 10), r[ix("content")]
+        ]);
+      }
+
+      // ---------- Thời gian ----------
+      function toDate(s) { const [d, t] = s.split(" "); const [y, mo, da] = d.split("-").map(Number); const [h, mi] = t.split(":").map(Number); return new Date(y, mo - 1, da, h, mi); }
+      const pad = (n) => String(n).padStart(2, "0");
+      const dayKey = (s) => s.slice(0, 10);
+      const hm = (s) => s.slice(11, 16);
+      const dmy = (s) => s.slice(8, 10) + "/" + s.slice(5, 7) + "/" + s.slice(0, 4);
+      const dm = (s) => s.slice(8, 10) + "/" + s.slice(5, 7);
+      const WEEK = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+      function longDay(s) { const d = toDate(s.slice(0, 10) + " 00:00"); return WEEK[d.getDay()] + ", " + d.getDate() + " tháng " + (d.getMonth() + 1) + ", " + d.getFullYear(); }
+      function stamp(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+      function digestAt(day) { const d = toDate(day + " 07:00"); d.setDate(d.getDate() + 1); return stamp(d); }
+      function dur(ms) {
+        const m = Math.max(0, Math.round(ms / 60000));
+        if (m < 60) return m + " phút";
+        const h = Math.floor(m / 60), r = m % 60;
+        if (h < 24) return h + " giờ" + (r ? " " + r + " phút" : "");
+        const dd = Math.floor(h / 24), rh = h % 24;
+        return dd + " ngày" + (rh ? " " + rh + " giờ" : "");
+      }
+
+      // ---------- Hiển thị tin ----------
+      function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+      function fmt(text) {
+        let s = esc(text);
+        const blocks = [];
+        s = s.replace(/```(?:[a-z]*\n)?([\s\S]*?)```/g, (m, c) => { blocks.push(c); return " " + (blocks.length - 1) + " "; });
+        s = s.replace(/`([^`\n]+)`/g, "<code>$1</code>");
+        s = s.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+        s = s.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s.,!?)]|$)/g, "$1<em>$2</em>");
+        s = s.replace(/\[@(D\d{4})\]/g, '<span class="mention">@$1</span>');
+        s = s.replace(/\[@BOT\]/g, '<span class="mention">@Trợ lý</span>');
+        s = s.replace(/\[@role\]/g, '<span class="mention">@vai trò</span>');
+        s = s.replace(/\[@user\]/g, '<span class="mention">@người dùng</span>');
+        s = s.replace(/@everyone/g, '<span class="mention">@everyone</span>');
+        s = s.replace(/\[#channel\]/g, '<span class="mention">#kênh</span>');
+        s = s.replace(/\[link:([^\]]+)\]/g, '<span class="link">$1</span>');
+        s = s.replace(/\[(HV|MSSV|EMAIL|PHONE|ID|PASSCODE)\]/g, '<span class="mask">$1</span>');
+        s = s.replace(/\[:([\w-]+):\]/g, ":$1:");
+        s = s.replace(/(https?:\/\/[^\s<)\]]+)/g, '<a class="link" href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+        s = s.replace(/\n/g, "<br>");
+        s = s.replace(/ (\d+) /g, (m, i) => "<pre><code>" + blocks[+i] + "</code></pre>");
+        return s;
+      }
+      function plain(text, n) {
+        const s = text.replace(/\[@(D\d{4}|BOT|role|user)\]/g, "@…").replace(/\[link:([^\]]+)\]/g, "$1").replace(/\[:([\w-]+):\]/g, "").replace(/[*`#>]/g, "").replace(/\s+/g, " ").trim();
+        return n && s.length > n ? s.slice(0, n - 1) + "…" : s;
+      }
+      const displayName = (m) => (m.local ? "Bạn (TA)" : m.bot ? "Trợ lý" : m.author);
+      function avatar(m, cls) {
+        const span = document.createElement("span");
+        span.className = "av" + (cls ? " " + cls : "");
+        if (m.local) { span.style.background = "#3BA55C"; span.textContent = "TA"; }
+        else if (m.bot || m.digest) { span.style.background = m.digest ? "#EB459E" : "#5865F2"; span.textContent = m.digest ? "BT" : "TL"; }
+        else {
+          const n = parseInt(m.author.slice(1), 10) || 0;
+          span.style.background = AV_COLORS[n % AV_COLORS.length];
+          span.textContent = m.author.slice(1, 3);
+        }
+        return span;
+      }
+      function h(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+      function btn(cls, text, onClick, id) { const b = h("button", cls, text); b.type = "button"; if (id) b.id = id; b.addEventListener("click", onClick); return b; }
+
+      // ---------- Phân tích câu hỏi ----------
+      function questionsFor(guild) {
+        return Object.keys(labels).map((id) => byId.get(id)).filter((m) => m.guild === guild);
+      }
+      function waitInfo(m) {
+        const l = labels[m.id];
+        if (l.repliedAt) return { text: "TA trả lời sau " + dur(toDate(l.repliedAt) - toDate(m.at)), cls: "" };
+        const first = (l.ev || []).map((id) => byId.get(id)).filter(Boolean).sort((a, b) => (a.at < b.at ? -1 : 1))[0];
+        if (l.status === "need" || !first) {
+          const ms = toDate(digestAt(dayKey(m.at))) - toDate(m.at);
+          return { text: (l.status === "need" ? "Đã chờ " : "Chưa có tin trả lời · ") + dur(ms), cls: l.status === "need" ? "wait" : "", ms };
+        }
+        const ms = toDate(first.at) - toDate(m.at);
+        return { text: "Trả lời sau " + dur(ms), cls: ms > 4 * 3600000 ? "late" : "", ms };
+      }
+      const pathOf = (l) => (l.corrected ? "TA sửa kết luận (correction)" : ST[l.ai].path);
+      const chanName = (c) => c.replace("channel_", "channel-");
+      function openCount(guild, channel) {
+        return questionsFor(guild).filter((m) => (!channel || m.channel === channel) && labels[m.id].status !== "done").length;
+      }
+
+      // ---------- Render: server + kênh ----------
+      function renderRail() {
+        const r = $("rail"); r.replaceChildren();
+        GUILDS.forEach((g, i) => {
+          const b = btn("srv", g.short, () => {
+            state.guild = g.id; state.channel = DIGEST; state.highlight = null; state.replyTo = null;
+            const q = questionsFor(g.id).filter((m) => labels[m.id].status === "need").sort((a, b) => (a.at < b.at ? 1 : -1))[0];
+            state.selected = q ? q.id : null; renderAll(true);
+          }, "srv-" + g.short);
+          b.title = g.name;
+          if (state.guild === g.id) b.setAttribute("aria-current", "true");
+          const n = openCount(g.id);
+          if (n) { const p = h("span", "ping", String(n)); b.append(p); }
+          r.append(b);
+        });
+      }
+
+      function renderSide() {
+        const g = GUILDS.find((x) => x.id === state.guild);
+        $("side-head").textContent = g.name;
+        const list = $("chan-list"); list.replaceChildren();
+        list.append(h("div", "cat", "TA — riêng tư"));
+        list.append(chanButton(DIGEST, "ban-tin-cau-hoi", openCount(state.guild), true));
+        list.append(h("div", "cat", "Kênh công khai"));
+        const chans = [...new Set(msgs.filter((m) => m.guild === state.guild).map((m) => m.channel))].sort();
+        chans.forEach((c) => list.append(chanButton(c, chanName(c), openCount(state.guild, c), false)));
+      }
+      function chanButton(id, name, count, isPrivate) {
+        const b = btn("chan" + (count ? " unread" : ""), null, () => { if (id !== state.channel) state.replyTo = null; state.channel = id; state.highlight = null; $("app").classList.remove("nav-open"); renderAll(true); }, "chan-" + id);
+        if (state.channel === id) b.setAttribute("aria-current", "true");
+        b.append(h("span", "hash", "#"), h("span", "name", name));
+        if (isPrivate) b.append(h("span", "lock", "🔒"));
+        if (count) b.append(h("span", "badge", String(count)));
+        return b;
+      }
+
+      // ---------- Render: khung chat ----------
+      function renderChat(scroll) {
+        const sc = $("scroller");
+        const isDigest = state.channel === DIGEST;
+        $("chan-title").textContent = isDigest ? "ban-tin-cau-hoi" : chanName(state.channel);
+        $("chan-topic").textContent = isDigest ? "Bản tin câu hỏi tồn mỗi sáng · chỉ TA xem được" : (TOPICS[state.channel] || "");
+        sc.replaceChildren();
+        if (isDigest) renderDigest(sc); else renderChannel(sc);
+        renderComposer();
+        if (scroll) {
+          requestAnimationFrame(() => {
+            const target = state.highlight && document.getElementById("m-" + state.highlight);
+            if (target) target.scrollIntoView({ block: "center" });
+            else if (isDigest && state.selected && document.getElementById("q-" + state.selected)) document.getElementById("q-" + state.selected).scrollIntoView({ block: "center" });
+            else sc.scrollTop = sc.scrollHeight;
+          });
+        }
+      }
+
+      function renderChannel(sc) {
+        const list = msgs.filter((m) => m.guild === state.guild && m.channel === state.channel);
+        const w = h("div", "welcome");
+        w.append(h("div", "big", "#"), h("h2", null, "Chào mừng đến với #" + chanName(state.channel)), h("p", null, "Đây là phần tin nhắn có trong data pack (12–14/09). Tin trước đó hoặc đã xoá không có."));
+        sc.append(w);
+        let prev = null, prevDay = "";
+        list.forEach((m) => {
+          if (dayKey(m.at) !== prevDay) { sc.append(h("div", "divider", longDay(m.at))); prevDay = dayKey(m.at); prev = null; }
+          const cont = prev && prev.author === m.author && !m.replyTo && !prev.local === !m.local &&
+            (toDate(m.at) - toDate(prev.at)) <= 7 * 60000 && !labels[m.id] && state.highlight !== m.id;
+          sc.append(messageEl(m, cont));
+          prev = m;
+        });
+      }
+
+      function messageEl(m, cont) {
+        const row = h("div", "msg" + (cont ? " cont" : ""));
+        row.id = "m-" + m.id;
+        if (state.highlight === m.id) row.classList.add("hl");
+        if (state.replyTo === m.id) row.classList.add("replying");
+
+        if (!cont && m.replyTo) {
+          const ref = byId.get(m.replyTo);
+          const rr = h("div", "reply-ref");
+          if (ref) {
+            const b = btn("", null, () => jumpTo(ref.id));
+            b.append(avatar(ref, "xs"), h("span", "rn", "@" + displayName(ref)), h("span", "snip", plain(ref.content, 80) || "Bấm để xem tin đính kèm"));
+            rr.append(b);
+          } else { rr.classList.add("missing"); rr.textContent = "Tin gốc không có trong dữ liệu"; }
+          row.append(h("div"), rr);
+        }
+
+        const gut = h("div", "gutter");
+        if (cont) gut.append(h("span", "ts-hover", hm(m.at))); else gut.append(avatar(m));
+        row.append(gut);
+
+        const main = h("div");
+        if (!cont) {
+          const hl = h("div", "headline");
+          hl.append(h("span", "uname", displayName(m)));
+          if (m.bot) hl.append(h("span", "tag-bot", "BOT"));
+          hl.append(h("span", "time", dmy(m.at) + " " + hm(m.at)));
+          const l = labels[m.id];
+          if (l) {
+            const p = btn("pill " + ST[l.status].cls, ST[l.status].label, () => selectQuestion(m.id, false));
+            p.title = "Xem chi tiết câu hỏi";
+            hl.append(p);
+          }
+          main.append(hl);
+        }
+        const body = h("div", "body");
+        body.innerHTML = fmt(m.content);
+        main.append(body);
+        if (m.att) {
+          const a = h("div", "attach");
+          for (let i = 0; i < m.att; i++) a.append(h("span", null, "Ảnh / tệp đính kèm\n(không có trong data pack)"));
+          main.append(a);
+        }
+        row.append(main);
+
+        if (!m.local) {
+          const ha = h("div", "hover-actions");
+          ha.append(btn("", "Trả lời", () => startReply(m.id)));
+          if (labels[m.id]) ha.append(btn("", "Chi tiết", () => selectQuestion(m.id, false)));
+          row.append(ha);
+        }
+        return row;
+      }
+
+      // ---------- Bản tin ----------
+      function renderDigest(sc) {
+        const w = h("div", "welcome");
+        w.append(h("div", "big", "#"), h("h2", null, "#ban-tin-cau-hoi"), h("p", null, "Mỗi sáng lúc 07:00, bot quét các kênh công khai của ngày hôm trước và đăng những câu hỏi chưa được trả lời sau 4 giờ. Không hiện tên học viên. Không xem được ảnh đính kèm, tin nhắn riêng và ticket — gặp các trường hợp này bot ghi \"không có căn cứ\"."));
+        sc.append(w);
+        const qs = questionsFor(state.guild);
+        const days = [...new Set(msgs.filter((m) => m.guild === state.guild).map((m) => dayKey(m.at)))].sort();
+        let prevDay = "";
+        days.forEach((day) => {
+          const at = digestAt(day);
+          if (dayKey(at) !== prevDay) { sc.append(h("div", "divider", longDay(at))); prevDay = dayKey(at); }
+          const dq = qs.filter((m) => dayKey(m.at) === day).sort((a, b) => (a.at < b.at ? -1 : 1));
+          const bot = { digest: true };
+          const row = h("div", "msg");
+          const gut = h("div", "gutter"); gut.append(avatar(bot)); row.append(gut);
+          const main = h("div");
+          const hl = h("div", "headline");
+          hl.append(h("span", "uname", "Bản tin câu hỏi"), h("span", "tag-bot", "BOT"), h("span", "time", dmy(at) + " " + hm(at)));
+          main.append(hl);
+          main.append(embed(day, dq));
+          row.append(main);
+          sc.append(row);
+        });
+      }
+
+      function embed(day, dq) {
+        const e = h("div", "embed");
+        e.append(h("div", "e-title", "Câu hỏi cần TA xem · " + dm(day)));
+        const need = dq.filter((m) => labels[m.id].status === "need");
+        const check = dq.filter((m) => labels[m.id].status === "check" || labels[m.id].status === "nogrounding");
+        const done = dq.filter((m) => labels[m.id].status === "done");
+        const d = h("div", "e-desc");
+        d.innerHTML = "Đã quét <b>" + dq.length + "</b> câu hỏi trong kênh công khai · <b>" + done.length + "</b> câu đã được trả lời trong 4 giờ.";
+        e.append(d);
+        if (!dq.length) { e.append(h("div", "e-empty", "Không có câu hỏi nào trong ngày.")); return e; }
+
+        const f1 = h("div");
+        const n1 = h("div", "field-name"); n1.append(h("span", "pill need", "Cần trả lời"), String(need.length) + " câu");
+        f1.append(n1);
+        if (need.length) need.forEach((m) => f1.append(qRow(m))); else f1.append(h("div", "e-empty", "Không còn câu nào."));
+        e.append(f1);
+
+        if (check.length) {
+          const f2 = h("div");
+          const n2 = h("div", "field-name"); n2.append(h("span", "pill check", "Cần kiểm tra"), String(check.length) + " câu · AI không chắc hoặc không có căn cứ");
+          f2.append(n2);
+          check.forEach((m) => f2.append(qRow(m)));
+          e.append(f2);
+        }
+        if (done.length) {
+          const det = h("details");
+          det.append(h("summary", null, "Xem " + done.length + " câu đã được trả lời"));
+          done.forEach((m) => det.append(qRow(m)));
+          e.append(det);
+        }
+        const foot = h("div", "e-foot");
+        foot.append(h("span", null, "AI gợi ý · TA quyết định"), h("span", null, "·"), h("span", null, "Bấm vào câu hỏi để xem căn cứ"));
+        e.append(foot);
+        return e;
+      }
+
+      function qRow(m) {
+        const l = labels[m.id];
+        const row = h("div", "q-row");
+        row.id = "q-" + m.id;
+        if (state.selected === m.id) row.setAttribute("aria-current", "true");
+        const t = btn("q-text", plain(m.content, 110) || "(chỉ có tệp đính kèm)", () => selectQuestion(m.id, false));
+        const meta = h("div", "q-meta");
+        const wi = waitInfo(m);
+        meta.append(h("span", null, "#" + chanName(m.channel) + " · " + hm(m.at)), h("span", wi.cls, wi.text));
+        if (l.dup && l.dup.length) meta.append(h("span", null, "+" + l.dup.length + " tin cùng ý"));
+        if (l.status === "nogrounding") meta.append(h("span", null, "Không có căn cứ"));
+        if (l.personal) meta.append(h("span", null, "Việc cá nhân"));
+        if (l.corrected) meta.append(h("span", null, "TA đã sửa"));
+        const j = btn("btn-sm jump", "Nhảy tới tin", () => jumpTo(m.id));
+        row.append(t, j, meta);
+        return row;
+      }
+
+      // ---------- Bảng chi tiết ----------
+      function renderPanel() {
+        const app = $("app");
+        app.classList.toggle("no-panel", !state.panelOpen);
+        $("panel").hidden = !state.panelOpen;
+        const body = $("panel-body"); body.replaceChildren();
+        const m = state.selected && byId.get(state.selected);
+        if (!m) { body.append(h("p", "ev-none", "Chọn một câu hỏi trong #ban-tin-cau-hoi để xem chi tiết.")); return; }
+        const l = labels[m.id];
+
+        const path = h("p", "p-path"); path.append("Đường đi: ", h("b", null, pathOf(l)));
+        body.append(path);
+
+        const qc = h("div");
+        qc.append(h("p", "p-label", "Tin gốc"));
+        qc.append(card(m));
+        body.append(qc);
+
+        const wi = waitInfo(m);
+        const wp = h("p", "p-wait"); wp.append(h("span", "pill " + ST[l.status].cls, ST[l.status].label), "  ", h("b", null, wi.text));
+        body.append(wp);
+        if (l.dup && l.dup.length) body.append(h("p", "p-wait", "Gộp " + l.dup.length + " tin cùng ý: " + l.dup.join(", ")));
+
+        const ai = h("div", "ai-box" + (l.ai === "nogrounding" && !l.corrected ? " nog" : ""));
+        const ah = h("div", "h");
+        ah.append(l.ai === "nogrounding" ? "AI không kết luận" : "AI gợi ý", h("span", "conf", ST[l.ai].conf));
+        ai.append(ah, h("p", null, l.reason || (l.ai === "done" ? "Có tin trả lời đúng ý trong 4 giờ sau câu hỏi." : "")));
+        ai.append(h("p", "src", "CP2: kết quả này là nhãn đọc tay của nhóm, đứng thay cho lời gọi AI."));
+        body.append(ai);
+
+        if (l.personal) {
+          const g = h("p", "guard");
+          g.append(h("b", null, "Việc cá nhân. "), "Gia hạn, điểm số, điểm danh, giấy tờ do TA/BTC quyết định. AI không soạn sẵn câu trả lời.");
+          body.append(g);
+        }
+
+        const evw = h("div");
+        evw.append(h("p", "p-label", "Căn cứ"));
+        const evs = (l.ev || []).map((id) => byId.get(id)).filter(Boolean);
+        const replies = msgs.filter((x) => x.local && x.replyTo === m.id);
+        if (!evs.length && !replies.length) evw.append(h("p", "ev-none", l.ai === "nogrounding" ? "Không tìm được tin nào để đối chiếu." : "Không có tin nào trả lời câu này trong 4 giờ sau."));
+        else { const list = h("div", "ev-list"); evs.concat(replies).forEach((x) => list.append(card(x))); evw.append(list); }
+        body.append(evw);
+
+        const acts = h("div", "actions");
+        acts.append(btn("btn primary", l.ai === "nogrounding" ? "Mở tin gốc để tự xem" : "Trả lời tại tin gốc", () => startReply(m.id), "reply-btn"));
+        if (l.status !== "done") acts.append(btn("btn", "Đánh dấu đã xử lý", () => { l.status = "done"; l.handled = true; setStep(3, true); renderAll(false); toast("Đã chuyển sang Đã được trả lời"); }, "mark-btn"));
+        body.append(acts);
+
+        body.append(fixPanel(m, l));
+      }
+
+      function card(m) {
+        const c = h("div", "p-card");
+        const hl = h("div", "headline");
+        hl.append(avatar(m, "xs"), h("span", "uname", displayName(m)));
+        if (m.bot) hl.append(h("span", "tag-bot", "BOT"));
+        hl.append(h("span", "time", "#" + chanName(m.channel) + " · " + dmy(m.at) + " " + hm(m.at)));
+        const b = h("div", "body"); b.innerHTML = fmt(m.content || "") + (m.att ? ' <span class="mask">' + m.att + " tệp đính kèm</span>" : "");
+        c.append(hl, b, btn("jumplink", "Nhảy tới tin", () => jumpTo(m.id)));
+        return c;
+      }
+
+      function fixPanel(m, l) {
+        const fs = h("fieldset", "fix");
+        fs.append(h("legend", null, "Sửa kết luận của AI"));
+        const seg = h("div", "seg");
+        ["need", "check", "done"].forEach((k) => {
+          const id = "fix-" + m.id + "-" + k;
+          const inp = document.createElement("input");
+          inp.type = "radio"; inp.name = "fix-" + m.id; inp.id = id; inp.value = k;
+          if ((l.status === "nogrounding" ? "check" : l.status) === k) inp.checked = true;
+          const lb = h("label", null, ST[k].label); lb.htmlFor = id;
+          seg.append(inp, lb);
+        });
+        const row = h("div", "row");
+        const sel = document.createElement("select");
+        sel.id = "fix-reason-" + m.id; sel.setAttribute("aria-label", "Lý do sửa");
+        FIX_REASONS.forEach((r) => sel.append(h("option", null, r)));
+        row.append(sel, btn("btn", "Lưu sửa", () => {
+          const v = fs.querySelector("input:checked").value;
+          if (v === l.status || (v === "check" && l.status === "nogrounding")) { toast("Chọn kết luận khác với hiện tại rồi bấm Lưu sửa"); return; }
+          l.status = v; l.corrected = true; l.fixReason = sel.value; state.corrections++;
+          renderAll(false);
+          toast("Đã lưu sửa · lần sửa thứ " + state.corrections + " được ghi lại để đo độ chính xác");
+        }, "fix-save-" + m.id));
+        fs.append(seg, row);
+        return fs;
+      }
+
+      // ---------- Ô soạn tin ----------
+      function renderComposer() {
+        const ta = $("msg-input");
+        const isDigest = state.channel === DIGEST;
+        ta.disabled = isDigest;
+        ta.placeholder = isDigest ? "Bạn không gửi tin trong kênh bản tin — bấm \"Trả lời tại tin gốc\"" : "Nhắn #" + chanName(state.channel);
+        const r = state.replyTo && byId.get(state.replyTo);
+        $("reply-bar").hidden = !(r && !isDigest && r.channel === state.channel);
+        if (r) $("reply-name").textContent = "@" + displayName(r);
+      }
+
+      function send() {
+        const ta = $("msg-input");
+        const text = ta.value.trim();
+        if (!text || state.channel === DIGEST) return;
+        const last = msgs.filter((m) => m.local).length;
+        const base = toDate("2026-09-15 07:30"); base.setMinutes(base.getMinutes() + last * 3);
+        const m = {
+          id: "LOCAL" + (++localSeq), guild: state.guild, channel: state.channel, author: "TA", bot: false, local: true,
+          replyTo: state.replyTo && byId.get(state.replyTo).channel === state.channel ? state.replyTo : "", at: stamp(base), att: 0, content: text
+        };
+        msgs.push(m); byId.set(m.id, m);
+        ta.value = ""; autosize();
+        const l = m.replyTo && labels[m.replyTo];
+        if (l) {
+          const was = l.status;
+          l.repliedAt = m.at;
+          if (was !== "done") { l.status = "done"; l.handled = true; }
+          state.selected = m.replyTo;
+          setStep(3, true);
+          toast(was !== "done" ? "Đã trả lời · câu hỏi chuyển sang Đã được trả lời" : "Đã gửi trả lời");
+        } else toast("Đã gửi tin");
+        state.replyTo = null; state.highlight = m.id;
+        renderAll(true);
+      }
+
+      // ---------- Điều hướng ----------
+      function selectQuestion(id, jump) {
+        state.selected = id; state.panelOpen = true;
+        setStep(3);
+        if (jump) jumpTo(id); else renderAll(false);
+      }
+      function jumpTo(id) {
+        const m = byId.get(id); if (!m) return;
+        state.guild = m.guild; state.channel = m.channel; state.highlight = id;
+        renderAll(true);
+      }
+      function startReply(id) {
+        const m = byId.get(id); if (!m) return;
+        state.selected = labels[id] ? id : state.selected;
+        state.replyTo = id; state.guild = m.guild; state.channel = m.channel; state.highlight = id;
+        setStep(3);
+        renderAll(true);
+        $("msg-input").focus();
+      }
+      function setStep(n, finished) {
+        state.step = finished ? 4 : n;
+        [1, 2, 3].forEach((i) => { $("st-" + i).dataset.state = finished || i < n ? "done" : i === n ? "active" : "todo"; });
+      }
+
+      function renderAll(scroll) { renderRail(); renderSide(); renderChat(scroll); renderPanel(); }
+
+      let toastT = null;
+      function toast(t) { const el = $("toast"); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2800); }
+      function autosize() { const ta = $("msg-input"); ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 200) + "px"; }
+
+      $("msg-input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
+      $("msg-input").addEventListener("input", autosize);
+      $("reply-cancel").addEventListener("click", () => { state.replyTo = null; renderChat(false); });
+      $("panel-close").addEventListener("click", () => { state.panelOpen = false; renderPanel(); });
+      $("panel-toggle").addEventListener("click", () => { state.panelOpen = !state.panelOpen; renderPanel(); });
+      $("nav-btn").addEventListener("click", () => $("app").classList.toggle("nav-open"));
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && state.replyTo) { state.replyTo = null; renderChat(false); } });
+
+      $("csv-input").addEventListener("change", (e) => {
+        const f = e.target.files[0]; if (!f) return;
+        const rd = new FileReader();
+        rd.onload = () => { try { boot(parseCSV(rd.result)); toast("Đã đọc " + msgs.length + " tin từ file"); } catch (err) { toast("Không đọc được file: hãy chọn đúng k4_messages.csv"); } };
+        rd.readAsText(f, "utf-8");
+      });
+
+      if (Array.isArray(window.K4_MESSAGES)) boot(window.K4_MESSAGES);
+      else $("loader").hidden = false;
+    })();
+  </script>
+</body>
+
+</html>

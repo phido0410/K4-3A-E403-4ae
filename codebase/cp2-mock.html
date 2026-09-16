@@ -934,6 +934,27 @@
     }
 
     /* Ô soạn tin */
+    .cmd-out {
+      margin: 0 16px 10px; padding: 11px 13px; border-radius: 8px;
+      background: var(--embed); border-left: 3px solid var(--blurple);
+      font-size: 13.5px; line-height: 1.55; color: var(--text);
+    }
+    .cmd-out .cmd-head { display: flex; align-items: center; gap: 7px; font-weight: 700; margin-bottom: 5px; }
+    .cmd-out .cmd-head .tag {
+      background: var(--blurple); color: #fff; font-size: 10px; font-weight: 700;
+      padding: 1px 5px; border-radius: 3px; letter-spacing: .02em;
+    }
+    .cmd-out .cmd-step { color: var(--muted); font-size: 12.5px; }
+    .cmd-out .cmd-step b { color: var(--text); }
+    .cmd-out .cmd-bar { height: 4px; border-radius: 2px; background: var(--panel-3); margin: 7px 0 4px; overflow: hidden; }
+    .cmd-out .cmd-bar i { display: block; height: 100%; background: var(--blurple); transition: width .2s; }
+    .cmd-out .cmd-sum { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .cmd-out .cmd-pill {
+      font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    }
+    .cmd-out .cmd-foot { margin-top: 8px; font-size: 11px; color: var(--faint); font-family: var(--mono); }
+    .cmd-out .cmd-err { color: var(--red); }
+
     .composer {
       padding: 0 16px 24px;
       padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
@@ -1436,9 +1457,9 @@
 <body>
   <div class="shell">
     <div class="notice" role="note">
-      <span>Bản thử CP2 · Dữ liệu thật từ data pack (chỉ trên máy) · Phân loại = nhãn đọc tay, chưa gọi AI</span>
+      <span id="banner-note">Bản thử CP3 · Dữ liệu thật từ data pack (chỉ trên máy) · Gõ <b>/question_unanswer</b> để gọi AI thật</span>
       <span class="steps" aria-label="Luồng sử dụng">
-        <span class="st" id="st-1" data-state="done">1 · Mở bản tin</span><span class="sep">→</span>
+        <span class="st" id="st-1" data-state="active">1 · Gõ lệnh</span><span class="sep">→</span>
         <span class="st" id="st-2" data-state="active">2 · Chọn câu hỏi</span><span class="sep">→</span>
         <span class="st" id="st-3" data-state="todo">3 · Trả lời tại tin gốc</span>
       </span>
@@ -1466,6 +1487,7 @@
           <button class="icon-btn" id="panel-toggle" type="button">Chi tiết câu hỏi</button>
         </header>
         <div class="scroller" id="scroller"></div>
+        <div class="cmd-out" id="cmd-out" hidden></div>
         <div class="composer" id="composer">
           <div class="reply-bar" id="reply-bar" hidden>
             <span>Đang trả lời <b id="reply-name"></b></span>
@@ -1893,7 +1915,9 @@
         const ah = h("div", "h");
         ah.append(l.ai === "nogrounding" ? "AI không kết luận" : "AI gợi ý", h("span", "conf", ST[l.ai].conf));
         ai.append(ah, h("p", null, l.reason || (l.ai === "done" ? "Có tin trả lời đúng ý trong 4 giờ sau câu hỏi." : "")));
-        ai.append(h("p", "src", "CP2: kết quả này là nhãn đọc tay của nhóm, đứng thay cho lời gọi AI."));
+        ai.append(h("p", "src", l.nguon === "AI"
+          ? "Kết quả do model sinh trong lượt chạy vừa rồi." + (l.ev && l.ev.length ? " Căn cứ: " + l.ev.join(", ") + "." : "")
+          : "Nhãn đọc tay của nhóm, đứng thay cho lời gọi AI. Gõ /question_unanswer để chạy AI thật."));
         body.append(ai);
 
         if (l.personal) {
@@ -1960,8 +1984,13 @@
       function renderComposer() {
         const ta = $("msg-input");
         const isDigest = state.channel === DIGEST;
-        ta.disabled = isDigest;
-        ta.placeholder = isDigest ? "Bạn không gửi tin trong kênh bản tin — bấm \"Trả lời tại tin gốc\"" : "Nhắn #" + chanName(state.channel);
+        ta.disabled = false;
+        ta.placeholder = isDigest
+          ? "/question_unanswer kenh:channel-11 ngay:13/09"
+          : "Nhắn #" + chanName(state.channel);
+        $("composer-hint").textContent = isDigest
+          ? "Gõ /question_unanswer để bot quét kênh và gọi AI phân loại. Thêm kenh: và ngay: để giới hạn phạm vi."
+          : "Enter để gửi · Shift + Enter để xuống dòng · Tin chỉ lưu trong trang này, không gửi đi đâu.";
         const r = state.replyTo && byId.get(state.replyTo);
         $("reply-bar").hidden = !(r && !isDigest && r.channel === state.channel);
         if (r) $("reply-name").textContent = "@" + displayName(r);
@@ -1970,7 +1999,9 @@
       function send() {
         const ta = $("msg-input");
         const text = ta.value.trim();
-        if (!text || state.channel === DIGEST) return;
+        if (!text) return;
+        if (text.charAt(0) === "/") { ta.value = ""; autosize(); runCommand(text); return; }
+        if (state.channel === DIGEST) { toast("Kênh bản tin chỉ nhận lệnh — gõ /question_unanswer"); return; }
         const last = msgs.filter((m) => m.local).length;
         const base = toDate("2026-09-15 07:30"); base.setMinutes(base.getMinutes() + last * 3);
         const m = {
@@ -1990,6 +2021,96 @@
         } else toast("Đã gửi tin");
         state.replyTo = null; state.highlight = m.id;
         renderAll(true);
+      }
+
+      // ---------- Lệnh gạch chéo: /question_unanswer ----------
+      const CMD_MAU = { need: "var(--red)", check: "var(--yellow)", nogrounding: "var(--muted)", done: "var(--green)" };
+      const CMD_TEN = { need: "Cần trả lời", check: "Cần kiểm tra", nogrounding: "Không có căn cứ", done: "Đã được trả lời" };
+
+      function cmdShow(html) { const el = $("cmd-out"); el.hidden = false; el.innerHTML = html; }
+      function cmdHead(extra) {
+        return '<div class="cmd-head"><span>Trợ lý</span><span class="tag">APP</span>' +
+               '<span class="cmd-step">' + (extra || "") + '</span></div>';
+      }
+
+      function runCommand(text) {
+        const parts = text.split(/\s+/);
+        const ten = parts[0].replace(/^\//, "").toLowerCase();
+        if (ten !== "question_unanswer" && ten !== "question-unanswer") {
+          cmdShow(cmdHead() + '<div class="cmd-err">Không có lệnh <b>' + ten.replace(/[<>]/g, "") +
+                  '</b>. Hiện chỉ có <b>/question_unanswer</b>.</div>');
+          return;
+        }
+        if (state.channel !== DIGEST) { state.channel = DIGEST; renderAll(false); }
+
+        const arg = {};
+        parts.slice(1).forEach((p) => { const i = p.indexOf(":"); if (i > 0) arg[p.slice(0, i)] = p.slice(i + 1); });
+        const kenh = (arg.kenh || "channel-11").replace(/-/g, "_");
+        const ngay = arg.ngay || "13/09";
+
+        cmdShow(cmdHead("đang mở kênh…") + '<div class="cmd-step">/question_unanswer kenh:' +
+                kenh.replace(/_/g, "-") + " ngay:" + ngay + "</div>");
+        setStep(1);
+
+        const es = new EventSource("/api/digest?kenh=" + encodeURIComponent(kenh) + "&ngay=" + encodeURIComponent(ngay));
+        let quet = null, tong = 0;
+
+        es.addEventListener("quet", (e) => {
+          quet = JSON.parse(e.data);
+          cmdShow(cmdHead("bước 1/3") + '<div class="cmd-step">Đã đọc <b>' + quet.so_tin +
+                  "</b> tin trong #" + quet.kenh.replace(/_/g, "-") + " ngày " + quet.ngay + "</div>");
+        });
+
+        es.addEventListener("ung_vien", (e) => {
+          tong = JSON.parse(e.data).so_cau;
+          cmdShow(cmdHead("bước 2/3") + '<div class="cmd-step">Rule lọc ra <b>' + tong +
+                  "</b> câu hỏi ứng viên từ " + (quet ? quet.so_tin : "?") + " tin — chưa dùng AI</div>");
+        });
+
+        es.addEventListener("tien_do", (e) => {
+          const d = JSON.parse(e.data);
+          cmdShow(cmdHead("bước 3/3") + '<div class="cmd-step">Đang hỏi AI <b>' + d.xong + "/" + d.tong +
+                  '</b> câu…</div><div class="cmd-bar"><i style="width:' +
+                  Math.round(d.xong / d.tong * 100) + '%"></i></div>');
+        });
+
+        es.addEventListener("xong", (e) => {
+          es.close();
+          const d = JSON.parse(e.data);
+          if (d.loi) { cmdShow(cmdHead() + '<div class="cmd-err">' + d.loi + "</div>"); return; }
+
+          Object.keys(labels).forEach((k) => delete labels[k]);
+          d.items.forEach((it) => {
+            if (!byId.has(it.msg_id)) return;
+            labels[it.msg_id] = { status: it.status, ai: it.status, reason: it.reason,
+                                  ev: it.ev || [], nguon: "AI" };
+          });
+          const dau = d.items.find((i) => i.status === "need" && byId.has(i.msg_id));
+          state.selected = dau ? dau.msg_id : null;
+          state.panelOpen = !!dau;
+          setStep(2);
+
+          let pills = "";
+          ["need", "check", "nogrounding", "done"].forEach((k) => {
+            if (!d.thong_ke[k]) return;
+            pills += '<span class="cmd-pill" style="background:' + CMD_MAU[k] + '22;color:' + CMD_MAU[k] +
+                     ';border:1px solid ' + CMD_MAU[k] + '55">' + d.thong_ke[k] + " " + CMD_TEN[k] + "</span>";
+          });
+          cmdShow(cmdHead("xong") +
+            '<div class="cmd-step">Đã quét <b>' + d.so_tin + "</b> tin trong #" +
+            d.kenh.replace(/_/g, "-") + " ngày " + d.ngay + ", gọi AI <b>" + d.so_goi + "</b> lần.</div>" +
+            '<div class="cmd-sum">' + pills + "</div>" +
+            '<div class="cmd-foot">' + d.model + " · " + d.prompt + " · " + d.giay + "s · " +
+            d.tokens.toLocaleString("vi-VN") + " token · không hiện tên học viên</div>");
+          renderAll(false);
+          toast("Bản tin dựng xong — " + (d.thong_ke.need || 0) + " câu cần trả lời");
+        });
+
+        es.onerror = () => {
+          es.close();
+          cmdShow(cmdHead() + '<div class="cmd-err">Không gọi được server. Chạy <b>' +
+                  '.venv/bin/python codebase/serve.py</b> rồi mở http://127.0.0.1:8765</div>');
+        };
       }
 
       // ---------- Điều hướng ----------

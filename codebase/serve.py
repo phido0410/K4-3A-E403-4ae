@@ -4,20 +4,20 @@
     -> http://127.0.0.1:8765
 
 Duong dan:
-  /                     ban mock, nhan do NGUOI gan (labels.js)
-  /?ai=1                ban mock, nhan do AI sinh (local-data/ai-labels.js)
-  POST /api/decide      {"msg_id": "M18056"} -> goi LLM that ngay luc do
-
-Trang duoc chen them mot bang nho o goc phai de bam goi AI truc tiep — chen luc phuc vu,
-khong sua mot dong nao trong cp2-mock.html.
+  /                     ban mock
+  GET  /api/digest      SSE — chay lenh /question_unanswer: rule loc -> goi LLM song song
+  POST /api/decide      {"msg_id": "M18056"} -> goi LLM that cho mot tin
 """
 from __future__ import annotations
 
 import json
+import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -36,82 +36,27 @@ def data():
     return _DATA
 
 
-PANEL = """
-<div id="ai-live" style="position:fixed;right:16px;bottom:16px;width:340px;z-index:99999;
-  font:13px/1.5 'Noto Sans',system-ui,sans-serif;background:#1E1F22;color:#DBDEE1;
-  border:1px solid #3F4147;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.5);overflow:hidden">
-  <div style="padding:9px 12px;background:#2B2D31;border-bottom:1px solid #3F4147;
-    display:flex;align-items:center;gap:8px">
-    <span style="width:7px;height:7px;border-radius:50%;background:#23A55A"></span>
-    <b style="font-size:12px">Phan loai lai bang AI that</b>
-    <span id="ai-model" style="margin-left:auto;font-size:10px;color:#949BA4"></span>
-  </div>
-  <div style="padding:12px">
-    <div style="font-size:11.5px;color:#949BA4;margin-bottom:7px">
-      Nhap <b style="color:#DBDEE1">ma tin nhan</b> (khong phai cau hoi) — AI se doc lai ngu canh
-      quanh tin do va phan loai ngay.</div>
-    <div style="display:flex;gap:6px">
-      <input id="ai-id" value="M18056" placeholder="M18056" spellcheck="false"
-        style="flex:1;min-width:0;background:#383A40;border:1px solid #3F4147;color:#DBDEE1;
-        border-radius:6px;padding:6px 9px;font:inherit;font-family:ui-monospace,monospace">
-      <button id="ai-go" style="background:#5865F2;color:#fff;border:0;border-radius:6px;
-        padding:6px 13px;font:inherit;font-weight:600;cursor:pointer">Hoi</button>
-    </div>
-    <div style="margin-top:8px;font-size:11px;color:#6D6F78">Thu nhanh:</div>
-    <div id="ai-quick" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px"></div>
-    <div id="ai-out" style="margin-top:10px;font-size:12.5px;color:#949BA4">
-      Bam mot ma o tren, hoac go ma tin roi bam Hoi.</div>
-  </div>
-</div>
-<script>
-(function(){
-  var COLOR={need:"#F23F43",check:"#F0B232",nogrounding:"#949BA4",done:"#23A55A"};
-  var TEN={need:"Can tra loi",check:"Can kiem tra",nogrounding:"Khong co can cu",done:"Da duoc tra loi"};
-  var out=document.getElementById("ai-out"), btn=document.getElementById("ai-go");
-  var QUICK=[["M18056","da co dap an trong kenh"],["M18676","hai cau tra loi mau thuan"],
-             ["M80884","can cu nam ngoai tam quan sat"],["M00553","chi duoc hen tra loi"]];
-  var qbox=document.getElementById("ai-quick");
-  QUICK.forEach(function(q){
-    var b=document.createElement("button");
-    b.textContent=q[0]; b.title=q[1];
-    b.style.cssText="background:#383A40;border:1px solid #3F4147;color:#DBDEE1;border-radius:5px;"+
-      "padding:3px 7px;font:inherit;font-size:11px;font-family:ui-monospace,monospace;cursor:pointer";
-    b.onclick=function(){document.getElementById("ai-id").value=q[0];ask();};
-    qbox.appendChild(b);
-  });
-  fetch("/api/info").then(r=>r.json()).then(d=>{
-    document.getElementById("ai-model").textContent=d.model+" · "+d.prompt;});
-  function ask(){
-    var id=document.getElementById("ai-id").value.trim().toUpperCase();
-    if(!/^M[0-9]{5}$/.test(id)){
-      out.innerHTML="<span style='color:#F0B232'>O nay nhan <b>ma tin nhan</b> dang M kem 5 chu so "+
-        "(vi du M18056), khong nhan cau hoi. Bam mot ma o tren de thu.</span>";
-      return;
-    }
-    document.getElementById("ai-id").value=id;
-    btn.disabled=true; out.innerHTML="<span style='color:#949BA4'>dang goi model...</span>";
-    var t0=Date.now();
-    fetch("/api/decide",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({msg_id:id})})
-      .then(r=>r.json()).then(function(d){
-        btn.disabled=false;
-        if(d.error){out.innerHTML="<span style='color:#F23F43'>"+d.error+"</span>";return;}
-        out.innerHTML=
-          '<div style="font-size:12px;color:#949BA4;margin-bottom:6px">'+
-            (d.cau_hoi||"").replace(/[<>]/g,"")+'</div>'+
-          '<div style="display:inline-block;background:'+COLOR[d.status]+'22;color:'+COLOR[d.status]+
-            ';border:1px solid '+COLOR[d.status]+'55;border-radius:999px;padding:2px 9px;'+
-            'font-size:11px;font-weight:700">'+(TEN[d.status]||d.status)+'</div>'+
-          '<div style="margin-top:8px;color:#DBDEE1">'+d.reason+'</div>'+
-          '<div style="margin-top:8px;font-size:11px;color:#6D6F78">can cu: '+
-            (d.evidence_msg_ids.join(", ")||"khong co")+' · '+d.ms+'ms · '+d.tokens+' token</div>';
-      }).catch(function(e){btn.disabled=false;out.innerHTML="<span style='color:#F23F43'>"+e+"</span>";});
-  }
-  btn.onclick=ask;
-  document.getElementById("ai-id").addEventListener("keydown",function(e){if(e.key==="Enter")ask();});
-})();
-</script>
-"""
+QUESTION = re.compile(
+    r"\?|^\s*(\[@[^\]]+\]\s*)*(cho|ch)\s*(em|mình|e|m|tôi)?\s*hỏi"
+    r"|\b(khi nào|bao giờ|ở đâu|làm sao|như thế nào|thế nào|bao nhiêu|được không"
+    r"|đc ko|có được|có phải|mấy giờ|mấy bạn|sao lại|là gì|nào ạ)\b", re.I)
+THANKS = re.compile(
+    r"^\W*(dạ|vâng|ok|oke|okey)?\W*(e|em|mình|tôi)?\W*(xin)?\s*(cảm ơn|cám ơn|thanks|tks)", re.I)
+
+
+def ung_vien(rows, kenh: str, ngay: str) -> list:
+    """Buoc 1 — rule loc, KHONG dung AI. Nhung tin co the la cau hoi can nguoi tra loi."""
+    out = []
+    for r in rows:
+        if r["is_bot"] == "True" or r["channel"] != kenh:
+            continue
+        if not r["created_at_vn"].startswith(ngay):
+            continue
+        if THANKS.match(r["content"]) or int(r["n_chars"]) < 12:
+            continue
+        if QUESTION.search(r["content"]):
+            out.append(r)
+    return out
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -132,8 +77,73 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _sse(self, ev: str, obj) -> bool:
+        try:
+            self.wfile.write(f"event: {ev}\ndata: {json.dumps(obj, ensure_ascii=False)}\n\n".encode())
+            self.wfile.flush()
+            return True
+        except (BrokenPipeError, ConnectionResetError):
+            return False
+
+    def digest(self, q):
+        kenh = q.get("kenh", ["channel_11"])[0].replace("-", "_")
+        ngay = q.get("ngay", ["2026-09-13"])[0]
+        if re.fullmatch(r"\d{2}/\d{2}", ngay):
+            ngay = f"2026-{ngay[3:]}-{ngay[:2]}"
+
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+
+        rows, by_id, replies, by_ch = data()
+        trong_kenh = [r for r in rows if r["channel"] == kenh and r["created_at_vn"].startswith(ngay)]
+        self._sse("quet", {"kenh": kenh, "ngay": ngay, "so_tin": len(trong_kenh)})
+
+        cands = ung_vien(rows, kenh, ngay)
+        if not self._sse("ung_vien", {"so_cau": len(cands)}):
+            return
+        if not cands:
+            self._sse("xong", {"items": [], "thong_ke": {}, "loi": "Khong tim thay cau hoi nao trong pham vi nay"})
+            return
+
+        t0 = time.time()
+        items, tokens, xong = [], 0, 0
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            fut = {pool.submit(self._mot_cau, m["msg_id"], by_id, replies, by_ch): m["msg_id"]
+                   for m in cands}
+            for f in as_completed(fut):
+                xong += 1
+                try:
+                    it = f.result()
+                except Exception as e:
+                    it = {"msg_id": fut[f], "status": "nogrounding",
+                          "reason": f"goi model that bai: {e}", "ev": [], "tokens": 0}
+                tokens += it.pop("tokens", 0)
+                items.append(it)
+                if not self._sse("tien_do", {"xong": xong, "tong": len(cands)}):
+                    return
+
+        thu_tu = {"need": 0, "check": 1, "nogrounding": 2, "done": 3}
+        items.sort(key=lambda x: (thu_tu.get(x["status"], 9), x["msg_id"]))
+        tk = {k: sum(1 for i in items if i["status"] == k)
+              for k in ("need", "check", "nogrounding", "done")}
+        self._sse("xong", {"items": items, "thong_ke": tk, "kenh": kenh, "ngay": ngay,
+                           "so_tin": len(trong_kenh), "so_goi": len(cands),
+                           "giay": round(time.time() - t0, 1), "tokens": tokens,
+                           "model": MODEL, "prompt": PROMPT_VERSION})
+
+    @staticmethod
+    def _mot_cau(mid, by_id, replies, by_ch):
+        ctx = build_context(mid, by_id, replies, by_ch)
+        r = decide(ctx, run="live")
+        return {"msg_id": mid, "status": r["status"], "reason": r["reason"],
+                "ev": r.get("evidence_msg_ids", []), "tokens": r.get("_tokens", 0)}
+
     def do_GET(self):
         path = self.path.split("?")[0]
+        if path == "/api/digest":
+            return self.digest(parse_qs(urlparse(self.path).query))
         if path == "/favicon.ico":
             self.send_response(204)
             self.end_headers()
@@ -144,7 +154,6 @@ class Handler(SimpleHTTPRequestHandler):
             html = (BASE / "cp2-mock.html").read_text(encoding="utf-8")
             if "ai=1" in self.path:
                 html = html.replace('src="labels.js"', 'src="local-data/ai-labels.js"')
-            html = html.replace("</body>", PANEL + "</body>")
             body = html.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")

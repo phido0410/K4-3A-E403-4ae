@@ -1,0 +1,259 @@
+{
+  "_meta": {
+    "ten": "Golden set — Còn Bỏ Ngỏ (Track B2, nhóm 4AE)",
+    "quyet_dinh_duoc_do": "Với một câu hỏi + ngữ cảnh quanh nó, hệ thống xếp vào need / check / nogrounding / done",
+    "nhan": {
+      "need": "còn bỏ ngỏ, TA cần trả lời",
+      "check": "không chắc, cần người xem",
+      "nogrounding": "không đủ căn cứ để kết luận",
+      "done": "đã được giải đáp"
+    },
+    "nguon_case": "100% lấy từ data/discord-pack/k4_messages.csv (yêu cầu tối thiểu là 10/20)",
+    "khong_chua_noi_dung": "File này chỉ giữ msg_id. Nội dung tin lấy lúc chạy từ codebase/local-data/ (không push).",
+    "ground_truth": "codebase/labels.js — 142 tin nhóm đọc và gán nhãn tay",
+    "co_cau": {
+      "tong": 25,
+      "theo_lop": {
+        "①": 3,
+        "②": 3,
+        "③": 3,
+        "④": 3
+      },
+      "thuong": 10,
+      "hiem": 4
+    },
+    "phan_bo_nhan": {
+      "need": 10,
+      "check": 7,
+      "nogrounding": 3,
+      "done": 5
+    }
+  },
+  "cases": [
+    {
+      "case_id": "GS-01",
+      "msg_id": "M80884",
+      "expected": "nogrounding",
+      "lop_kho": "①",
+      "nhom": "kho",
+      "vi_sao_chon": "Căn cứ nằm ở tin nhắn riêng — ngoài tầm quan sát của hệ thống",
+      "nhan_goc": "Học viên nhờ admin trả lời tin nhắn riêng. Hệ thống không đọc tin nhắn riêng nên không biết đã được xử lý chưa."
+    },
+    {
+      "case_id": "GS-02",
+      "msg_id": "M97637",
+      "expected": "nogrounding",
+      "lop_kho": "①",
+      "nhom": "kho",
+      "vi_sao_chon": "Nhắc tới file/link từ hội thoại không nằm trong kênh đã quét",
+      "nhan_goc": "Câu hỏi nhắc tới \"file hay link\" từ một cuộc trò chuyện không có trong kênh đã quét."
+    },
+    {
+      "case_id": "GS-03",
+      "msg_id": "M51326",
+      "expected": "nogrounding",
+      "lop_kho": "①",
+      "nhom": "hiem",
+      "vi_sao_chon": "Nội dung lỗi nằm trong ảnh đính kèm; hệ thống không đọc ảnh",
+      "nhan_goc": "Nội dung lỗi nằm trong 2 ảnh đính kèm, AI không đọc ảnh. Có người trả lời sau 11 giờ nhưng không kiểm được có đúng lỗi không."
+    },
+    {
+      "case_id": "GS-04",
+      "msg_id": "M33885",
+      "expected": "need",
+      "lop_kho": "②",
+      "nhom": "kho",
+      "vi_sao_chon": "Câu hỏi thiếu ngữ cảnh — không rõ 'vào' hệ thống nào",
+      "nhan_goc": "Không ai phản hồi. Câu hỏi thiếu ngữ cảnh (\"vào\" hệ thống nào) — TA nên hỏi lại học viên."
+    },
+    {
+      "case_id": "GS-05",
+      "msg_id": "M00553",
+      "expected": "check",
+      "lop_kho": "②",
+      "nhom": "kho",
+      "vi_sao_chon": "Chỉ được hẹn 'mai hỏi luôn' — lời hẹn không phải câu trả lời",
+      "nhan_goc": "Chỉ được hẹn \"mai hỏi luôn\", chưa có câu trả lời thật."
+    },
+    {
+      "case_id": "GS-06",
+      "msg_id": "M54679",
+      "expected": "check",
+      "lop_kho": "②",
+      "nhom": "kho",
+      "vi_sao_chon": "Có phản hồi nhưng né câu hỏi",
+      "nhan_goc": "Có phản hồi nhưng né câu hỏi; chưa đủ 4 giờ quan sát trước khi dữ liệu kết thúc."
+    },
+    {
+      "case_id": "GS-07",
+      "msg_id": "M30246",
+      "expected": "need",
+      "lop_kho": "③",
+      "nhom": "kho",
+      "vi_sao_chon": "Việc cá nhân (giấy tờ) — TA không tự quyết được",
+      "nhan_goc": "Hỏi lại lần 2 sau 3,5 giờ, vẫn không ai trả lời."
+    },
+    {
+      "case_id": "GS-08",
+      "msg_id": "M27566",
+      "expected": "need",
+      "lop_kho": "③",
+      "nhom": "kho",
+      "vi_sao_chon": "Giấy tờ cá nhân — phải chuyển BTC",
+      "nhan_goc": "Không ai phản hồi. Câu về giấy tờ cá nhân — cần BTC trả lời."
+    },
+    {
+      "case_id": "GS-09",
+      "msg_id": "M88027",
+      "expected": "check",
+      "lop_kho": "③",
+      "nhom": "kho",
+      "vi_sao_chon": "Đã chỉ chỗ gửi ticket nhưng kết quả xử lý nằm ngoài Discord",
+      "nhan_goc": "Đã được chỉ chỗ gửi ticket sau 13 phút, nhưng chưa rõ yêu cầu gia hạn đã được xử lý chưa."
+    },
+    {
+      "case_id": "GS-10",
+      "msg_id": "M72484",
+      "expected": "need",
+      "lop_kho": "④",
+      "nhom": "kho",
+      "vi_sao_chon": "Hỏi hạn nộp — trả lời sai deadline gây hậu quả trực tiếp",
+      "nhan_goc": "Hỏi hạn nộp trong kênh bot nhưng không tag bot, không ai trả lời."
+    },
+    {
+      "case_id": "GS-11",
+      "msg_id": "M18676",
+      "expected": "check",
+      "lop_kho": "④",
+      "nhom": "kho",
+      "vi_sao_chon": "Hai bạn học trả lời mâu thuẫn nhau về điểm danh",
+      "nhan_goc": "Hai bạn học trả lời mâu thuẫn nhau về điểm danh workshop trong cùng buổi sáng."
+    },
+    {
+      "case_id": "GS-12",
+      "msg_id": "M67980",
+      "expected": "check",
+      "lop_kho": "④",
+      "nhom": "kho",
+      "vi_sao_chon": "Câu trả lời đến từ bạn học, chưa phải nguồn chính thức",
+      "nhan_goc": "Học viên phải hỏi lại sau 9 giờ; câu trả lời đến từ bạn học, chưa phải nguồn chính thức."
+    },
+    {
+      "case_id": "GS-13",
+      "msg_id": "M30201",
+      "expected": "need",
+      "lop_kho": null,
+      "nhom": "hiem",
+      "vi_sao_chon": "Có reply sau 3 phút nhưng reply nói chuyện khác",
+      "nhan_goc": "Có reply sau 3 phút nhưng reply nói về nhận role, không trả lời câu hỏi."
+    },
+    {
+      "case_id": "GS-14",
+      "msg_id": "M36687",
+      "expected": "check",
+      "lop_kho": null,
+      "nhom": "hiem",
+      "vi_sao_chon": "Được trả lời sau ~12 giờ, qua câu hỏi 'ké' của người khác",
+      "nhan_goc": "Có trả lời, nhưng sau gần 12 giờ và qua câu hỏi \"ké\" của người khác."
+    },
+    {
+      "case_id": "GS-15",
+      "msg_id": "M19124",
+      "expected": "check",
+      "lop_kho": null,
+      "nhom": "hiem",
+      "vi_sao_chon": "Có trả lời nhưng sau 8 giờ — ranh giới 'đã trả lời' hay chưa",
+      "nhan_goc": "Có trả lời, nhưng sau 8 giờ."
+    },
+    {
+      "case_id": "GS-16",
+      "msg_id": "M60122",
+      "expected": "need",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Không ai phản hồi trong kênh",
+      "nhan_goc": "Không ai phản hồi trong kênh."
+    },
+    {
+      "case_id": "GS-17",
+      "msg_id": "M04392",
+      "expected": "need",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Không ai phản hồi",
+      "nhan_goc": "Không ai phản hồi."
+    },
+    {
+      "case_id": "GS-18",
+      "msg_id": "M03948",
+      "expected": "need",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Hỏi trong kênh bot nhưng không tag bot",
+      "nhan_goc": "Hỏi trong kênh bot nhưng không tag bot, không ai trả lời."
+    },
+    {
+      "case_id": "GS-19",
+      "msg_id": "M17206",
+      "expected": "need",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Có người +1 nhưng không TA/BTC nào phản hồi",
+      "nhan_goc": "Không TA/BTC nào phản hồi, có người +1."
+    },
+    {
+      "case_id": "GS-20",
+      "msg_id": "M18056",
+      "expected": "need",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Hai người cùng hỏi cách xem XP, không ai trả lời",
+      "nhan_goc": "2 người hỏi cách xem XP trong cùng buổi chiều, không ai trả lời."
+    },
+    {
+      "case_id": "GS-21",
+      "msg_id": "M83358",
+      "expected": "done",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Đã được trả lời bình thường",
+      "nhan_goc": ""
+    },
+    {
+      "case_id": "GS-22",
+      "msg_id": "M15562",
+      "expected": "done",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Đã được trả lời bình thường",
+      "nhan_goc": ""
+    },
+    {
+      "case_id": "GS-23",
+      "msg_id": "M20982",
+      "expected": "done",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Đã được trả lời bình thường",
+      "nhan_goc": ""
+    },
+    {
+      "case_id": "GS-24",
+      "msg_id": "M49586",
+      "expected": "done",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Đã được trả lời bình thường",
+      "nhan_goc": ""
+    },
+    {
+      "case_id": "GS-25",
+      "msg_id": "M83711",
+      "expected": "done",
+      "lop_kho": null,
+      "nhom": "thuong",
+      "vi_sao_chon": "Đã được trả lời bình thường",
+      "nhan_goc": ""
+    }
+  ]
+}

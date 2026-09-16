@@ -8,11 +8,26 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "data" / "discord-pack" / "k4_messages.csv"
+def find_pack(name="k4_messages.csv"):
+    """Dò data pack ở các vị trí hay gặp, hoặc lấy từ biến môi trường K4_DATA_DIR."""
+    import os
+    root = Path(__file__).resolve().parent.parent
+    cands = []
+    if os.environ.get("K4_DATA_DIR"):
+        cands.append(Path(os.environ["K4_DATA_DIR"]) / name)
+    cands += [root / "data" / "discord-pack" / name,
+              root / "Turtorial" / "data" / "discord-pack" / name,
+              root / "Tutorial" / "data" / "discord-pack" / name]
+    for c in cands:
+        if c.exists():
+            return c
+    raise SystemExit(
+        "Khong tim thay data pack. Dat K4_DATA_DIR tro toi thu muc discord-pack, vi du:\n"
+        "  K4_DATA_DIR=Turtorial/data/discord-pack python " + __file__)
 OUT = ROOT / "codebase" / "local-data" / "k4-data.js"
 
 def main():
-    with SRC.open(encoding="utf-8") as f:
+    with find_pack().open(encoding="utf-8") as f:
         rows = [
             [r["msg_id"], r["guild"], r["channel"], r["author"], r["is_bot"] == "True",
              r["reply_to"], r["created_at_vn"], int(r["n_attachments"] or 0), r["content"]]

@@ -1604,7 +1604,7 @@
       function fmt(text) {
         let s = esc(text);
         const blocks = [];
-        s = s.replace(/```(?:[a-z]*\n)?([\s\S]*?)```/g, (m, c) => { blocks.push(c); return " " + (blocks.length - 1) + " "; });
+        s = s.replace(/```(?:[a-z]*\n)?([\s\S]*?)```/g, (m, c) => { blocks.push(c); return "\u0000" + (blocks.length - 1) + "\u0000"; });
         s = s.replace(/`([^`\n]+)`/g, "<code>$1</code>");
         s = s.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
         s = s.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s.,!?)]|$)/g, "$1<em>$2</em>");
@@ -1619,7 +1619,7 @@
         s = s.replace(/\[:([\w-]+):\]/g, ":$1:");
         s = s.replace(/(https?:\/\/[^\s<)\]]+)/g, '<a class="link" href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
         s = s.replace(/\n/g, "<br>");
-        s = s.replace(/ (\d+) /g, (m, i) => "<pre><code>" + blocks[+i] + "</code></pre>");
+        s = s.replace(/\u0000(\d+)\u0000/g, (m, i) => "<pre><code>" + blocks[+i] + "</code></pre>");
         return s;
       }
       function plain(text, n) {

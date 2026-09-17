@@ -1671,7 +1671,7 @@
         const s = text.replace(/\[@(D\d{4}|BOT|role|user)\]/g, "@…").replace(/\[link:([^\]]+)\]/g, "$1").replace(/\[:([\w-]+):\]/g, "").replace(/[*`#>]/g, "").replace(/\s+/g, " ").trim();
         return n && s.length > n ? s.slice(0, n - 1) + "…" : s;
       }
-      const displayName = (m) => (m.local ? "Bạn (TA)" : m.bot ? "Trợ lý" : m.author);
+      const displayName = (m) => (m.local ? "Bạn (TA)" : m.bot ? "Trợ lý" : biDanh(m.author));
       function avatar(m, cls) {
         const span = document.createElement("span");
         span.className = "av" + (cls ? " " + cls : "");
@@ -1789,7 +1789,7 @@
           const rr = h("div", "reply-ref");
           if (ref) {
             const b = btn("", null, () => jumpTo(ref.id));
-            b.append(avatar(ref, "xs"), h("span", "rn", "@" + displayName(ref)), h("span", "snip", plain(ref.content, 80) || "Bấm để xem tin đính kèm"));
+            b.append(avatar(ref, "xs"), h("span", "rn", "@" + displayName(ref)), h("span", "snip", anMa(plain(ref.content, 80)) || "Bấm để xem tin đính kèm"));
             rr.append(b);
           } else { rr.classList.add("missing"); rr.textContent = "Tin gốc không có trong dữ liệu"; }
           row.append(h("div"), rr);
@@ -1814,7 +1814,7 @@
           main.append(hl);
         }
         const body = h("div", "body");
-        body.innerHTML = fmt(m.content);
+        body.innerHTML = anMa(fmt(m.content));
         main.append(body);
         if (m.att) {
           const a = h("div", "attach");
@@ -1970,9 +1970,7 @@
         hl.append(avatar(m, "xs"), h("span", "uname", vaiTro(m, q)));
         if (m.bot) hl.append(h("span", "tag-bot", "BOT"));
         hl.append(h("span", "time", "#" + chanName(m.channel) + " · " + dmy(m.at) + " " + hm(m.at)));
-        // Panel căn cứ là đầu ra của sản phẩm — nội dung trích cũng phải ẩn mã người gửi,
-        // không chỉ dòng tiêu đề. Khung chat mô phỏng Discord bên trái thì giữ nguyên mã,
-        // vì ở sản phẩm thật TA đang nhìn Discord thật.
+        // Nội dung trích cũng đi qua anMa() như mọi chỗ khác hiện nội dung tin.
         const b = h("div", "body"); b.innerHTML = anMa(fmt(m.content || "")) + (m.att ? ' <span class="mask">' + m.att + " tệp đính kèm</span>" : "");
         c.append(hl, b, btn("jumplink", "Nhảy tới tin", () => jumpTo(m.id)));
         return c;
@@ -2048,8 +2046,16 @@
         renderAll(true);
       }
 
-      // Bản tin và panel cam kết không nêu tên/mã người gửi (spec §5 K13, §7 điều kiện 3).
-      const anMa = (t) => String(t || "").replace(/@?(?<![A-Za-z0-9])D\d{4}(?!\d)/g, "[người gửi]");
+      // Không nơi nào trong giao diện hiện mã người gửi của data pack (spec §5 K13, §7 điều kiện 3).
+      // Thay bằng bí danh ổn định "Học viên NN" thay vì xoá trắng, để hội thoại vẫn đọc được:
+      // biết được hai tin là của cùng một người hay hai người khác nhau, mà không lộ mã gốc.
+      const _biDanh = new Map();
+      function biDanh(ma) {
+        if (!_biDanh.has(ma)) _biDanh.set(ma, "Học viên " + String(_biDanh.size + 1).padStart(2, "0"));
+        return _biDanh.get(ma);
+      }
+      const anMa = (t) => String(t || "")
+        .replace(/@?(?<![A-Za-z0-9])(D\d{4})(?!\d)/g, (kh, ma) => (kh[0] === "@" ? "@" : "") + biDanh(ma));
       function vaiTro(m, q) {
         if (m.local) return "Bạn (TA)";
         if (m.bot) return "Trợ lý";

@@ -2049,6 +2049,8 @@
       // Không nơi nào trong giao diện hiện mã người gửi của data pack (spec §5 K13, §7 điều kiện 3).
       // Thay bằng bí danh ổn định "Học viên NN" thay vì xoá trắng, để hội thoại vẫn đọc được:
       // biết được hai tin là của cùng một người hay hai người khác nhau, mà không lộ mã gốc.
+      const guildTen = () => (GUILDS.find((g) => g.id === state.guild) || {}).short || state.guild;
+
       const _biDanh = new Map();
       function biDanh(ma) {
         if (!_biDanh.has(ma)) _biDanh.set(ma, "Học viên " + String(_biDanh.size + 1).padStart(2, "0"));
@@ -2066,18 +2068,22 @@
       const LENH = [{ ten: "/question_unanswer", mo: "Liệt kê câu hỏi học viên chưa được trả lời" }];
       const sug = { mo: false, items: [], idx: 0, cap: "" };
 
+      // Chi goi y kenh va ngay CUA SERVER DANG XEM. O Discord that, slash command chay
+      // trong server minh dang dung, khong tro sang server khac duoc.
       function kenhCoTin() {
         const d = new Map();
         msgs.forEach((m) => {
-          if (m.local) return;
-          const cur = d.get(m.channel) || { n: 0, guild: m.guild };
-          cur.n++; d.set(m.channel, cur);
+          if (m.local || m.guild !== state.guild) return;
+          d.set(m.channel, (d.get(m.channel) || 0) + 1);
         });
-        return [...d.entries()].sort((a, b) => b[1].n - a[1].n);
+        return [...d.entries()].sort((a, b) => b[1] - a[1]);
       }
       function ngayCoTin() {
         const d = new Map();
-        msgs.forEach((m) => { if (!m.local) { const k = m.at.slice(0, 10); d.set(k, (d.get(k) || 0) + 1); } });
+        msgs.forEach((m) => {
+          if (m.local || m.guild !== state.guild) return;
+          const k = m.at.slice(0, 10); d.set(k, (d.get(k) || 0) + 1);
+        });
         return [...d.entries()].sort();
       }
 
@@ -2094,13 +2100,11 @@
         if (/^kenh:/i.test(tuCuoi)) {
           const q = tuCuoi.slice(5).toLowerCase();
           const items = kenhCoTin()
-            .map(([c, v]) => ({ ten: c.replace(/_/g, "-"), n: v.n, g: v.guild }))
+            .map(([c, n]) => ({ ten: c.replace(/_/g, "-"), n }))
             .filter((x) => x.ten.indexOf(q) === 0)
             .slice(0, 6)
-            .map((x) => ({ k: "kenh:" + x.ten,
-                           d: x.n + " tin · " + x.g.replace("K4-", ""),
-                           the: "kenh:" + x.ten + " " }));
-          return items.length ? { cap: "Kênh", items } : null;
+            .map((x) => ({ k: "kenh:" + x.ten, d: x.n + " tin", the: "kenh:" + x.ten + " " }));
+          return items.length ? { cap: "Kênh trong " + guildTen(), items } : null;
         }
         if (/^ngay:/i.test(tuCuoi)) {
           const q = tuCuoi.slice(5);
@@ -2108,7 +2112,7 @@
             .map(([d, n]) => ({ ten: d.slice(8) + "/" + d.slice(5, 7), n }))
             .filter((x) => x.ten.indexOf(q) === 0)
             .map((x) => ({ k: "ngay:" + x.ten, d: x.n + " tin trong ngày này", the: "ngay:" + x.ten + " " }));
-          return items.length ? { cap: "Ngày", items } : null;
+          return items.length ? { cap: "Ngày có dữ liệu trong " + guildTen(), items } : null;
         }
         if (tuCuoi === "") {
           const co = (t) => new RegExp("\\b" + t + ":", "i").test(text);
@@ -2198,6 +2202,22 @@
         const kenh = (arg.kenh || "channel-11").replace(/-/g, "_");
         const ngay = arg.ngay || "13/09";
 
+        // Kenh co thuoc server dang xem khong? Khong tu nhay server — bao ro de TA biet
+        // minh dang dung nham cho, giong Discord that: lenh chi chay trong server hien tai.
+        const tinKenh = msgs.find((m) => !m.local && m.channel === kenh);
+        if (tinKenh && tinKenh.guild !== state.guild) {
+          const g = GUILDS.find((x) => x.id === tinKenh.guild);
+          cmdShow(cmdHead() + '<div class="cmd-err">Kênh <b>#' + kenh.replace(/_/g, "-") +
+            "</b> thuộc server <b>" + (g ? g.name : tinKenh.guild) + "</b>, không phải server bạn đang xem. " +
+            "Chuyển sang server đó ở cột trái rồi chạy lại lệnh.</div>");
+          return;
+        }
+        if (!tinKenh) {
+          cmdShow(cmdHead() + '<div class="cmd-err">Không có kênh <b>#' + kenh.replace(/_/g, "-") +
+            "</b> trong dữ liệu. Gõ <b>kenh:</b> rồi bấm Tab để chọn từ danh sách.</div>");
+          return;
+        }
+
         cmdShow(cmdHead("đang mở kênh…") + '<div class="cmd-step">/question_unanswer kenh:' +
                 kenh.replace(/_/g, "-") + " ngay:" + ngay + "</div>");
         setStep(1);
@@ -2235,8 +2255,6 @@
             labels[it.msg_id] = { status: it.status, ai: it.status, reason: anMa(it.reason),
                                   ev: it.ev || [], nguon: "AI" };
           });
-          const coTin = d.items.find((i) => byId.has(i.msg_id));
-          if (coTin) state.guild = byId.get(coTin.msg_id).guild;
           const dau = d.items.find((i) => i.status === "need" && byId.has(i.msg_id));
           state.selected = dau ? dau.msg_id : null;
           state.panelOpen = !!dau;

@@ -1,4 +1,4 @@
-# AI SPEC — Còn Bỏ Ngỏ · Nhóm 4AE · Cụm ___
+# AI SPEC — Missing · Nhóm 4AE · Cụm ___
 Hướng: **B — Trợ lý Discord** · đề **B2** (tính năng mới cho TA)
 Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới *(cải tiến từ bản tin bot đang chạy)*
 
@@ -11,7 +11,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới *(cải tiế
 
 - **Job executor:** TA / Lab coach trực kênh Discord của khoá, cuối ngày.
 - **Workflow hiện tại:** cuộn lại từng kênh công khai → đọc bản tin ngày do bot tự sinh → tự đoán câu nào chưa ai trả lời → trả lời. Bản tin hiện tại không có link tới từng câu hỏi và không tách được "đã có phản hồi" với "đã giải quyết".
-- **Core JTBD:** *Khi hết một ngày trực, tôi muốn biết câu hỏi nào của học viên còn bỏ ngỏ, để trả lời hết trước khi học viên bỏ cuộc hoặc hỏi lại.*
+- **Core JTBD:** *Khi hết một ngày trực, tôi muốn biết câu hỏi nào của học viên bị miss, để trả lời hết trước khi học viên bỏ cuộc hoặc hỏi lại.*
 - **Problem statement (không chữ AI):** TA phải tự cuộn lại nhiều kênh để tìm câu hỏi chưa ai trả lời; câu trôi thì không ai biết là đã trôi.
 
 ### Evidence — chuẩn B (mining)
@@ -59,7 +59,7 @@ Ba ứng viên cùng lấy từ data pack Discord khoá 4 (12–14/09).
 
 | Ứng viên | Bao nhiêu người gặp | Tần suất | Mỗi lần tốn gì | Build nổi? | Chọn? |
 |---|---|---|---|---|---|
-| **① Bản tin câu hỏi còn bỏ ngỏ cho TA** | 27 câu không reply / 3 ngày; trong 142 tin đọc tay có 32 câu cần TA xem | hằng ngày | Học viên chờ mà không ai biết; có câu hỏi lại sau 3,5 giờ vẫn không ai trả lời (`M30246` → `M48859`) | Có — 1 lời gọi LLM mỗi câu | ✅ **chọn** |
+| **① Bản tin câu hỏi bị miss cho TA** | 27 câu không reply / 3 ngày; trong 142 tin đọc tay có 32 câu cần TA xem | hằng ngày | Học viên chờ mà không ai biết; có câu hỏi lại sau 3,5 giờ vẫn không ai trả lời (`M30246` → `M48859`) | Có — 1 lời gọi LLM mỗi câu | ✅ **chọn** |
 | ② Sửa lỗi bản tin ngày đang chạy | 4/4 bản tin; mọi TA đọc bản tin | hằng ngày | 14 lỗi chèn chữ, 2/4 bản tin cụt → TA mất tin cậy vào bản tin | Có | ❌ loại |
 | ③ Bot trả lời câu hỏi hành chính có căn cứ | **130/307** tin tag bot có từ khoá hành chính (`deadline|hạn|nộp|điểm danh|xp|ticket|standup|lịch|mấy giờ`) | nhiều lần/ngày | Trả sai deadline → học viên mất điểm | Khó | ❌ loại |
 
@@ -94,7 +94,7 @@ Ba ứng viên cùng lấy từ data pack Discord khoá 4 (12–14/09).
 ## §4. Thiết kế  ← **chốt tại CP2**
 
 ### Lát cắt MỘT CÂU
-> **Một TA · cuối ngày muốn biết còn câu nào bỏ ngỏ · AI quyết định mỗi câu hỏi trong ngày đã thực sự được giải đáp chưa · TA nhận danh sách câu còn bỏ ngỏ kèm link tới tin gốc, không nêu tên, bấm vào là trả lời đúng chỗ.**
+> **Một TA · cuối ngày muốn biết còn câu nào bị miss · AI quyết định mỗi câu hỏi trong ngày đã thực sự được giải đáp chưa · TA nhận danh sách câu bị miss kèm link tới tin gốc, không nêu tên, bấm vào là trả lời đúng chỗ.**
 
 **Vì sao đây là quyết định AI, không phải truy vấn CSDL.** "Không có reply" ≠ "chưa được trả lời", và cả hai chiều đều sai được:
 - Có reply nhưng **không phải câu trả lời** — reply là *"em ké câu hỏi ạ"*.
@@ -122,7 +122,7 @@ Ba ứng viên cùng lấy từ data pack Discord khoá 4 (12–14/09).
 ### Automation: **augment**
 AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một bên:
 - **Báo thừa** một câu đã được trả lời → TA mất ~10 giây bỏ qua. Rẻ, TA tự thấy ngay.
-- **Bỏ sót** một câu thật sự bỏ ngỏ → học viên bị lờ, không ai biết để sửa. Đắt, và không tự lộ ra.
+- **Bỏ sót** một câu thật sự bị miss → học viên bị lờ, không ai biết để sửa. Đắt, và không tự lộ ra.
 
 → Thiết kế ưu tiên **không bỏ sót**, chấp nhận báo thừa, và luôn có người duyệt trước khi chạm tới học viên.
 

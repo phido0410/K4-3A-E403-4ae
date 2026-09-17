@@ -1,6 +1,6 @@
-# codebase/ — Còn Bỏ Ngỏ · Nhóm 4AE · Track B2
+# codebase/ — Missing · Nhóm 4AE · Track B2
 
-Lát cắt: **Một TA · cuối ngày muốn biết còn câu nào bỏ ngỏ · AI quyết định mỗi câu hỏi đã thực sự được giải đáp chưa · TA nhận danh sách kèm link tới tin gốc, không nêu tên.**
+Lát cắt: **Một TA · cuối ngày muốn biết còn câu nào bị miss · AI quyết định mỗi câu hỏi đã thực sự được giải đáp chưa · TA nhận danh sách kèm link tới tin gốc, không nêu tên.**
 
 Sản phẩm là một **lệnh gạch chéo cho bot Discord**. TA gõ `/question_unanswer` trong kênh riêng, bot quét kênh công khai, gọi LLM phân loại từng câu hỏi, rồi dựng bản tin ngay trong kênh.
 

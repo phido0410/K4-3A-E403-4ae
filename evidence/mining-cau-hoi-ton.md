@@ -1,4 +1,4 @@
-# Log mining — câu hỏi còn bỏ ngỏ trên Discord khoá 4
+# Log mining — câu hỏi bị miss trên Discord khoá 4
 
 Nguồn: `data/discord-pack/k4_messages.csv` — 1.092 tin, 12–14/09/2026, 202 tác giả, đã ẩn danh.
 Mục đích: chứng minh pain *"câu hỏi của học viên trôi mà không ai biết"* bằng số đếm lại được.
@@ -55,7 +55,7 @@ Vì quy tắc máy không kết luận được, nhóm **đọc tay 142 tin** v�
 
 | Nhãn | Số |
 |---|---|
-| `need` — còn bỏ ngỏ | 21 |
+| `need` — bị miss | 21 |
 | `check` — không chắc, cần người xem | 8 |
 | `nogrounding` — không đủ căn cứ | 3 |
 | `done` — đã được giải đáp | 110 |

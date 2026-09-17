@@ -1,4 +1,4 @@
-"""Mat xich quyet dinh trung tam — Con Bo Ngo (Track B2).
+"""Mat xich quyet dinh trung tam — Missing (Track B2).
 
 Voi mot cau hoi tren Discord + ngu canh quanh no, goi LLM that de xep vao:
     need        con bo ngo, TA can tra loi

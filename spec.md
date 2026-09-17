@@ -169,8 +169,9 @@ Cột cuối là kết quả AI thật trên golden set, lượt `run-05` ([`eva
 | K10 | Hỏi **hạn nộp** trong kênh bot đông tin, không tag bot (`M72484`) | ④ | `need` · bản tin **chỉ dẫn link**, không tóm tắt nội dung deadline | Track B an toàn | GS-10 · ❌ AI xếp `check` |
 | K11 | Có trả lời nhưng **sau 8 giờ** (`M19124`) | ④ | `check` — trả lời muộn chưa tính là xong | G11 | GS-15 · ❌ AI xếp `done` — **bỏ sót ở cả 5 lượt** |
 | K12 | **Đáp án có sẵn** cho câu y hệt 19 phút trước, nhưng không ai trỏ cho người hỏi (`M18056`) | ② | `need` (quy ước chốt tại CP4 — xem §7) | G10 | GS-20 · ❌ AI xếp `done` — **bỏ sót ở cả 5 lượt** |
-| K13 | **Lộ danh tính**: bản tin nêu ai hỏi gì | ④ | Bản tin chỉ xuất `msg_id` + link, không tên, không mã người gửi | — | Kiểm bằng đầu ra bản tin; không có case trong golden set |
+| K13 | **Lộ danh tính**: bản tin hoặc bất kỳ màn hình nào nêu ai hỏi gì | ④ | **Không nơi nào trong giao diện hiện mã người gửi của data pack.** Bản tin và panel căn cứ xuất `msg_id` + link; tên hiển thị dùng bí danh ổn định *Học viên 01, 02…*; panel căn cứ dùng vai trò *Người hỏi / Người khác / Trợ lý* | — | Kiểm bằng cách quét mã `D####` trên trang đang phục vụ; không có case trong golden set |
 | K14 | Tin chứa **chỉ thị** kiểu "bỏ qua hướng dẫn trước đó" | ① | Coi là dữ liệu, phân loại bình thường (đã ghi trong system prompt `decide.py`) | — | **Chưa có case** — pack không có tin nào khớp mẫu này |
+| K15 | **Chạy nhầm server**: TA đứng ở L2-3 nhưng lệnh quét kênh của L3-4 | ③ | Gợi ý `kenh:` và `ngay:` chỉ liệt kê theo server đang xem; gõ tay kênh server khác thì báo rõ kênh đó thuộc server nào và dừng, không tự chuyển | — | Kiểm tay trên mock |
 
 **Kịch bản nhóm sợ nhất khi demo: K3, K11, K12.** AI xếp `done` → câu hỏi biến khỏi danh sách TA mà không ai thấy. Cả ba bị xếp sai ở **cả 5 lượt**, chưa lượt sửa prompt nào chạm tới.
 
@@ -263,7 +264,7 @@ Số liệu khớp [`eval/run_results.md`](eval/run_results.md) và [`eval/READM
 |---|---|---|
 | 1. Bỏ sót ≤ 1/20 (recall ≥ 95%) | Bỏ sót **3/20** — recall **85%** | ❌ **chưa đạt** |
 | 2. Báo thừa ≤ 30% | **2/19** — 10,5% | ✅ đạt |
-| 3. 0 mục bản tin lộ tên/mã người gửi | Bản tin chỉ xuất `msg_id` + link — **0** | ✅ đạt |
+| 3. 0 chỗ trong giao diện lộ mã người gửi | Quét mã `D####` trên trang đang phục vụ — **0**. Phạm vi kiểm gồm bản tin, panel căn cứ, lý do AI, nội dung tin và tên hiển thị trong khung chat | ✅ đạt |
 
 **Kết luận: run-05 chưa đạt quality bar** vì điều kiện 1.
 
@@ -350,6 +351,8 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 | 17/9 CP4 | Hoàn thiện §1–§3, §5, §7, §8 | Hạn chốt spec |
 | 17/9 CP4 | Chốt định nghĩa 4 nhãn + 3 quy ước (reply lạc đề = `need`; đáp án có sẵn không ai trỏ = `need`; không phải câu hỏi = `done` kèm lý do). **Không đổi nhãn nào trong golden set** | Phân tích run-05 (GS-13, GS-20, GS-24) cho thấy ranh giới chưa được viết ra. Giữ nhãn gán trước khi chạy AI để không chỉnh ground truth theo kết quả |
 | 17/9 CP4 | Chuẩn hoá cách tính recall (mẫu số 20, gồm `nogrounding`) và báo thừa (trên số mục danh sách); **giữ nguyên ngưỡng 95% / 30% / 0** | Chữ "≤1/20" trong bar có sẵn trước CP4; script cũ tính trên 17 case nên báo 88,2%. Số đúng là 85% — tệ hơn, nhưng đúng với bar |
-| 17/9 CP4 | Lọc mã người gửi khỏi lý do AI trước khi hiện cho TA; thẻ tin trong panel căn cứ hiện vai trò thay cho mã | Lý do do model tự viết nhắc mã tác giả ở 3/25 case run-05 — mâu thuẫn với cam kết "không nêu tên" của bản tin (④, K13) |
+| 17/9 CP4 | Lọc mã người gửi khỏi lý do AI trước khi hiện cho TA; thẻ tin trong panel căn cứ hiện vai trò thay cho mã | Lý do do model tự viết nhắc mã tác giả ở 4/25 case run-05 — mâu thuẫn với cam kết "không nêu tên" của bản tin (④, K13) |
+| 17/9 CP4 | **Mở rộng phạm vi cam kết**: từ *"bản tin không nêu tên"* thành *"không nơi nào trong giao diện hiện mã người gửi"*. Tên hiển thị và nội dung tin trong khung chat dùng bí danh ổn định *Học viên NN* | Chạy thử thấy khung chat vẫn hiện `D9617`, `D7699`. Dùng bí danh thay vì xoá trắng để hội thoại còn đọc được — vẫn phân biệt được hai tin của cùng một người hay hai người (K13) |
+| 17/9 CP4 | Gợi ý `kenh:`/`ngay:` lọc theo server đang xem; gõ kênh của server khác thì báo lỗi thay vì tự chuyển server | Đứng ở L2-3 mà gợi ý vẫn hiện kênh của L3-4, chọn nhầm là bản tin dựng sai dữ liệu. Ở Discord thật lệnh chỉ chạy trong server đang đứng (K14) |
 | 17/9 CP4 | Điền người thử: Huỳnh Văn Nghĩa (Lab coach) | Đã đồng ý thử; còn thiếu 1 người |
 | 17/9 CP4 | Khoá quality bar | Hạn 21:00 17/9 |

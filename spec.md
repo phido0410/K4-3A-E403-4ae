@@ -330,8 +330,10 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 
 | # | Người thử | Vai trò | Trạng thái |
 |---|---|---|---|
-| 1 | **Huỳnh Văn Nghĩa** | Lab coach | Đã đồng ý thử |
-| 2 | *(chưa có)* | TA / Lab coach | Đang mời — thiếu 1 người so với yêu cầu ≥2 |
+| 1 | **Huỳnh Văn Nghĩa** | Lab coach | Đã đồng ý thử — khai từ CP1 |
+| 2 | **Đặng Quốc Hiệp** | Học viên | Đã đồng ý thử — khai từ CP1 |
+
+Đủ **≥2 người ngoài nhóm**, cả hai đã khai từ CP1 theo yêu cầu R6. Hai vai trò khác nhau là có chủ ý: Lab coach là người dùng thật của bản tin; học viên là người ở đầu kia — kiểm xem câu hỏi bị bỏ sót có đúng là câu họ từng hỏi mà không ai đáp không.
 
 - **Phạm vi thử:** một ngày dữ liệu (`channel-11` · 13/09, 22 lời gọi AI, ~6 giây).
 - **Đo khi thử:** thời gian TA tìm ra câu tồn bằng cách cũ (cuộn kênh + đọc bản tin bot) so với bằng bản tin mới · số mục TA bấm sửa và lý do · số câu tồn TA thấy bị thiếu.
@@ -354,5 +356,5 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 | 17/9 CP4 | **Mở rộng phạm vi cam kết**: từ *"bản tin không nêu tên"* thành *"không nơi nào trong giao diện hiện mã người gửi"*. Tên hiển thị và nội dung tin trong khung chat dùng bí danh ổn định *Học viên NN* | Chạy thử thấy khung chat vẫn hiện `D9617`, `D7699`. Dùng bí danh thay vì xoá trắng để hội thoại còn đọc được — vẫn phân biệt được hai tin của cùng một người hay hai người (K13) |
 | 17/9 CP4 | Điều kiện 3 của quality bar mở rộng từ *"0 mục trong bản tin"* thành *"0 chỗ trong giao diện"* | Cam kết **chặt hơn**, không nới lỏng. Sau khi che mã ở cả khung chat thì phạm vi kiểm rộng ra theo, và vẫn đạt 0 |
 | 17/9 CP4 | Gợi ý `kenh:`/`ngay:` lọc theo server đang xem; gõ kênh của server khác thì báo lỗi thay vì tự chuyển server | Đứng ở L2-3 mà gợi ý vẫn hiện kênh của L3-4, chọn nhầm là bản tin dựng sai dữ liệu. Ở Discord thật lệnh chỉ chạy trong server đang đứng (K14) |
-| 17/9 CP4 | Điền người thử: Huỳnh Văn Nghĩa (Lab coach) | Đã đồng ý thử; còn thiếu 1 người |
+| 17/9 CP4 | Điền đủ 2 người thử: Huỳnh Văn Nghĩa (Lab coach) và Đặng Quốc Hiệp (học viên), cả hai khai từ CP1 | Đủ yêu cầu R6 ≥2 người ngoài nhóm |
 | 17/9 CP4 | Khoá quality bar | Hạn 21:00 17/9 |

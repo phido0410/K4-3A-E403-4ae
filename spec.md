@@ -244,7 +244,7 @@ Ground truth: [`codebase/labels.js`](codebase/labels.js) — 142 tin nhóm đọ
 > **Đạt khi cả ba điều kiện cùng đúng trên golden set:**
 > 1. **Bỏ sót ≤ 1/20** câu cần TA xem — tức **recall ≥ 95%** trên 20 case `need` / `check` / `nogrounding`;
 > 2. **Báo thừa ≤ 30%** số mục trong danh sách gửi TA;
-> 3. **0 mục** trong bản tin chứa tên hoặc mã người gửi.
+> 3. **0 chỗ** trong giao diện hiện tên hoặc mã người gửi — gồm bản tin, panel căn cứ, lý do AI, nội dung tin và tên hiển thị trong khung chat.
 
 ### Kết quả các lượt chạy
 
@@ -294,7 +294,7 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 |---|---|---|
 | 1 | **Quality bar** | **Chưa đạt** — recall 85% < 95%, bỏ sót 3 case (GS-02, GS-15, GS-20), cả ba sai ở mọi lượt |
 | 2 | Cách tính recall và báo thừa trong `run_eval.py` | **Đã sửa trước CP4** — recall trên 20 case, báo thừa trên số mục danh sách; báo cáo dựng lại từ log, không gọi lại API |
-| 3 | Lý do AI tự viết có thể nhắc mã người gửi | 3/25 lý do trong run-05 có mã dạng `D####` (GS-21, GS-22, GS-25). **Đã lọc ở lớp hiển thị**: `an_ma_nguoi_gui()` trong `decide.py`, áp ở `serve.py` trước khi trả về giao diện, và lọc thêm lần nữa trong `cp2-mock.html`; thẻ tin trong panel căn cứ hiện vai trò (Người hỏi / Người khác / Trợ lý) thay cho mã. Log thô `eval/logs/` giữ nguyên để đối chiếu. **Còn lại:** lý do AI trích trong báo cáo eval (`eval/runs/`, `eval/audit/`) chưa đi qua bộ lọc |
+| 3 | Lý do AI tự viết có thể nhắc mã người gửi | 4/25 lý do trong run-05 có mã dạng `D####`. **Đã lọc ở mọi lớp**: `an_ma_nguoi_gui()` trong `decide.py`, áp ở `serve.py` trước khi trả về giao diện, lọc lại trong `cp2-mock.html`, và áp cả khi ghi báo cáo (`run_eval.py`, `redact_logs.py`) — báo cáo đã dựng lại từ log. Khung chat dùng bí danh *Học viên NN*; panel căn cứ dùng vai trò. Quét `D####` trên trang đang phục vụ và trên mọi file sẽ push: **0**. Log thô `eval/logs/` giữ nguyên để đối chiếu |
 | 4 | Ba quy ước chốt tại CP4 **chưa đưa vào prompt** | Prompt `v5` chưa nói rõ quy ước 2 (đáp án có sẵn nhưng không ai trỏ = `need`) |
 | 5 | **Chưa đo độ lệch giữa hai người chấm** | Guide §2.6 bước 4: hai người gán độc lập cùng 20 case rồi so. Nhãn hiện tại do một người gán |
 | 6 | `M36687` — trả lời đến sau **705 phút** qua câu hỏi "ké" của người khác | Nằm ngoài mọi cửa sổ thời gian; cần tìm theo ngữ nghĩa. **Giới hạn thiết kế**, chưa làm |
@@ -321,7 +321,6 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 | Việc | Người | Trước |
 |---|---|---|
 | Prompt/code v6: luật cứng cho ảnh đính kèm và trả lời muộn (`tra_loi_muon`), bước 1 chạy độc lập, đưa 3 quy ước vào prompt → `run-06`. **Quality bar giữ nguyên** | Phi | CP5 |
-| Áp `an_ma_nguoi_gui()` cho lý do AI trong báo cáo eval (`run_eval.py`, `redact_logs.py`) | Phi | CP5 |
 | Người chấm thứ hai gán độc lập 20 case, so với `labels.js`, ghi tỷ lệ lệch | Đại | CP5 |
 | Thêm ≥2 case prompt injection tự viết (ghi rõ là tự viết) vào golden set | Quốc | CP5 |
 | Thu khảo sát ≥20 học viên + TA bằng form đã soạn | Đại, Quốc | CP5 |
@@ -353,6 +352,7 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 | 17/9 CP4 | Chuẩn hoá cách tính recall (mẫu số 20, gồm `nogrounding`) và báo thừa (trên số mục danh sách); **giữ nguyên ngưỡng 95% / 30% / 0** | Chữ "≤1/20" trong bar có sẵn trước CP4; script cũ tính trên 17 case nên báo 88,2%. Số đúng là 85% — tệ hơn, nhưng đúng với bar |
 | 17/9 CP4 | Lọc mã người gửi khỏi lý do AI trước khi hiện cho TA; thẻ tin trong panel căn cứ hiện vai trò thay cho mã | Lý do do model tự viết nhắc mã tác giả ở 4/25 case run-05 — mâu thuẫn với cam kết "không nêu tên" của bản tin (④, K13) |
 | 17/9 CP4 | **Mở rộng phạm vi cam kết**: từ *"bản tin không nêu tên"* thành *"không nơi nào trong giao diện hiện mã người gửi"*. Tên hiển thị và nội dung tin trong khung chat dùng bí danh ổn định *Học viên NN* | Chạy thử thấy khung chat vẫn hiện `D9617`, `D7699`. Dùng bí danh thay vì xoá trắng để hội thoại còn đọc được — vẫn phân biệt được hai tin của cùng một người hay hai người (K13) |
+| 17/9 CP4 | Điều kiện 3 của quality bar mở rộng từ *"0 mục trong bản tin"* thành *"0 chỗ trong giao diện"* | Cam kết **chặt hơn**, không nới lỏng. Sau khi che mã ở cả khung chat thì phạm vi kiểm rộng ra theo, và vẫn đạt 0 |
 | 17/9 CP4 | Gợi ý `kenh:`/`ngay:` lọc theo server đang xem; gõ kênh của server khác thì báo lỗi thay vì tự chuyển server | Đứng ở L2-3 mà gợi ý vẫn hiện kênh của L3-4, chọn nhầm là bản tin dựng sai dữ liệu. Ở Discord thật lệnh chỉ chạy trong server đang đứng (K14) |
 | 17/9 CP4 | Điền người thử: Huỳnh Văn Nghĩa (Lab coach) | Đã đồng ý thử; còn thiếu 1 người |
 | 17/9 CP4 | Khoá quality bar | Hạn 21:00 17/9 |

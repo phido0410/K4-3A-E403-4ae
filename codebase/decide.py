@@ -123,6 +123,20 @@ def build_context(msg_id: str, by_id, replies, by_ch) -> dict:
     }
 
 
+# ------------------------------------------------------------- an danh hien thi
+_MA_NGUOI_GUI = re.compile(r"@?(?<![A-Za-z0-9])D\d{4}(?!\d)")
+
+
+def an_ma_nguoi_gui(text: str) -> str:
+    """Xoa ma nguoi gui (D####) khoi van ban AI viet truoc khi hien cho TA.
+
+    Ban tin cam ket khong neu ten/ma nguoi gui (spec §5 K13, §7 dieu kien 3), nhung "reason"
+    do model tu viet va co the nhac ma tac gia (run-05: GS-21, GS-22, GS-25).
+    Log tho trong eval/logs/ van giu nguyen de doi chieu.
+    """
+    return _MA_NGUOI_GUI.sub("[người gửi]", text or "")
+
+
 # -------------------------------------------------------------------- prompt
 PROMPT_VERSION = "v5"   # v5 = v4 + reply truc tiep kem do tre (truoc day thieu -> khong ap duoc nguong 2 gio)
 

@@ -100,7 +100,7 @@
           "M83398"
         ]
       },
-      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi của học viên về việc hợp tác giữa hai team có thể đã được trả lời nhưng chưa rõ ràng. Câu trả lời từ D3694 không trực tiếp giải quyết câu hỏi về việc bắt tay giữa hai team mà chỉ đưa ra ý kiến về việc tìm đồng đội. Cần kiểm tra thêm để xác định có câu trả lời nào khác rõ ràng hơn không.\",\"evidence_msg_ids\":[\"M45489\"]}",
+      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi của học viên về việc hợp tác giữa hai team có thể đã được trả lời nhưng chưa rõ ràng. Câu trả lời từ [người gửi] không trực tiếp giải quyết câu hỏi về việc bắt tay giữa hai team mà chỉ đưa ra ý kiến về việc tìm đồng đội. Cần kiểm tra thêm để xác định có câu trả lời nào khác rõ ràng hơn không.\",\"evidence_msg_ids\":[\"M45489\"]}",
       "token": {
         "vao": 1818,
         "ra": 96
@@ -527,7 +527,7 @@
           "M19574"
         ]
       },
-      "response_tho": "{\"status\":\"nogrounding\",\"reason\":\"Câu hỏi không rõ ràng vì nó yêu cầu một người cụ thể ([@D9617]) trả lời tin nhắn mà không có thông tin nào về nội dung tin nhắn đó. Không có thông tin nào trong ngữ cảnh để xác định nội dung cần trả lời.\",\"evidence_msg_ids\":[\"M80884\"]}",
+      "response_tho": "{\"status\":\"nogrounding\",\"reason\":\"Câu hỏi không rõ ràng vì nó yêu cầu một người cụ thể ([[người gửi]]) trả lời tin nhắn mà không có thông tin nào về nội dung tin nhắn đó. Không có thông tin nào trong ngữ cảnh để xác định nội dung cần trả lời.\",\"evidence_msg_ids\":[\"M80884\"]}",
       "token": {
         "vao": 1569,
         "ra": 77
@@ -557,7 +557,7 @@
           "M36494"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ bởi D3694 với thông tin rõ ràng về số lượng thành viên trong team. Không có câu hỏi nào khác liên quan đến nội dung này trong 30 phút sau đó.\",\"evidence_msg_ids\":[\"M83358\",\"M43101\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ bởi [người gửi] với thông tin rõ ràng về số lượng thành viên trong team. Không có câu hỏi nào khác liên quan đến nội dung này trong 30 phút sau đó.\",\"evidence_msg_ids\":[\"M83358\",\"M43101\"]}",
       "token": {
         "vao": 1752,
         "ra": 67
@@ -583,7 +583,7 @@
           "M81490"
         ]
       },
-      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi chưa được giải đáp rõ ràng. Có hai tin nhắn trả lời, nhưng không có câu trả lời trực tiếp nào xác nhận việc bài mới đã được up hay chưa. Tin nhắn từ D7688 chỉ hướng dẫn hỏi labcoach, không trả lời trực tiếp câu hỏi. Tin nhắn từ D6604 có thể là câu trả lời nhưng không rõ ràng vì không có thông tin cụ thể về bài mới. Cần kiểm tra thêm để xác nhận.\",\"evidence_msg_ids\":[\"M83711\",\"M81490\",\"M96607\"]}",
+      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi chưa được giải đáp rõ ràng. Có hai tin nhắn trả lời, nhưng không có câu trả lời trực tiếp nào xác nhận việc bài mới đã được up hay chưa. Tin nhắn từ [người gửi] chỉ hướng dẫn hỏi labcoach, không trả lời trực tiếp câu hỏi. Tin nhắn từ [người gửi] có thể là câu trả lời nhưng không rõ ràng vì không có thông tin cụ thể về bài mới. Cần kiểm tra thêm để xác nhận.\",\"evidence_msg_ids\":[\"M83711\",\"M81490\",\"M96607\"]}",
       "token": {
         "vao": 1521,
         "ra": 124

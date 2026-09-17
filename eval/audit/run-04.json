@@ -228,7 +228,7 @@
           "M94349"
         ]
       },
-      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi 'có điểm danh hả mn :v' không có ai trả lời trực tiếp và không có thông tin nào từ tin nhắn trước đó hoặc sau đó liên quan đến câu hỏi này. Tuy nhiên, có một tin nhắn trước đó từ D2313 hỏi 'mình điểm danh ws ko ạ', có thể liên quan đến câu hỏi này nhưng không đủ để xác định có người dùng nào trả lời cho câu hỏi của D2407. Do đó, cần kiểm tra thêm.\",\"evidence_msg_ids\":[\"M21623\",\"M10804\"]}",
+      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi 'có điểm danh hả mn :v' không có ai trả lời trực tiếp và không có thông tin nào từ tin nhắn trước đó hoặc sau đó liên quan đến câu hỏi này. Tuy nhiên, có một tin nhắn trước đó từ [người gửi] hỏi 'mình điểm danh ws ko ạ', có thể liên quan đến câu hỏi này nhưng không đủ để xác định có người dùng nào trả lời cho câu hỏi của [người gửi]. Do đó, cần kiểm tra thêm.\",\"evidence_msg_ids\":[\"M21623\",\"M10804\"]}",
       "token": {
         "vao": 2526,
         "ra": 125
@@ -701,7 +701,7 @@
           "M36494"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D3694) với nội dung rõ ràng. Không có mâu thuẫn nào với các tin nhắn khác.\",\"evidence_msg_ids\":[\"M43101\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với nội dung rõ ràng. Không có mâu thuẫn nào với các tin nhắn khác.\",\"evidence_msg_ids\":[\"M43101\"]}",
       "token": {
         "vao": 2847,
         "ra": 61
@@ -730,7 +730,7 @@
           "M81490"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D6604) với thông tin rõ ràng về bài học mới. Không có mâu thuẫn nào với các tin nhắn khác.\",\"evidence_msg_ids\":[\"M96607\",\"M81490\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với thông tin rõ ràng về bài học mới. Không có mâu thuẫn nào với các tin nhắn khác.\",\"evidence_msg_ids\":[\"M96607\",\"M81490\"]}",
       "token": {
         "vao": 1986,
         "ra": 69

@@ -398,7 +398,7 @@
           "M12802"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ và đúng ý trong vòng 2 giờ từ người dùng D6587. Tin trả lời cung cấp thông tin chi tiết về vấn đề mà người hỏi gặp phải và cách giải quyết.\",\"evidence_msg_ids\":[\"M51326\",\"M12802\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ và đúng ý trong vòng 2 giờ từ người dùng [người gửi]. Tin trả lời cung cấp thông tin chi tiết về vấn đề mà người hỏi gặp phải và cách giải quyết.\",\"evidence_msg_ids\":[\"M51326\",\"M12802\"]}",
       "token": {
         "vao": 1542,
         "ra": 67
@@ -557,7 +557,7 @@
           "M36494"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ từ người dùng khác (D3694) với thông tin chính xác về số lượng thành viên trong team.\",\"evidence_msg_ids\":[\"M83358\",\"M43101\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ từ người dùng khác ([người gửi]) với thông tin chính xác về số lượng thành viên trong team.\",\"evidence_msg_ids\":[\"M83358\",\"M43101\"]}",
       "token": {
         "vao": 1921,
         "ra": 57

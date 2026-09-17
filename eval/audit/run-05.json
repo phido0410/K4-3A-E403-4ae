@@ -125,7 +125,7 @@
           "M42075"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ bởi người dùng D3694 trong tin nhắn M45489, không có mâu thuẫn nào và nằm trong khoảng thời gian 2 giờ. Câu trả lời đã giải thích rõ ràng về việc hợp tác giữa các team và không có rào cản lớn cho các bạn non-tech.\",\"evidence_msg_ids\":[\"M15562\",\"M45489\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ bởi người dùng [người gửi] trong tin nhắn M45489, không có mâu thuẫn nào và nằm trong khoảng thời gian 2 giờ. Câu trả lời đã giải thích rõ ràng về việc hợp tác giữa các team và không có rào cản lớn cho các bạn non-tech.\",\"evidence_msg_ids\":[\"M15562\",\"M45489\"]}",
       "token": {
         "vao": 2465,
         "ra": 92
@@ -228,7 +228,7 @@
           "M94349"
         ]
       },
-      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi 'có điểm danh hả mn :v' có liên quan đến nội dung trước đó, cụ thể là câu hỏi 'mình điểm danh ws ko ạ' từ D2313, cho thấy có người đang thắc mắc về điểm danh. Tuy nhiên, không có ai trả lời cho câu hỏi này trong vòng 30 phút sau đó, và cũng không có thông tin nào từ người hỏi sau đó. Do đó, cần kiểm tra thêm.\",\"evidence_msg_ids\":[\"M21623\",\"M33885\",\"M19404\"]}",
+      "response_tho": "{\"status\":\"check\",\"reason\":\"Câu hỏi 'có điểm danh hả mn :v' có liên quan đến nội dung trước đó, cụ thể là câu hỏi 'mình điểm danh ws ko ạ' từ [người gửi], cho thấy có người đang thắc mắc về điểm danh. Tuy nhiên, không có ai trả lời cho câu hỏi này trong vòng 30 phút sau đó, và cũng không có thông tin nào từ người hỏi sau đó. Do đó, cần kiểm tra thêm.\",\"evidence_msg_ids\":[\"M21623\",\"M33885\",\"M19404\"]}",
       "token": {
         "vao": 2528,
         "ra": 121
@@ -701,7 +701,7 @@
           "M36494"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D3694) với nội dung cụ thể về số lượng thành viên trong team.\",\"evidence_msg_ids\":[\"M43101\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với nội dung cụ thể về số lượng thành viên trong team.\",\"evidence_msg_ids\":[\"M43101\"]}",
       "token": {
         "vao": 2861,
         "ra": 53
@@ -730,7 +730,7 @@
           "M81490"
         ]
       },
-      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D6604) với nội dung xác nhận bài mới đã được up. Không có mâu thuẫn nào với các tin nhắn khác.\",\"evidence_msg_ids\":[\"M96607\",\"M81490\"]}",
+      "response_tho": "{\"status\":\"done\",\"reason\":\"Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với nội dung xác nhận bài mới đã được up. Không có mâu thuẫn nào với các tin nhắn khác.\",\"evidence_msg_ids\":[\"M96607\",\"M81490\"]}",
       "token": {
         "vao": 2012,
         "ra": 69

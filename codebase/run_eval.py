@@ -14,7 +14,8 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from decide import ROOT, MODEL, PROMPT_VERSION, build_context, decide, load_messages
+from decide import (ROOT, MODEL, PROMPT_VERSION, an_ma_nguoi_gui, build_context, decide,
+                    load_messages)
 
 LABELS = ["need", "check", "nogrounding", "done"]
 LOP_TEN = {"①": "① Nguon su that", "②": "② Mo ho / thieu thong tin",
@@ -75,7 +76,7 @@ def main() -> None:
         else:
             got = decide(ctx, run=args.run)
             tokens += got.pop("_tokens", 0)
-        rows.append({**c, "got": got["status"], "reason": got["reason"],
+        rows.append({**c, "got": got["status"], "reason": an_ma_nguoi_gui(got["reason"]),
                      "ev": got.get("evidence_msg_ids", []),
                      "dat": got["status"] == c["expected"]})
         print(f"  {c['case_id']} {mid} ky vong={c['expected']:12s} ra={got['status']:12s} "

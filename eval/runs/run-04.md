@@ -1,7 +1,7 @@
 # Ket qua chay golden set — luot `run-04`
 
 - **Model:** `gpt-4o-mini` · prompt `v4`
-- **Luc chay:** 17/09/2026 10:47
+- **Luc chay:** 17/09/2026 11:03
 - **Bo test:** `eval/golden_set.json` — 25 case
 - **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)
 - **Log tung case:** `eval/logs/run-04/`
@@ -66,11 +66,11 @@
 | GS-18 | `M03948` | thuong | need | check | **TRUOT** | Câu hỏi 'khi tôi commit tại sao ko thấy lịch sử bên activity ở kênh discord này' chưa được giải đáp. Có một ti |
 | GS-19 | `M17206` | thuong | need | need | dat | Câu hỏi không có ai trả lời, không có tin nhắn nào nhắm vào nội dung câu hỏi này trong khoảng thời gian 30 phú |
 | GS-20 | `M18056` | thuong | need | done | **TRUOT** | Câu hỏi 'xem xp ở đâu' đã được trả lời bởi BOT trước đó trong tin nhắn M42137 và M45780. Câu trả lời rõ ràng v |
-| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D3694) với nội dung rõ ràng. Không có mâu |
+| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với nội dung rõ ràng. Không  |
 | GS-22 | `M15562` | thuong | done | check | **TRUOT** | Câu hỏi của học viên về việc hợp tác giữa hai team đã có một số phản hồi từ người khác, nhưng chưa có câu trả  |
 | GS-23 | `M20982` | thuong | done | check | **TRUOT** | Câu hỏi của học viên về việc điền hồ sơ năng lực có thể bị xem xét kết thúc đào tạo sớm chưa được trả lời. Có  |
 | GS-24 | `M49586` | thuong | done | check | **TRUOT** | Câu hỏi không có ai trả lời trực tiếp và không có thông tin nào cho thấy đã có câu trả lời chính thức. Tuy nhi |
-| GS-25 | `M83711` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D6604) với thông tin rõ ràng về bài học m |
+| GS-25 | `M83711` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với thông tin rõ ràng về bài |
 
 ### Case bi bo sot — loai loi dat nhat
 

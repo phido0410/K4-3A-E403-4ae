@@ -1,7 +1,7 @@
 # Ket qua chay golden set — luot `run-05`
 
 - **Model:** `gpt-4o-mini` · prompt `v5`
-- **Luc chay:** 17/09/2026 10:47
+- **Luc chay:** 17/09/2026 11:03
 - **Bo test:** `eval/golden_set.json` — 25 case
 - **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)
 - **Log tung case:** `eval/logs/run-05/`
@@ -66,11 +66,11 @@
 | GS-18 | `M03948` | thuong | need | check | **TRUOT** | Câu hỏi chưa được giải đáp và có tin nhắn từ người hỏi sau đó, nhưng không có ai trả lời cho câu hỏi này. Câu  |
 | GS-19 | `M17206` | thuong | need | need | dat | Câu hỏi chưa được giải đáp vì không có ai trả lời cho câu hỏi này trong khoảng thời gian 30 phút sau khi hỏi. |
 | GS-20 | `M18056` | thuong | need | done | **TRUOT** | Câu hỏi 'xem xp ở đâu' đã được trả lời bởi BOT trước đó trong tin M42137 và M45780. Câu trả lời rõ ràng và đầy |
-| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D3694) với nội dung cụ thể về số lượng th |
-| GS-22 | `M15562` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ bởi người dùng D3694 trong tin nhắn M45489, không có mâu thuẫn nào và nằm trong |
+| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với nội dung cụ thể về số lư |
+| GS-22 | `M15562` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ bởi người dùng [người gửi] trong tin nhắn M45489, không có mâu thuẫn nào và nằm |
 | GS-23 | `M20982` | thuong | done | check | **TRUOT** | Câu hỏi của học viên về việc điền hồ sơ năng lực có thể bị xem xét kết thúc đào tạo sớm hay không chưa được gi |
 | GS-24 | `M49586` | thuong | done | need | **TRUOT** | Câu hỏi không có nội dung cụ thể và không có ai trả lời cho câu hỏi này, chỉ có các tin nhắn liên quan đến câu |
-| GS-25 | `M83711` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D6604) với nội dung xác nhận bài mới đã đ |
+| GS-25 | `M83711` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác ([người gửi]) với nội dung xác nhận bài mớ |
 
 ### Case bi bo sot — loai loi dat nhat
 

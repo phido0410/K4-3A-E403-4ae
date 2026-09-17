@@ -1,7 +1,7 @@
 # Ket qua chay golden set — luot `run-01`
 
 - **Model:** `gpt-4o-mini` · prompt `v1`
-- **Luc chay:** 17/09/2026 10:47
+- **Luc chay:** 17/09/2026 11:03
 - **Bo test:** `eval/golden_set.json` — 25 case
 - **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)
 - **Log tung case:** `eval/logs/run-01/`

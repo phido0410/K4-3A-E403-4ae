@@ -1,7 +1,7 @@
 # Ket qua chay golden set — luot `run-02`
 
 - **Model:** `gpt-4o-mini` · prompt `v2`
-- **Luc chay:** 17/09/2026 10:47
+- **Luc chay:** 17/09/2026 11:03
 - **Bo test:** `eval/golden_set.json` — 25 case
 - **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)
 - **Log tung case:** `eval/logs/run-02/`
@@ -46,7 +46,7 @@
 
 | Case | Tin | Lop | Ky vong | AI tra ve | Dat | Ly do AI dua ra |
 |---|---|---|---|---|---|---|
-| GS-01 | `M80884` | ① | nogrounding | nogrounding | dat | Câu hỏi không rõ ràng vì nó yêu cầu một người cụ thể ([@D9617]) trả lời tin nhắn mà không có thông tin nào về  |
+| GS-01 | `M80884` | ① | nogrounding | nogrounding | dat | Câu hỏi không rõ ràng vì nó yêu cầu một người cụ thể ([[người gửi]]) trả lời tin nhắn mà không có thông tin nà |
 | GS-02 | `M97637` | ① | nogrounding | done | **TRUOT** | Câu hỏi đã được trả lời đầy đủ bởi BOT trong tin nhắn M08439, cung cấp thông tin chi tiết về quy trình và các  |
 | GS-03 | `M51326` | ① | nogrounding | nogrounding | dat | Câu hỏi có nhắc đến lỗi cụ thể nhưng không có thông tin chi tiết về lỗi đó trong ngữ cảnh. Hơn nữa, có ảnh đín |
 | GS-04 | `M33885` | ② | need | need | dat | Không có câu trả lời nào nhắm đúng câu hỏi về việc bị out ra, chỉ có các câu hỏi và thông tin không liên quan  |
@@ -66,8 +66,8 @@
 | GS-18 | `M03948` | thuong | need | need | dat | Không có câu trả lời nào nhắm đúng câu hỏi về việc không thấy lịch sử bên activity ở kênh Discord. Các tin nhắ |
 | GS-19 | `M17206` | thuong | need | nogrounding | **TRUOT** | Câu hỏi không có thông tin rõ ràng về việc đã có ai đó trả lời hay không, và không có nội dung nào trong ngữ c |
 | GS-20 | `M18056` | thuong | need | done | **TRUOT** | Câu hỏi 'xem xp ở đâu' đã được trả lời trong tin nhắn của BOT với nội dung hướng dẫn cách theo dõi hoặc tìm ki |
-| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ bởi D3694 với thông tin rõ ràng về số lượng thành viên trong team. Không có câu |
-| GS-22 | `M15562` | thuong | done | check | **TRUOT** | Câu hỏi của học viên về việc hợp tác giữa hai team có thể đã được trả lời nhưng chưa rõ ràng. Câu trả lời từ D |
+| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ bởi [người gửi] với thông tin rõ ràng về số lượng thành viên trong team. Không  |
+| GS-22 | `M15562` | thuong | done | check | **TRUOT** | Câu hỏi của học viên về việc hợp tác giữa hai team có thể đã được trả lời nhưng chưa rõ ràng. Câu trả lời từ [ |
 | GS-23 | `M20982` | thuong | done | need | **TRUOT** | Không có câu trả lời nào nhắm đúng câu hỏi về việc điền hồ sơ năng lực và khả năng bị xem xét kết thúc đào tạo |
 | GS-24 | `M49586` | thuong | done | need | **TRUOT** | Câu hỏi không có nội dung cụ thể để trả lời, chỉ là một câu hỏi về việc không có câu hỏi nào để hỏi. Không có  |
 | GS-25 | `M83711` | thuong | done | check | **TRUOT** | Câu hỏi chưa được giải đáp rõ ràng. Có hai tin nhắn trả lời, nhưng không có câu trả lời trực tiếp nào xác nhận |
@@ -144,7 +144,7 @@ AI lap luan: *Câu hỏi 'xem xp ở đâu' đã được trả lời trong tin 
 
 **GS-22 · `M15562`** — ky vong `done`, AI tra ve `check`  
 Nhom gan nhan vi: *(nhan chi ghi tin lam can cu: M45489)*  
-AI lap luan: *Câu hỏi của học viên về việc hợp tác giữa hai team có thể đã được trả lời nhưng chưa rõ ràng. Câu trả lời từ D3694 không trực tiếp giải quyết câu hỏi về việc bắt tay giữa hai team mà chỉ đưa ra ý kiến về việc tìm đồng đội. Cần kiểm tra thêm để xác định có câu trả lời nào khác rõ ràng hơn không.*  
+AI lap luan: *Câu hỏi của học viên về việc hợp tác giữa hai team có thể đã được trả lời nhưng chưa rõ ràng. Câu trả lời từ [người gửi] không trực tiếp giải quyết câu hỏi về việc bắt tay giữa hai team mà chỉ đưa ra ý kiến về việc tìm đồng đội. Cần kiểm tra thêm để xác định có câu trả lời nào khác rõ ràng hơn không.*  
 _Chua chan doan — doc log `eval/logs/run-02/M15562.json` roi bo sung vao eval/phan_tich.json_  
 
 **GS-23 · `M20982`** — ky vong `done`, AI tra ve `need`  ·  nguyen nhan nhom **A**  
@@ -161,7 +161,7 @@ AI lap luan: *Câu hỏi không có nội dung cụ thể để trả lời, ch�
 
 **GS-25 · `M83711`** — ky vong `done`, AI tra ve `check`  
 Nhom gan nhan vi: *(nhan chi ghi tin lam can cu: M81490)*  
-AI lap luan: *Câu hỏi chưa được giải đáp rõ ràng. Có hai tin nhắn trả lời, nhưng không có câu trả lời trực tiếp nào xác nhận việc bài mới đã được up hay chưa. Tin nhắn từ D7688 chỉ hướng dẫn hỏi labcoach, không trả lời trực tiếp câu hỏi. Tin nhắn từ D6604 có thể là câu trả lời nhưng không rõ ràng vì không có thông tin cụ thể về bài mới. Cần kiểm tra thêm để xác nhận.*  
+AI lap luan: *Câu hỏi chưa được giải đáp rõ ràng. Có hai tin nhắn trả lời, nhưng không có câu trả lời trực tiếp nào xác nhận việc bài mới đã được up hay chưa. Tin nhắn từ [người gửi] chỉ hướng dẫn hỏi labcoach, không trả lời trực tiếp câu hỏi. Tin nhắn từ [người gửi] có thể là câu trả lời nhưng không rõ ràng vì không có thông tin cụ thể về bài mới. Cần kiểm tra thêm để xác nhận.*  
 _Chua chan doan — doc log `eval/logs/run-02/M83711.json` roi bo sung vao eval/phan_tich.json_  
 
 ### Gom theo nhom nguyen nhan

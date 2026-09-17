@@ -9,7 +9,11 @@ mo hinh, phien ban prompt, van tat ngu canh, msg_id da dung, va response tho cua
 import hashlib
 import json
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from decide import an_ma_nguoi_gui  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "eval" / "logs"
@@ -44,7 +48,7 @@ def main() -> None:
                 "system_prompt_sha256": hashlib.sha256(
                     d["prompt"]["system"].encode()).hexdigest()[:16],
                 "ngu_canh": shape(d["prompt"]["user"]),
-                "response_tho": d["response_tho"],
+                "response_tho": an_ma_nguoi_gui(d["response_tho"]),
                 "token": d.get("token"),
             })
         note = ("Ban da luoc cua eval/logs/%s. Prompt he thong nam trong codebase/decide.py "

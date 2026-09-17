@@ -1926,7 +1926,7 @@
 
         const qc = h("div");
         qc.append(h("p", "p-label", "Tin gốc"));
-        qc.append(card(m));
+        qc.append(card(m, m));
         body.append(qc);
 
         const wi = waitInfo(m);
@@ -1937,7 +1937,7 @@
         const ai = h("div", "ai-box" + (l.ai === "nogrounding" && !l.corrected ? " nog" : ""));
         const ah = h("div", "h");
         ah.append(l.ai === "nogrounding" ? "AI không kết luận" : "AI gợi ý", h("span", "conf", ST[l.ai].conf));
-        ai.append(ah, h("p", null, l.reason || (l.ai === "done" ? "Có tin trả lời đúng ý trong 4 giờ sau câu hỏi." : "")));
+        ai.append(ah, h("p", null, anMa(l.reason) || (l.ai === "done" ? "Có tin trả lời đúng ý trong 4 giờ sau câu hỏi." : "")));
         ai.append(h("p", "src", "Kết quả do model sinh trong lượt chạy vừa rồi." +
           (l.ev && l.ev.length ? " Căn cứ: " + l.ev.join(", ") + "." : "")));
         body.append(ai);
@@ -1953,7 +1953,7 @@
         const evs = (l.ev || []).map((id) => byId.get(id)).filter(Boolean);
         const replies = msgs.filter((x) => x.local && x.replyTo === m.id);
         if (!evs.length && !replies.length) evw.append(h("p", "ev-none", l.ai === "nogrounding" ? "Không tìm được tin nào để đối chiếu." : "Không có tin nào trả lời câu này trong 4 giờ sau."));
-        else { const list = h("div", "ev-list"); evs.concat(replies).forEach((x) => list.append(card(x))); evw.append(list); }
+        else { const list = h("div", "ev-list"); evs.concat(replies).forEach((x) => list.append(card(x, m))); evw.append(list); }
         body.append(evw);
 
         const acts = h("div", "actions");
@@ -1964,10 +1964,10 @@
         body.append(fixPanel(m, l));
       }
 
-      function card(m) {
+      function card(m, q) {
         const c = h("div", "p-card");
         const hl = h("div", "headline");
-        hl.append(avatar(m, "xs"), h("span", "uname", displayName(m)));
+        hl.append(avatar(m, "xs"), h("span", "uname", vaiTro(m, q)));
         if (m.bot) hl.append(h("span", "tag-bot", "BOT"));
         hl.append(h("span", "time", "#" + chanName(m.channel) + " · " + dmy(m.at) + " " + hm(m.at)));
         const b = h("div", "body"); b.innerHTML = fmt(m.content || "") + (m.att ? ' <span class="mask">' + m.att + " tệp đính kèm</span>" : "");
@@ -2043,6 +2043,14 @@
         } else toast("Đã gửi tin");
         state.replyTo = null; state.highlight = m.id;
         renderAll(true);
+      }
+
+      // Bản tin và panel cam kết không nêu tên/mã người gửi (spec §5 K13, §7 điều kiện 3).
+      const anMa = (t) => String(t || "").replace(/@?(?<![A-Za-z0-9])D\d{4}(?!\d)/g, "[người gửi]");
+      function vaiTro(m, q) {
+        if (m.local) return "Bạn (TA)";
+        if (m.bot) return "Trợ lý";
+        return q && m.author === q.author ? "Người hỏi" : "Người khác";
       }
 
       // ---------- Gợi ý lệnh (kiểu Discord) ----------
@@ -2215,7 +2223,7 @@
           Object.keys(labels).forEach((k) => delete labels[k]);
           d.items.forEach((it) => {
             if (!byId.has(it.msg_id)) return;
-            labels[it.msg_id] = { status: it.status, ai: it.status, reason: it.reason,
+            labels[it.msg_id] = { status: it.status, ai: it.status, reason: anMa(it.reason),
                                   ev: it.ev || [], nguon: "AI" };
           });
           const coTin = d.items.find((i) => byId.has(i.msg_id));

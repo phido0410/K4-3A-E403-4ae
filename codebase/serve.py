@@ -24,7 +24,8 @@ from urllib.parse import parse_qs, urlparse
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from decide import MODEL, PROMPT_VERSION, build_context, decide, load_messages  # noqa: E402
+from decide import (MODEL, PROMPT_VERSION, an_ma_nguoi_gui, build_context, decide,  # noqa: E402
+                    load_messages)
 
 BASE = Path(__file__).resolve().parent
 PORT = 8765
@@ -150,7 +151,7 @@ class Handler(SimpleHTTPRequestHandler):
     def _mot_cau(mid, by_id, replies, by_ch):
         ctx = build_context(mid, by_id, replies, by_ch)
         r = decide(ctx, run="live")
-        return {"msg_id": mid, "status": r["status"], "reason": r["reason"],
+        return {"msg_id": mid, "status": r["status"], "reason": an_ma_nguoi_gui(r["reason"]),
                 "ev": r.get("evidence_msg_ids", []), "tokens": r.get("_tokens", 0)}
 
     def end_headers(self):
@@ -200,7 +201,7 @@ class Handler(SimpleHTTPRequestHandler):
         return self._json({
             "msg_id": mid,
             "cau_hoi": ctx["cau_hoi"]["noi_dung"][:120],
-            "status": r["status"], "reason": r["reason"],
+            "status": r["status"], "reason": an_ma_nguoi_gui(r["reason"]),
             "evidence_msg_ids": r.get("evidence_msg_ids", []),
             "ms": int((time.time() - t0) * 1000), "tokens": r.get("_tokens", 0),
             "model": MODEL, "prompt": PROMPT_VERSION,

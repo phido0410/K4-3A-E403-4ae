@@ -1,7 +1,7 @@
 # Ket qua chay golden set — luot `run-03`
 
 - **Model:** `gpt-4o-mini` · prompt `v3`
-- **Luc chay:** 17/09/2026 10:47
+- **Luc chay:** 17/09/2026 11:03
 - **Bo test:** `eval/golden_set.json` — 25 case
 - **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)
 - **Log tung case:** `eval/logs/run-03/`
@@ -48,7 +48,7 @@
 |---|---|---|---|---|---|---|
 | GS-01 | `M80884` | ① | nogrounding | nogrounding | dat | Câu hỏi trỏ tới một người cụ thể mà không có nội dung nào trong ngữ cảnh để trả lời, chỉ là yêu cầu nhắc nhở m |
 | GS-02 | `M97637` | ① | nogrounding | done | **TRUOT** | Câu hỏi đã được trả lời đầy đủ bởi BOT trong vòng 2 giờ, cung cấp thông tin chi tiết về file hướng dẫn mà ngườ |
-| GS-03 | `M51326` | ① | nogrounding | done | **TRUOT** | Câu hỏi đã được trả lời đầy đủ và đúng ý trong vòng 2 giờ từ người dùng D6587. Tin trả lời cung cấp thông tin  |
+| GS-03 | `M51326` | ① | nogrounding | done | **TRUOT** | Câu hỏi đã được trả lời đầy đủ và đúng ý trong vòng 2 giờ từ người dùng [người gửi]. Tin trả lời cung cấp thôn |
 | GS-04 | `M33885` | ② | need | need | dat | Câu hỏi chưa được ai trả lời và không có ai nhắc đến nội dung câu hỏi trong các tin nhắn gần đây. Do đó, cần p |
 | GS-05 | `M00553` | ② | check | need | **TRUOT** | Câu hỏi chưa được giải đáp vì chỉ có một tin nhắn hẹn hỏi lại mà không có câu trả lời cụ thể nào cho câu hỏi.  |
 | GS-06 | `M54679` | ② | check | need | **TRUOT** | Câu hỏi chưa được ai trả lời, và không có ai nhắc đến nội dung câu hỏi trong các tin nhắn gần đây. |
@@ -66,7 +66,7 @@
 | GS-18 | `M03948` | thuong | need | check | **TRUOT** | Câu hỏi chưa được trả lời và có tin nhắn sau đó từ người hỏi, nhưng không có ai trả lời trực tiếp cho câu hỏi  |
 | GS-19 | `M17206` | thuong | need | need | dat | Câu hỏi chưa được giải đáp vì không có ai trả lời trong kênh. Không có tin nhắn nào nhắm vào nội dung câu hỏi. |
 | GS-20 | `M18056` | thuong | need | done | **TRUOT** | Câu hỏi 'xem xp ở đâu' đã được trả lời đầy đủ trong tin nhắn của BOT với nội dung hướng dẫn cách theo dõi hoặc |
-| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ từ người dùng khác (D3694) với thông tin chính xác về số lượng |
+| GS-21 | `M83358` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ từ người dùng khác ([người gửi]) với thông tin chính xác về số |
 | GS-22 | `M15562` | thuong | done | check | **TRUOT** | Câu hỏi về việc hợp tác giữa hai team đã nhận được một số phản hồi từ người khác, nhưng chưa có câu trả lời rõ |
 | GS-23 | `M20982` | thuong | done | check | **TRUOT** | Câu hỏi chưa được giải đáp và không có ai trả lời trực tiếp. Tuy nhiên, có một số tin nhắn trong cùng kênh như |
 | GS-24 | `M49586` | thuong | done | need | **TRUOT** | Câu hỏi không có nội dung cụ thể để giải đáp và không có ai trả lời, chỉ có một tin nhắn sau đó không liên qua |
@@ -92,7 +92,7 @@ AI lap luan: *Câu hỏi đã được trả lời đầy đủ bởi BOT trong 
 
 **GS-03 · `M51326`** — ky vong `nogrounding`, AI tra ve `done`  ·  nguyen nhan nhom **C**  
 Nhom gan nhan vi: *Nội dung lỗi nằm trong 2 ảnh đính kèm, AI không đọc ảnh. Có người trả lời sau 11 giờ nhưng không kiểm được có đúng lỗi không.*  
-AI lap luan: *Câu hỏi đã được trả lời đầy đủ và đúng ý trong vòng 2 giờ từ người dùng D6587. Tin trả lời cung cấp thông tin chi tiết về vấn đề mà người hỏi gặp phải và cách giải quyết.*  
+AI lap luan: *Câu hỏi đã được trả lời đầy đủ và đúng ý trong vòng 2 giờ từ người dùng [người gửi]. Tin trả lời cung cấp thông tin chi tiết về vấn đề mà người hỏi gặp phải và cách giải quyết.*  
 **Chan doan:** Ngu canh CO co 'co_anh_dinh_kem: true' nhung model khong dung no de kich hoat nogrounding. Luot 5 da tien tu done sang check, van chua dung.  
 **Huong xu ly:** Chuyen co anh dinh kem thanh luat cung trong code thay vi de model tu quyet.  
 

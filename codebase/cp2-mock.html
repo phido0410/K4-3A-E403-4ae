@@ -1970,7 +1970,10 @@
         hl.append(avatar(m, "xs"), h("span", "uname", vaiTro(m, q)));
         if (m.bot) hl.append(h("span", "tag-bot", "BOT"));
         hl.append(h("span", "time", "#" + chanName(m.channel) + " · " + dmy(m.at) + " " + hm(m.at)));
-        const b = h("div", "body"); b.innerHTML = fmt(m.content || "") + (m.att ? ' <span class="mask">' + m.att + " tệp đính kèm</span>" : "");
+        // Panel căn cứ là đầu ra của sản phẩm — nội dung trích cũng phải ẩn mã người gửi,
+        // không chỉ dòng tiêu đề. Khung chat mô phỏng Discord bên trái thì giữ nguyên mã,
+        // vì ở sản phẩm thật TA đang nhìn Discord thật.
+        const b = h("div", "body"); b.innerHTML = anMa(fmt(m.content || "")) + (m.att ? ' <span class="mask">' + m.att + " tệp đính kèm</span>" : "");
         c.append(hl, b, btn("jumplink", "Nhảy tới tin", () => jumpTo(m.id)));
         return c;
       }

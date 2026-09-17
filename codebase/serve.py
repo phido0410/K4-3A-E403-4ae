@@ -150,6 +150,11 @@ class Handler(SimpleHTTPRequestHandler):
         return {"msg_id": mid, "status": r["status"], "reason": r["reason"],
                 "ev": r.get("evidence_msg_ids", []), "tokens": r.get("_tokens", 0)}
 
+    def end_headers(self):
+        # Sua code roi tai lai la thay ngay — khong de trinh duyet giu ban cu.
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
+
     def do_GET(self):
         path = self.path.split("?")[0]
         if path == "/api/digest":
@@ -206,4 +211,12 @@ if __name__ == "__main__":
     print(f"  nhan NGUOI gan : http://127.0.0.1:{PORT}/")
     print(f"  nhan AI sinh   : http://127.0.0.1:{PORT}/?ai=1")
     print("  Ctrl+C de dung")
-    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    try:
+        ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    except OSError as e:
+        if e.errno != 48:
+            raise
+        print(f"\n  Cong {PORT} dang co tien trinh khac giu. Tat no roi chay lai:")
+        print(f"    pkill -f codebase/serve.py")
+        print(f"    lsof -ti:{PORT} | xargs kill -9")
+        raise SystemExit(1)

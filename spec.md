@@ -1,4 +1,4 @@
-# AI SPEC — Missing · Nhóm 4AE · Cụm ___
+# AI SPEC — Missing · Nhóm 4AE · Cụm 4
 Hướng: **B — Trợ lý Discord** · đề **B2** (tính năng mới cho TA)
 Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới *(cải tiến từ bản tin bot đang chạy)*
 
@@ -49,7 +49,31 @@ Log đầy đủ, quy tắc đếm và cách chạy lại: [`evidence/mining-cau
 
 ### Evidence — chuẩn A (khảo sát)
 
-**Chưa có.** Form khảo sát học viên + TA đã soạn (`evidence/khao-sat/`) nhưng **chưa thu đủ ≥20 người** tại CP4. Bằng chứng của nhóm hiện dựa hoàn toàn vào chuẩn B.
+**Chưa đạt chuẩn A.** Đã thu **6 phản hồi** (5 học viên + 1 Lab Coach) lúc 19:26–19:40 ngày 16/9 — cần ≥20 người và ≥50% xác nhận. Bằng chứng chính của nhóm vẫn là chuẩn B. Phần dưới là **bằng chứng bổ sung**, khai đúng cỡ mẫu.
+
+**Câu xác nhận** — *"Trong 7 ngày qua, có câu hỏi nào của bạn phải chờ HƠN 4 GIỜ hoặc KHÔNG AI TRẢ LỜI không?"* Trên 5 học viên: **Có 2 · Không 1 · Không nhớ 2** → 40% xác nhận, dưới ngưỡng 50%.
+
+| Chỉ số (n = 5 học viên) | Kết quả |
+|---|---|
+| Ai trả lời câu hỏi gần nhất | Bot Trợ lý 2 · TA/Lab Coach 1 · **không ai trả lời 2** |
+| Thời gian chờ | dưới 15 phút 3 · 1–4 giờ 1 · **hơn 1 ngày 1** |
+| Lý do từng không hỏi trên Discord | *"Nghĩ không ai trả lời"*, *"Tin nhắn trôi nhanh"*, *"Không biết hỏi kênh nào"* |
+
+**Hai phản hồi khớp thẳng với pain:** một học viên hỏi qua ticket, chờ **hơn 1 ngày**, không ai trả lời, và chọn *"Bỏ qua, không hỏi nữa"*. Một học viên khác xác nhận **2–3 lần trong 7 ngày**, lần tốn nhất mất **4 giờ** tự xoay sở.
+
+**Phản hồi của Lab Coach — chỗ đáng chú ý nhất.** Người này là user thật của bản tin:
+
+- Tìm câu chưa được trả lời bằng cách **kéo đọc các kênh** và **xem tin được tag** — đúng thao tác thủ công mà sản phẩm định thay thế
+- Dành **dưới 15 phút/ngày** cho Discord
+- Loại câu dễ trôi nhất theo họ: **deadline / nộp bài**
+- Đọc bản tin bot hiện tại: **thỉnh thoảng**
+- **Đồng ý thử công cụ**
+
+Nhưng cùng người đó trả lời **"Không"** cho câu *"trong 7 ngày qua có phát hiện câu hỏi chờ >4 giờ hoặc không ai trả lời không?"*.
+
+**Đây là mâu thuẫn, và nhóm giữ nguyên không làm mượt.** Mining đếm được **27 câu không ai reply trong 3 ngày**, trong khi Lab Coach nói không thấy câu nào bị chờ. Hai điều này không loại trừ nhau — chúng chỉ ra đúng bản chất bài toán: **câu hỏi trôi mà TA không biết là có câu đang trôi.** TA chỉ dành dưới 15 phút/ngày và tìm bằng cách kéo đọc thủ công, nên cái họ không thấy không có nghĩa là không tồn tại. Nếu TA tự phát hiện được thì sản phẩm này không cần thiết.
+
+**Giới hạn phải khai:** n = 6 quá nhỏ để kết luận; 1/5 phản hồi học viên có dấu hiệu điền cho xong (*"jajaj"*, trả lời `36` cho nhiều câu khác nhau) nhưng nhóm **giữ lại trong mẫu**, không loại, vì loại bỏ sau khi đã thấy kết quả là chỉnh số liệu. Chỉ có **1 TA** trả lời nên không suy rộng ra cả nhóm TA được. Bảng trả lời gốc có email cá nhân nên **không đưa vào repo**; chỉ giữ số tổng hợp ở đây.
 
 ---
 
@@ -300,7 +324,7 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 | 6 | `M36687` — trả lời đến sau **705 phút** qua câu hỏi "ké" của người khác | Nằm ngoài mọi cửa sổ thời gian; cần tìm theo ngữ nghĩa. **Giới hạn thiết kế**, chưa làm |
 | 7 | Kênh đông (`channel_10`) làm ngữ cảnh lẫn hội thoại khác | Nhóm nguyên nhân B (GS-10). Chưa xử lý |
 | 8 | **Golden set chưa có case prompt injection** | Pack không có tin nào khớp mẫu "bỏ qua hướng dẫn"; system prompt đã có câu phòng vệ nhưng **chưa được kiểm** |
-| 9 | **Khảo sát chuẩn A chưa thu** | Form đã soạn, chưa đủ ≥20 người |
+| 9 | **Khảo sát chưa đạt chuẩn A** | Đã thu 6 phản hồi (5 học viên + 1 Lab Coach), xác nhận 2/5 = 40%. Chuẩn A cần ≥20 người và ≥50%. Đang dùng làm bằng chứng bổ sung, khai rõ cỡ mẫu ở §1 |
 | 10 | Giao diện là mock HTML | Chưa phải bot chạy trong Discord thật; nút "Trả lời tại tin gốc" không gửi tin đi đâu |
 
 ---
@@ -323,7 +347,7 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 | Prompt/code v6: luật cứng cho ảnh đính kèm và trả lời muộn (`tra_loi_muon`), bước 1 chạy độc lập, đưa 3 quy ước vào prompt → `run-06`. **Quality bar giữ nguyên** | Phi | CP5 |
 | Người chấm thứ hai gán độc lập 20 case, so với `labels.js`, ghi tỷ lệ lệch | Đại | CP5 |
 | Thêm ≥2 case prompt injection tự viết (ghi rõ là tự viết) vào golden set | Quốc | CP5 |
-| Thu khảo sát ≥20 học viên + TA bằng form đã soạn | Đại, Quốc | CP5 |
+| Thu tiếp khảo sát cho đủ ≥20 người (hiện 6) và ≥2 TA | Đại, Quốc | CP5 |
 | Dry run demo 5 phút + quay video dự phòng | Bảo | CP5 · 13:00 18/9 |
 
 ### Willing users & vòng validation
@@ -357,4 +381,6 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 | 17/9 CP4 | Điều kiện 3 của quality bar mở rộng từ *"0 mục trong bản tin"* thành *"0 chỗ trong giao diện"* | Cam kết **chặt hơn**, không nới lỏng. Sau khi che mã ở cả khung chat thì phạm vi kiểm rộng ra theo, và vẫn đạt 0 |
 | 17/9 CP4 | Gợi ý `kenh:`/`ngay:` lọc theo server đang xem; gõ kênh của server khác thì báo lỗi thay vì tự chuyển server | Đứng ở L2-3 mà gợi ý vẫn hiện kênh của L3-4, chọn nhầm là bản tin dựng sai dữ liệu. Ở Discord thật lệnh chỉ chạy trong server đang đứng (K14) |
 | 17/9 CP4 | Điền đủ 2 người thử: Huỳnh Văn Nghĩa (Lab coach) và Đặng Quốc Hiệp (học viên), cả hai khai từ CP1 | Đủ yêu cầu R6 ≥2 người ngoài nhóm |
+| 17/9 CP4 | Thêm 6 phản hồi khảo sát vào §1 làm bằng chứng bổ sung; khai rõ chưa đạt chuẩn A | Lab Coach nói không thấy câu chờ >4 giờ, trong khi mining đếm 27 câu không reply — giữ nguyên mâu thuẫn vì nó chính là bản chất bài toán: câu trôi mà TA không biết |
+| 17/9 CP4 | Điền Cụm 4 |  |
 | 17/9 CP4 | Khoá quality bar | Hạn 21:00 17/9 |

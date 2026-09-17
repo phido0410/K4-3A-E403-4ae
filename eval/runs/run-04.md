@@ -1,7 +1,7 @@
 # Ket qua chay golden set — luot `run-04`
 
 - **Model:** `gpt-4o-mini` · prompt `v4`
-- **Luc chay:** 17/09/2026 09:32
+- **Luc chay:** 17/09/2026 10:47
 - **Bo test:** `eval/golden_set.json` — 25 case
 - **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)
 - **Log tung case:** `eval/logs/run-04/`
@@ -14,9 +14,10 @@
 | Dat | 13 |
 | Truot | 12 |
 | **Ty le dat** | **52.0%** |
-| Bo sot cau con ton (xep nham thanh `done`) | **2/17** |
-| Recall tren nhom can TA xem | **88.2%** |
-| Bao thua (`done` bi xep thanh can xem) | 3 |
+| Bo sot (case khong phai `done` ma AI xep `done`) | **4/20** |
+| Recall tren 20 case can TA xem | **80.0%** |
+| Muc xuat hien tren ban tin | 19 |
+| Bao thua (`done` bi dua vao ban tin) | **3/19 = 15.8%** |
 
 > Ty le dat chung khong phai chi so quan trong nhat. Bo sot dat hon bao thua nhieu lan:
 > bao thua ton cua TA 10 giay, bo sot thi hoc vien bi bo roi ma khong ai biet.
@@ -70,6 +71,16 @@
 | GS-23 | `M20982` | thuong | done | check | **TRUOT** | Câu hỏi của học viên về việc điền hồ sơ năng lực có thể bị xem xét kết thúc đào tạo sớm chưa được trả lời. Có  |
 | GS-24 | `M49586` | thuong | done | check | **TRUOT** | Câu hỏi không có ai trả lời trực tiếp và không có thông tin nào cho thấy đã có câu trả lời chính thức. Tuy nhi |
 | GS-25 | `M83711` | thuong | done | done | dat | Câu hỏi đã được trả lời đầy đủ trong vòng 2 giờ bởi người dùng khác (D6604) với thông tin rõ ràng về bài học m |
+
+### Case bi bo sot — loai loi dat nhat
+
+| Case | Tin | Ky vong | AI tra ve |
+|---|---|---|---|
+| GS-02 | `M97637` | nogrounding | done |
+| GS-03 | `M51326` | nogrounding | done |
+| GS-15 | `M19124` | check | done |
+| GS-20 | `M18056` | need | done |
+
 
 ## 5. Phan tich case truot
 
@@ -161,6 +172,6 @@ AI lap luan: *Câu hỏi không có ai trả lời trực tiếp và không có 
 Quality bar (chot tai CP4, xem `spec.md` §7): bo sot <=1/20 cau that su bo ngo (recall >=95%),
 bao thua <=30%, va 0 muc lo ten nguoi.
 
-- Recall luot nay: **88.2%** — CHUA DAT
-- Bao thua: **12.0%** — DAT
+- Recall luot nay: **80.0%** — CHUA DAT
+- Bao thua: **15.8%** (3/19 muc tren ban tin) — DAT
 - Lo ten nguoi: **0** — ban tin chi xuat `msg_id` va link, khong xuat tac gia

@@ -2,21 +2,23 @@
 
 Quyết định được đo: **với một câu hỏi + ngữ cảnh quanh nó, hệ thống xếp vào `need` / `check` / `nogrounding` / `done`.**
 
+> **Đính chính 17/9:** recall trước đây tính trên 17 case (`need`+`check`), bỏ sót 3 case `nogrounding`.
+> Bar viết *"bỏ sót ≤1/20"* nên mẫu số đúng là **20 case không phải `done`**. Báo thừa cũng đổi sang
+> mẫu **số mục thật sự hiện trên bản tin**. Mọi số dưới đây đã tính lại.
+
 - Bộ test: [`golden_set.json`](golden_set.json) — 25 case, 100% từ data thật
-- Ground truth: `codebase/labels.js` — 142 tin nhóm đọc và gán nhãn tay
-- Chẩn đoán từng case trượt: [`phan_tich.json`](phan_tich.json)
-- Log thô: `logs/<run>/` (không push — chứa nguyên văn tin thật) · bản đã lược: [`audit/`](audit/)
-- Báo cáo từng lượt: [`runs/`](runs/) · lượt mới nhất ở [`run_results.md`](run_results.md)
+- Ground truth: `codebase/labels.js` · Chẩn đoán case trượt: [`phan_tich.json`](phan_tich.json)
+- Log thô: `logs/<run>/` (không push) · bản đã lược: [`audit/`](audit/)
 
 ## Tiến trình
 
-| Lượt | Đổi gì | Đạt | Tỷ lệ | Recall | Bỏ sót |
-|---|---|---|---|---|---|
-| `run-01` | Lượt đầu, prompt v1 | 10/25 | **40%** | 88.2% | 2 |
-| `run-02` | Prompt v2 — thêm thứ tự quyết định 3 bước | 10/25 | **40%** | 88.2% | 2 |
-| `run-03` | Prompt v3 — sửa ranh giới `need`/`check`, siết `nogrounding` | 11/25 | **44%** | 88.2% | 2 |
-| `run-04` | Ngữ cảnh v4 — quét cả 30 phút **trước** câu hỏi, thêm `tra_loi_cho` | 13/25 | **52%** | 88.2% | 2 |
-| `run-05` | Ngữ cảnh v5 — reply trực tiếp kèm **độ trễ** (trước đó thiếu nên không áp được ngưỡng 2 giờ) | 14/25 | **56%** | 88.2% | 2 |
+| Lượt | Đổi gì | Đạt | Tỷ lệ | Recall (/20) | Bỏ sót | Báo thừa |
+|---|---|---|---|---|---|---|
+| `run-01` | Lượt đầu, prompt v1 | 10/25 | **40%** | 80% | 4 | 15.8% |
+| `run-02` | Prompt v2 — thêm thứ tự quyết định 3 bước | 10/25 | **40%** | 85% | 3 | 19.0% |
+| `run-03` | Prompt v3 — sửa ranh giới `need`/`check`, siết `nogrounding` | 11/25 | **44%** | 80% | 4 | 15.8% |
+| `run-04` | Ngữ cảnh v4 — quét cả 30 phút **trước** câu hỏi, thêm `tra_loi_cho` | 13/25 | **52%** | 80% | 4 | 15.8% |
+| `run-05` | Ngữ cảnh v5 — reply trực tiếp kèm **độ trễ** | 14/25 | **56%** | 85% | 3 | 10.5% |
 
 ## Nhãn AI trả về so với kỳ vọng
 

@@ -103,13 +103,13 @@ AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một b�
 
 ### Kết quả các lượt chạy
 
-| Lượt | Đổi gì | Đạt | Tỷ lệ | Recall | Bỏ sót |
-|---|---|---|---|---|---|
-| `run-01` | Lượt đầu, prompt v1 | 10/25 | 40% | 88.2% | 2 |
-| `run-02` | Prompt v2 — thêm thứ tự quyết định 3 bước | 10/25 | 40% | 88.2% | 2 |
-| `run-03` | Prompt v3 — sửa ranh giới `need`/`check`, siết `nogrounding` | 11/25 | 44% | 88.2% | 2 |
-| `run-04` | Ngữ cảnh v4 — quét cả 30 phút trước câu hỏi, thêm `tra_loi_cho` | 13/25 | 52% | 88.2% | 2 |
-| `run-05` | Ngữ cảnh v5 — reply trực tiếp kèm độ trễ (trước đó thiếu nên không áp được ngưỡng 2 giờ) | 14/25 | 56% | 88.2% | 2 |
+| Lượt | Đổi gì | Đạt | Tỷ lệ | Recall (/20) | Bỏ sót | Báo thừa |
+|---|---|---|---|---|---|---|
+| `run-01` | Lượt đầu, prompt v1 | 10/25 | 40% | 80% | 4 | 15.8% |
+| `run-02` | Prompt v2 — thêm thứ tự quyết định 3 bước | 10/25 | 40% | 85% | 3 | 19.0% |
+| `run-03` | Prompt v3 — sửa ranh giới `need`/`check`, siết `nogrounding` | 11/25 | 44% | 80% | 4 | 15.8% |
+| `run-04` | Ngữ cảnh v4 — quét cả 30 phút trước câu hỏi, thêm `tra_loi_cho` | 13/25 | 52% | 80% | 4 | 15.8% |
+| `run-05` | Ngữ cảnh v5 — reply trực tiếp kèm độ trễ | 14/25 | 56% | 85% | 3 | 10.5% |
 
 Chi tiết từng lượt và từng case: [`eval/README.md`](eval/README.md) · [`eval/runs/`](eval/runs/)
 
@@ -135,7 +135,9 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 
 > Đạt khi **bỏ sót ≤1/20 câu thật sự còn bỏ ngỏ (recall ≥95%)**, **báo thừa ≤30%**, và **0 mục lộ tên người**.
 
-Đối chiếu `run-04`: recall **88,2% — chưa đạt** (bỏ sót 2) · báo thừa **12% — đạt** · lộ tên **0 — đạt**.
+Đối chiếu `run-05`: recall **85% — chưa đạt** (bỏ sót 3/20) · báo thừa **10,5%** (2/19 mục trên bản tin) — **đạt** · lộ tên **0 — đạt**.
+
+**Ba case bỏ sót** (loại lỗi đắt nhất): `GS-02` M97637 (nogrounding→done) · `GS-15` M19124 (check→done, trả lời sau 8 giờ) · `GS-20` M18056 (need→done, đáp án có sẵn nhưng không ai trỏ). Cả ba sai ở **cả 5 lượt**.
 
 ### Còn phải làm trước CP4
 - Hai người gán nhãn độc lập trên cùng 20 case để đo độ lệch (guide §2.6 bước 4).
@@ -158,6 +160,7 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 ## §9. Changelog
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
+| 17/9 | **Sửa công thức đo.** Recall trước đây tính trên 17 case (`need`+`check`), bỏ qua 3 case `nogrounding`, trong khi bar viết "bỏ sót ≤1/20". Tính đúng trên 20 case: run-05 là **85%**, không phải 88,2%. Báo thừa cũng đổi mẫu số sang **số mục thật sự xuất hiện trên bản tin** (2/19 = 10,5%) thay vì trên tổng 25 case | Quốc phát hiện khi rà soát CP4. Con số mới thấp hơn nhưng khớp định nghĩa trong bar — an toàn hơn nếu giám khảo tự tính lại |
 | 16/9 CP2 | Chốt §4 + §6; dựng bản mock chạy trên data thật tại máy | Phát hiện "không có reply ≠ chưa được trả lời" khi mining → tách 4 trạng thái thay vì một danh sách phẳng |
 | 16/9 CP2 | Tách `local-data/` ra khỏi repo, chỉ commit `labels.js` (msg_id + nhãn) | Repo nộp bài là repo công khai; nguyên văn tin nhắn của bạn cùng khoá không được lên mạng |
 | 16/9 CP2 | Bỏ phương án bot soạn sẵn câu trả lời cho TA | Bản thử đầu điền sẵn câu như *"BTC có hỗ trợ nới deadline"* — không có nguồn nào trong data nói vậy; Track B yêu cầu deadline chỉ lấy từ nguồn chính thức |

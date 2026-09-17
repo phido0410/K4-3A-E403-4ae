@@ -90,11 +90,19 @@ def main() -> None:
     for r in rows:
         cm[r["expected"]][r["got"]] += 1
 
-    # chi so quan trong nhat: co bo sot cau con bo ngo khong?
-    that_su_ton = [r for r in rows if r["expected"] in ("need", "check")]
-    bo_sot = [r for r in that_su_ton if r["got"] == "done"]
-    recall = (len(that_su_ton) - len(bo_sot)) / len(that_su_ton) * 100 if that_su_ton else 0
-    bao_thua = [r for r in rows if r["expected"] == "done" and r["got"] != "done"]
+    # Chi so quan trong nhat: co bo sot cau can TA xem khong?
+    # Mau so = MOI case khong phai "done" (need + check + nogrounding = 20),
+    # dung theo cach bar viet "bo sot <=1/20". Truoc day chi lay need+check (17)
+    # nen recall bi bao cao hon thuc te 3,2 diem. Xem §9 Changelog 17/9.
+    khong_done = [r for r in rows if r["expected"] != "done"]
+    bo_sot = [r for r in khong_done if r["got"] == "done"]
+    recall = (len(khong_done) - len(bo_sot)) / len(khong_done) * 100 if khong_done else 0
+
+    # Bao thua = ty le muc SAI trong so muc that su xuat hien tren ban tin gui TA,
+    # khong phai tren tong so case. TA chi nhin thay nhung muc AI xep khac "done".
+    trong_ban_tin = [r for r in rows if r["got"] != "done"]
+    bao_thua = [r for r in trong_ban_tin if r["expected"] == "done"]
+    thua_pct = len(bao_thua) / len(trong_ban_tin) * 100 if trong_ban_tin else 0
 
     L = []
     A = L.append
@@ -111,9 +119,10 @@ def main() -> None:
     A(f"| Dat | {dat} |")
     A(f"| Truot | {tong - dat} |")
     A(f"| **Ty le dat** | **{pct:.1f}%** |")
-    A(f"| Bo sot cau con ton (xep nham thanh `done`) | **{len(bo_sot)}/{len(that_su_ton)}** |")
-    A(f"| Recall tren nhom can TA xem | **{recall:.1f}%** |")
-    A(f"| Bao thua (`done` bi xep thanh can xem) | {len(bao_thua)} |")
+    A(f"| Bo sot (case khong phai `done` ma AI xep `done`) | **{len(bo_sot)}/{len(khong_done)}** |")
+    A(f"| Recall tren {len(khong_done)} case can TA xem | **{recall:.1f}%** |")
+    A(f"| Muc xuat hien tren ban tin | {len(trong_ban_tin)} |")
+    A(f"| Bao thua (`done` bi dua vao ban tin) | **{len(bao_thua)}/{len(trong_ban_tin)} = {thua_pct:.1f}%** |")
     A("\n> Ty le dat chung khong phai chi so quan trong nhat. Bo sot dat hon bao thua nhieu lan:")
     A("> bao thua ton cua TA 10 giay, bo sot thi hoc vien bi bo roi ma khong ai biet.\n")
 
@@ -143,6 +152,14 @@ def main() -> None:
     for r in rows:
         A(f"| {r['case_id']} | `{r['msg_id']}` | {r['lop_kho'] or r['nhom']} | {r['expected']} | "
           f"{r['got']} | {'dat' if r['dat'] else '**TRUOT**'} | {r['reason'][:110]} |")
+
+    if bo_sot:
+        A("\n### Case bi bo sot — loai loi dat nhat\n")
+        A("| Case | Tin | Ky vong | AI tra ve |")
+        A("|---|---|---|---|")
+        for r in bo_sot:
+            A(f"| {r['case_id']} | `{r['msg_id']}` | {r['expected']} | done |")
+        A("")
 
     A("\n## 5. Phan tich case truot\n")
     truot = [r for r in rows if not r["dat"]]
@@ -177,8 +194,7 @@ def main() -> None:
     A("Quality bar (chot tai CP4, xem `spec.md` §7): bo sot <=1/20 cau that su bo ngo (recall >=95%),")
     A("bao thua <=30%, va 0 muc lo ten nguoi.\n")
     A(f"- Recall luot nay: **{recall:.1f}%** — {'DAT' if recall >= 95 else 'CHUA DAT'}")
-    thua_pct = len(bao_thua) / tong * 100
-    A(f"- Bao thua: **{thua_pct:.1f}%** — {'DAT' if thua_pct <= 30 else 'CHUA DAT'}")
+    A(f"- Bao thua: **{thua_pct:.1f}%** ({len(bao_thua)}/{len(trong_ban_tin)} muc tren ban tin) — {'DAT' if thua_pct <= 30 else 'CHUA DAT'}")
     A("- Lo ten nguoi: **0** — ban tin chi xuat `msg_id` va link, khong xuat tac gia\n")
 
     text = "\n".join(L)
@@ -187,7 +203,7 @@ def main() -> None:
     (archive / f"{args.run}.md").write_text(text, encoding="utf-8")
     out = ROOT / "eval" / "run_results.md"
     out.write_text(text, encoding="utf-8")
-    print(f"\n{dat}/{tong} = {pct:.1f}% · recall {recall:.1f}% · bo sot {len(bo_sot)}")
+    print(f"\n{dat}/{tong} = {pct:.1f}% · recall {recall:.1f}% ({len(khong_done)-len(bo_sot)}/{len(khong_done)}) · bo sot {len(bo_sot)} · bao thua {thua_pct:.1f}%")
     print(f"-> {out.relative_to(ROOT)}")
 
 

@@ -142,7 +142,18 @@ Bản đầu chỉ bắt 17/32 — bỏ sót câu hỏi dạng yêu cầu không
 - Xử lý case `M36687`: câu trả lời đến sau **705 phút** qua câu hỏi "ké" của người khác — nằm ngoài mọi cửa sổ thời gian hợp lý. Đây là **giới hạn thiết kế**, cần tìm kiếm theo ngữ nghĩa thay vì theo thời gian.
 
 ## §8. Phân công & kế hoạch
-*(điền tên — bắt buộc cho R7)* spec · evidence/mining · prompt + AI call · flow/UI · golden set + eval · demo
+
+| Người | Mã học viên | Phần việc | Mốc |
+|---|---|---|---|
+| **Đỗ Ngọc Phi** | 2A202602531 | Prompt + lời gọi AI (`decide.py`) · server chạy lệnh (`serve.py`) · golden set · 5 lượt eval + phân tích nguyên nhân · log mining | **CP3** |
+| **Phạm Cường Quốc** | 2A202602469 | Giao diện mô phỏng Discord (`cp2-mock.html`) · dựng dữ liệu chạy máy · chốt spec và quality bar | **CP2**, CP4 |
+| **Nguyễn Trường Bảo** | 2A202602540 | Gán nhãn tay 142 tin (`labels.js`) — ground truth · slide + video dự phòng | **CP2**, CP5 |
+| **Đỗ Đức Đại** | 2A202602725 | Ý tưởng, Canvas 4 ô, lát cắt một câu, bằng chứng ban đầu | **CP1** |
+
+Đội trưởng nộp form mọi mốc: **Đỗ Ngọc Phi · 2A202602531**. Phân công CP4–CP5 là dự kiến.
+
+- Willing users (≥2 tên) + kế hoạch vòng validation: *(bổ sung trước CP5)*
+- Multi-prototype: *(không làm — dồn thời gian cho vòng lặp đo ở §7)*
 
 ## §9. Changelog
 | Thời điểm | Đổi gì | Vì sao |

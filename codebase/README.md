@@ -8,7 +8,7 @@ Sản phẩm là một **lệnh gạch chéo cho bot Discord**. TA gõ `/questio
 
 | Mốc | Nội dung | Link |
 |---|---|---|
-| **CP3** | 30 giây — gõ lệnh, AI chạy thật, bản tin hiện ra | `<DÁN LINK CP3 VÀO ĐÂY>` |
+| **CP3** | 30 giây — gõ lệnh, AI chạy thật, bản tin hiện ra | https://www.youtube.com/watch?v=VXkpZGx-_7Y |
 | CP2 | Đi hết luồng giao diện (bản trước, nhãn còn do người gán) | https://youtu.be/NdsaCmuDQBQ |
 
 **Mở repo này từ GitHub thì xem video** — bản mock cần data pack ở máy mới chạy được, lý do ở mục *Vì sao thiếu một file*.

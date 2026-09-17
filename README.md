@@ -9,8 +9,8 @@
 | Họ và Tên | Mã Học Viên | Vai trò chính | Phần việc đảm nhiệm trong dự án |
 |---|---|---|---|
 | **Đỗ Ngọc Phi** | 2A202602531 | Đội trưởng · Prototype AI + kiểm thử (**CP3**) | Mắt xích quyết định `codebase/decide.py` — dựng ngữ cảnh 4 nguồn, gọi OpenAI, ghi log prompt và phản hồi thô · server `serve.py` chạy lệnh `/question_unanswer` · bộ kiểm thử `eval/golden_set.json` 25 ca · 5 lượt chạy và phân tích nguyên nhân `eval/phan_tich.json` · log mining `evidence/` |
-| **Phạm Cường Quốc** | 2A202602469 | Giao diện + chốt spec (**CP2**, **CP4**) | Giao diện mô phỏng Discord `codebase/cp2-mock.html` — kênh, bản tin, panel căn cứ, nút sửa · `build_local_data.py` · chốt `spec.md` và quality bar tại CP4 |
-| **Nguyễn Trường Bảo** | 2A202602540 | Gán nhãn + demo (**CP2**, **CP5**) | Đọc tay 142 tin và gán nhãn `codebase/labels.js` — ground truth để chấm AI · slide 6 trang và video demo dự phòng tại CP5 |
+| **Phạm Cường Quốc** | 2A202602469 | Gán nhãn + chốt spec (**CP2**, **CP4**) | Đọc tay 142 tin và gán nhãn `codebase/labels.js` — ground truth để chấm AI · `build_local_data.py` dựng dữ liệu chạy máy · chốt `spec.md` và quality bar tại CP4 |
+| **Nguyễn Trường Bảo** | 2A202602540 | Thiết kế giao diện + demo (**CP2**, **CP5**) | Thiết kế giao diện mô phỏng Discord `codebase/cp2-mock.html` — kênh, tin nhắn, bản tin, panel căn cứ, nút sửa · slide 6 trang và video demo dự phòng tại CP5 |
 | **Đỗ Đức Đại** | 2A202602725 | Bài toán + Canvas (**CP1**) | Nêu ý tưởng, dựng Canvas 4 ô · xác định người dùng, pain và lát cắt một câu · bằng chứng ban đầu từ `discord-pack` |
 
 > Phân công CP4 và CP5 là dự kiến, có thể điều chỉnh. Mỗi người phải giải thích được phần mang tên mình — giám khảo hỏi ngẫu nhiên tại CP6.

@@ -50,6 +50,9 @@ def main() -> None:
     args = ap.parse_args()
 
     gs = json.loads((ROOT / "eval" / "golden_set.json").read_text(encoding="utf-8"))
+    pt_file = ROOT / "eval" / "phan_tich.json"
+    pt = json.loads(pt_file.read_text(encoding="utf-8")) if pt_file.exists() else {}
+    chan_doan, nhom_nn = pt.get("theo_case", {}), pt.get("nhom_nguyen_nhan", {})
     gt = load_ground_truth()
     _, by_id, replies, by_ch = load_messages()
 
@@ -147,10 +150,28 @@ def main() -> None:
         A("Khong co case truot o luot nay.\n")
     else:
         for r in truot:
-            A(f"**{r['case_id']} · `{r['msg_id']}`** — ky vong `{r['expected']}`, AI tra ve `{r['got']}`  ")
+            cd = chan_doan.get(r["case_id"], {})
+            nn = cd.get("nhom", "?")
+            A(f"**{r['case_id']} · `{r['msg_id']}`** — ky vong `{r['expected']}`, AI tra ve `{r['got']}`"
+              + (f"  ·  nguyen nhan nhom **{nn}**" if nn != "?" else "") + "  ")
             A(f"Nhom gan nhan vi: *{r['nhan_goc'] or '(nhan chi ghi tin lam can cu: ' + ', '.join(GT_EV.get(r['msg_id'], [])) + ')'}*  ")
             A(f"AI lap luan: *{r['reason']}*  ")
-            A(f"Huong xu ly: _(dien tay sau khi doc log `eval/logs/{args.run}/{r['msg_id']}.json`)_\n")
+            if cd:
+                A(f"**Chan doan:** {cd['chan_doan']}  ")
+                A(f"**Huong xu ly:** {cd['huong_xu_ly']}  ")
+            else:
+                A(f"_Chua chan doan — doc log `eval/logs/{args.run}/{r['msg_id']}.json` roi bo sung vao eval/phan_tich.json_  ")
+            A("")
+
+        if nhom_nn:
+            dem = Counter(chan_doan.get(r["case_id"], {}).get("nhom", "?") for r in truot)
+            A("### Gom theo nhom nguyen nhan\n")
+            A("| Nhom | So case | Mo ta |")
+            A("|---|---|---|")
+            for k in sorted(nhom_nn):
+                if dem.get(k):
+                    A(f"| **{k}** | {dem[k]} | {nhom_nn[k]} |")
+            A("")
 
     A("\n## 6. Doi chieu quality bar\n")
     A("Quality bar (chot tai CP4, xem `spec.md` §7): bo sot <=1/20 cau that su bo ngo (recall >=95%),")

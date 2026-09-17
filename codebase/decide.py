@@ -97,7 +97,9 @@ def build_context(msg_id: str, by_id, replies, by_ch) -> dict:
             break
     truoc.reverse()
 
-    direct = [item(r) for r in replies.get(msg_id, [])]
+    # v5: reply truc tiep phai kem do tre, khong thi model khong ap duoc nguong 2 gio.
+    direct = [item(r, (_t(r["created_at_vn"]) - t0).total_seconds() / 60)
+              for r in replies.get(msg_id, [])]
 
     sau, tac_gia_sau = [], []
     for r in seq[i + 1:]:
@@ -122,7 +124,7 @@ def build_context(msg_id: str, by_id, replies, by_ch) -> dict:
 
 
 # -------------------------------------------------------------------- prompt
-PROMPT_VERSION = "v4"   # v4 = v3 + ngu canh hai chieu, them truong tra_loi_cho
+PROMPT_VERSION = "v5"   # v5 = v4 + reply truc tiep kem do tre (truoc day thieu -> khong ap duoc nguong 2 gio)
 
 SYSTEM = """Ban la bo phan quyet dinh cua mot cong cu noi bo giup tro giang (TA) cua mot khoa hoc
 tim ra nhung cau hoi cua hoc vien tren Discord con bo ngo cuoi ngay.
@@ -164,7 +166,7 @@ Nguoc lai, KHONG tinh la co nguoi dung toi:
 
 BUOC 3 — VIEC DO DA XONG DUT DIEM CHUA?
 Neu dinh BAT KY dieu nao duoi day -> "check" (khong phai "done", cung khong phai "need"):
-  a. Den sau HON 2 GIO ke tu luc hoi (xem "sau_bao_phut"; reply truc tiep thi so gio o "luc").
+  a. Den sau HON 120 PHUT ke tu luc hoi — xem truong "sau_bao_phut" o MOI tin, ke ca reply truc tiep.
   b. Den tu mot hoc vien khac, khong phai BOT / Mod / TA / BTC — tuc chua phai nguon chinh thuc.
   c. Co tu hai cau tra loi tro len MAU THUAN nhau ve cung mot y.
   d. Chi la loi hen ("de minh hoi lai", "mai hoi luon", "de check da") chu chua phai cau tra loi.

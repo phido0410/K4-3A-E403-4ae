@@ -105,10 +105,11 @@ AI lập danh sách, **TA quyết định**. Cost-of-error lệch hẳn một b�
 
 | Lượt | Đổi gì | Đạt | Tỷ lệ | Recall | Bỏ sót |
 |---|---|---|---|---|---|
-| `run-01` | Lượt đầu, prompt v1 | 10/25 | 40% | 88,2% | 2 |
-| `run-02` | Prompt v2 — thêm thứ tự quyết định 3 bước | 10/25 | 40% | 88,2% | 2 |
-| `run-03` | Prompt v3 — sửa ranh giới `need`/`check` | 11/25 | 44% | 88,2% | 2 |
-| `run-04` | Ngữ cảnh v4 — quét cả 30 phút trước câu hỏi | **13/25** | **52%** | 88,2% | 2 |
+| `run-01` | Lượt đầu, prompt v1 | 10/25 | 40% | 88.2% | 2 |
+| `run-02` | Prompt v2 — thêm thứ tự quyết định 3 bước | 10/25 | 40% | 88.2% | 2 |
+| `run-03` | Prompt v3 — sửa ranh giới `need`/`check`, siết `nogrounding` | 11/25 | 44% | 88.2% | 2 |
+| `run-04` | Ngữ cảnh v4 — quét cả 30 phút trước câu hỏi, thêm `tra_loi_cho` | 13/25 | 52% | 88.2% | 2 |
+| `run-05` | Ngữ cảnh v5 — reply trực tiếp kèm độ trễ (trước đó thiếu nên không áp được ngưỡng 2 giờ) | 14/25 | 56% | 88.2% | 2 |
 
 Chi tiết từng lượt và từng case: [`eval/README.md`](eval/README.md) · [`eval/runs/`](eval/runs/)
 

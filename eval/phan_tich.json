@@ -1,0 +1,25 @@
+{
+  "_ghi_chu": "Chan doan nguyen nhan tung case truot, nhom viet sau khi doc log tho trong eval/logs/. Moi dong gan voi mot nhom nguyen nhan o muc duoi cung cua run_results.md.",
+  "nhom_nguyen_nhan": {
+    "A": "Ranh gioi need/check: nhom coi reply lac de hoac '+1' la KHONG ai dung toi (need); model coi co reply la da dung toi (check).",
+    "B": "Ngu canh lan hoi thoai khac: kenh dong, cua so +/-30 phut chua day tin cua cuoc noi chuyen khac, model tuong do la cau tra loi.",
+    "C": "nogrounding bi lan at: khi co bat ky tin tra loi nao o gan, model bo qua buoc 1 va khong con hoi 'can cu co nam trong tam quan sat khong'.",
+    "D": "Cua so thoi gian: cau tra loi den ngoai +/-30 phut thi khong bao gio vao ngu canh. Day la gioi han thiet ke, khong sua duoc bang prompt.",
+    "E": "Model doc sai du lieu da duoc cung cap (vi du bo qua truong sau_bao_phut).",
+    "F": "Ranh gioi san pham chua dinh nghia: dap an da co san trong kenh cho cau hoi giong het cua nguoi khac.",
+    "G": "Thieu nhan thu nam cho 'khong phai cau hoi can nguoi tra loi'."
+  },
+  "theo_case": {
+    "GS-01": { "nhom": "C", "chan_doan": "Cau hoi la 'rep tin nhan e voi a' — can cu nam trong tin nhan rieng, ngoai tam quan sat. Model mo ta dung ('chi la nhac nho mot nguoi khac tra loi') nhung van chon need. Buoc 1 chua du manh voi cau hoi tro ra ngoai Discord.", "huong_xu_ly": "Them vi du 'nho rep tin nhan rieng' vao buoc 1 cua prompt." },
+    "GS-02": { "nhom": "C", "chan_doan": "BOT tra loi sau 1 phut nen model ket luan done, bo qua viec cau hoi nhac toi 'file hay link' tu mot cuoc tro chuyen khong co trong ngu canh.", "huong_xu_ly": "Buoc 1 phai chay truoc va doc lap voi viec co hay khong co tin tra loi gan." },
+    "GS-03": { "nhom": "C", "chan_doan": "Ngu canh CO co 'co_anh_dinh_kem: true' nhung model khong dung no de kich hoat nogrounding. Luot 5 da tien tu done sang check, van chua dung.", "huong_xu_ly": "Chuyen co anh dinh kem thanh luat cung trong code thay vi de model tu quyet." },
+    "GS-10": { "nhom": "B", "chan_doan": "Cau hoi 'Han nop Lab02' trong kenh bot dong tin. Ngu canh day tin BOT tra loi nguoi khac ve deadline, model tuong da co huong dan.", "huong_xu_ly": "Loc ngu canh theo chu de, hoac giam cua so o kenh co mat do tin cao." },
+    "GS-13": { "nhom": "A", "chan_doan": "Co reply sau 3 phut nhung noi ve nhan role. Nhom coi lac de = khong ai dung toi = need; model coi co reply = check.", "huong_xu_ly": "Chot lai dinh nghia trong spec §7 truoc CP4: reply lac de tinh la need hay check." },
+    "GS-14": { "nhom": "D", "chan_doan": "Cau tra loi den sau 705 phut qua cau hoi 'ke' cua nguoi khac — nam ngoai moi cua so thoi gian hop ly.", "huong_xu_ly": "Khong sua bang prompt. Can tim kiem theo ngu nghia thay vi theo thoi gian; de lai sau CP3." },
+    "GS-15": { "nhom": "E", "chan_doan": "Luot 5 da them sau_bao_phut = 487 vao reply truc tiep, nhung model van viet 'trong vong 2 gio'. Day la loi tuan thu, khong phai thieu du lieu.", "huong_xu_ly": "Tinh san co 'tra_loi_muon: true' trong code thay vi de model tu so sanh so." },
+    "GS-18": { "nhom": "A", "chan_doan": "Khong ai tra loi; chi co chinh nguoi hoi nhan lai. Model tinh viec do la 'co nguoi dung toi'.", "huong_xu_ly": "Noi ro trong prompt: tin cua chinh nguoi hoi khong tinh la co nguoi dung toi." },
+    "GS-20": { "nhom": "F", "chan_doan": "Cau hoi giong het cua nguoi khac da duoc BOT tra loi 19 phut truoc trong cung kenh. Ca nhom va AI deu doc dung du lieu — khac nhau o dinh nghia san pham.", "huong_xu_ly": "Nhom phai chot truoc CP4: xep need, check, hay them trang thai 'da co dap an, chi can tro'." },
+    "GS-23": { "nhom": "A", "chan_doan": "Co tra loi nhung model danh gia la chua du ro nen ha xuong check. Bang chung mong, ranh gioi done/check con mo.", "huong_xu_ly": "Bo sung tieu chi 'du de nguoi hoi di tiep' vao dinh nghia done." },
+    "GS-24": { "nhom": "G", "chan_doan": "Tin la 'Kieu em ko co cau hoi nao hoi, co on ko a :))' — khong phai cau hoi can nguoi tra loi. Bon nhan hien tai khong co cho de xep.", "huong_xu_ly": "Them nhan thu nam 'khong phai cau hoi', hoac quy uoc xep vao done kem ly do." }
+  }
+}

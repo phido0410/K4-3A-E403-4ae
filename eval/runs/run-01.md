@@ -1,7 +1,7 @@
 # Ket qua chay golden set — luot `run-01`
 
 - **Model:** `gpt-4o-mini` · prompt `v1`
-- **Luc chay:** 16/09/2026 23:47
+- **Luc chay:** 17/09/2026 09:32
 - **Bo test:** `eval/golden_set.json` — 25 case
 - **Ground truth:** `codebase/labels.js` (nhom doc tay 142 tin)
 - **Log tung case:** `eval/logs/run-01/`
@@ -73,80 +73,100 @@
 
 ## 5. Phan tich case truot
 
-**GS-01 · `M80884`** — ky vong `nogrounding`, AI tra ve `need`  
+**GS-01 · `M80884`** — ky vong `nogrounding`, AI tra ve `need`  ·  nguyen nhan nhom **C**  
 Nhom gan nhan vi: *Học viên nhờ admin trả lời tin nhắn riêng. Hệ thống không đọc tin nhắn riêng nên không biết đã được xử lý chưa.*  
 AI lap luan: *Câu hỏi không nhận được phản hồi nào từ người khác, chỉ có một tin nhắn không liên quan. Do đó, không thể kết luận câu hỏi đã được giải đáp hay chưa.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M80884.json`)_
+**Chan doan:** Cau hoi la 'rep tin nhan e voi a' — can cu nam trong tin nhan rieng, ngoai tam quan sat. Model mo ta dung ('chi la nhac nho mot nguoi khac tra loi') nhung van chon need. Buoc 1 chua du manh voi cau hoi tro ra ngoai Discord.  
+**Huong xu ly:** Them vi du 'nho rep tin nhan rieng' vao buoc 1 cua prompt.  
 
-**GS-02 · `M97637`** — ky vong `nogrounding`, AI tra ve `done`  
+**GS-02 · `M97637`** — ky vong `nogrounding`, AI tra ve `done`  ·  nguyen nhan nhom **C**  
 Nhom gan nhan vi: *Câu hỏi nhắc tới "file hay link" từ một cuộc trò chuyện không có trong kênh đã quét.*  
 AI lap luan: *Câu hỏi đã được trả lời đầy đủ bởi BOT với hướng dẫn chi tiết và các liên kết cần thiết để người hỏi có thể thực hiện theo. Nội dung trả lời phù hợp với câu hỏi và cung cấp thông tin cần thiết.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M97637.json`)_
+**Chan doan:** BOT tra loi sau 1 phut nen model ket luan done, bo qua viec cau hoi nhac toi 'file hay link' tu mot cuoc tro chuyen khong co trong ngu canh.  
+**Huong xu ly:** Buoc 1 phai chay truoc va doc lap voi viec co hay khong co tin tra loi gan.  
 
-**GS-03 · `M51326`** — ky vong `nogrounding`, AI tra ve `done`  
+**GS-03 · `M51326`** — ky vong `nogrounding`, AI tra ve `done`  ·  nguyen nhan nhom **C**  
 Nhom gan nhan vi: *Nội dung lỗi nằm trong 2 ảnh đính kèm, AI không đọc ảnh. Có người trả lời sau 11 giờ nhưng không kiểm được có đúng lỗi không.*  
 AI lap luan: *Câu hỏi đã được trả lời đầy đủ với thông tin chi tiết về lỗi và cách khắc phục. Người hỏi có thể tiếp tục với câu hỏi khác.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M51326.json`)_
+**Chan doan:** Ngu canh CO co 'co_anh_dinh_kem: true' nhung model khong dung no de kich hoat nogrounding. Luot 5 da tien tu done sang check, van chua dung.  
+**Huong xu ly:** Chuyen co anh dinh kem thanh luat cung trong code thay vi de model tu quyet.  
 
 **GS-05 · `M00553`** — ky vong `check`, AI tra ve `need`  
 Nhom gan nhan vi: *Chỉ được hẹn "mai hỏi luôn", chưa có câu trả lời thật.*  
 AI lap luan: *Câu hỏi chưa được trả lời cụ thể, chỉ có một phản hồi không rõ ràng từ người khác mà không cung cấp thông tin cần thiết để giải đáp câu hỏi. Không có ai trả lời trực tiếp về nội dung câu hỏi của học viên.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M00553.json`)_
+_Chua chan doan — doc log `eval/logs/run-01/M00553.json` roi bo sung vao eval/phan_tich.json_  
 
 **GS-06 · `M54679`** — ky vong `check`, AI tra ve `need`  
 Nhom gan nhan vi: *Có phản hồi nhưng né câu hỏi; chưa đủ 4 giờ quan sát trước khi dữ liệu kết thúc.*  
 AI lap luan: *Không có ai trả lời trực tiếp cho câu hỏi về thời gian demo và QnA, chỉ có một phản hồi không rõ ràng từ người khác. Cần thêm thông tin để xác định câu hỏi đã được giải đáp hay chưa.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M54679.json`)_
+_Chua chan doan — doc log `eval/logs/run-01/M54679.json` roi bo sung vao eval/phan_tich.json_  
 
 **GS-09 · `M88027`** — ky vong `check`, AI tra ve `need`  
 Nhom gan nhan vi: *Đã được chỉ chỗ gửi ticket sau 13 phút, nhưng chưa rõ yêu cầu gia hạn đã được xử lý chưa.*  
 AI lap luan: *Câu hỏi về việc gia hạn thời gian nộp bài chưa được trả lời cụ thể. Các phản hồi từ học viên không cung cấp thông tin rõ ràng về việc có thể gia hạn hay không, chỉ có một lời khuyên gửi ticket mà không có câu trả lời trực tiếp cho câu hỏi của người hỏi.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M88027.json`)_
+_Chua chan doan — doc log `eval/logs/run-01/M88027.json` roi bo sung vao eval/phan_tich.json_  
 
-**GS-10 · `M72484`** — ky vong `need`, AI tra ve `check`  
+**GS-10 · `M72484`** — ky vong `need`, AI tra ve `check`  ·  nguyen nhan nhom **B**  
 Nhom gan nhan vi: *Hỏi hạn nộp trong kênh bot nhưng không tag bot, không ai trả lời.*  
 AI lap luan: *Câu hỏi về hạn nộp Lab02 chưa được trả lời cụ thể. BOT đã cung cấp thông tin về cách tìm kiếm nhưng không đưa ra ngày giờ cụ thể cho hạn nộp. Có một số phản hồi từ người khác nhưng không rõ ràng và không chính thức.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M72484.json`)_
+**Chan doan:** Cau hoi 'Han nop Lab02' trong kenh bot dong tin. Ngu canh day tin BOT tra loi nguoi khac ve deadline, model tuong da co huong dan.  
+**Huong xu ly:** Loc ngu canh theo chu de, hoac giam cua so o kenh co mat do tin cao.  
 
 **GS-11 · `M18676`** — ky vong `check`, AI tra ve `need`  
 Nhom gan nhan vi: *Hai bạn học trả lời mâu thuẫn nhau về điểm danh workshop trong cùng buổi sáng.*  
 AI lap luan: *Câu hỏi 'có điểm danh hả mn :v' chưa được trả lời bởi ai trong kênh, và không có phản hồi nào liên quan đến câu hỏi này. Các tin nhắn khác không liên quan đến câu hỏi về điểm danh.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M18676.json`)_
+_Chua chan doan — doc log `eval/logs/run-01/M18676.json` roi bo sung vao eval/phan_tich.json_  
 
-**GS-14 · `M36687`** — ky vong `check`, AI tra ve `need`  
+**GS-14 · `M36687`** — ky vong `check`, AI tra ve `need`  ·  nguyen nhan nhom **D**  
 Nhom gan nhan vi: *Có trả lời, nhưng sau gần 12 giờ và qua câu hỏi "ké" của người khác.*  
 AI lap luan: *Câu hỏi chưa được trả lời, chỉ có một phản hồi không liên quan đến nội dung câu hỏi.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M36687.json`)_
+**Chan doan:** Cau tra loi den sau 705 phut qua cau hoi 'ke' cua nguoi khac — nam ngoai moi cua so thoi gian hop ly.  
+**Huong xu ly:** Khong sua bang prompt. Can tim kiem theo ngu nghia thay vi theo thoi gian; de lai sau CP3.  
 
-**GS-15 · `M19124`** — ky vong `check`, AI tra ve `done`  
+**GS-15 · `M19124`** — ky vong `check`, AI tra ve `done`  ·  nguyen nhan nhom **E**  
 Nhom gan nhan vi: *Có trả lời, nhưng sau 8 giờ.*  
 AI lap luan: *Câu hỏi đã được trả lời đầy đủ và rõ ràng về lý do deadline ghép đội tự do kết thúc sớm, đồng thời cung cấp thông tin hỗ trợ từ BTC.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M19124.json`)_
+**Chan doan:** Luot 5 da them sau_bao_phut = 487 vao reply truc tiep, nhung model van viet 'trong vong 2 gio'. Day la loi tuan thu, khong phai thieu du lieu.  
+**Huong xu ly:** Tinh san co 'tra_loi_muon: true' trong code thay vi de model tu so sanh so.  
 
-**GS-18 · `M03948`** — ky vong `need`, AI tra ve `check`  
+**GS-18 · `M03948`** — ky vong `need`, AI tra ve `check`  ·  nguyen nhan nhom **A**  
 Nhom gan nhan vi: *Hỏi trong kênh bot nhưng không tag bot, không ai trả lời.*  
 AI lap luan: *Câu hỏi của học viên về việc không thấy lịch sử bên activity khi commit có thể đã được trả lời một phần bởi BOT, nhưng câu trả lời không trực tiếp giải thích lý do tại sao không thấy lịch sử đó. Học viên đã nhắc lại câu hỏi, cho thấy họ vẫn chưa nhận được câu trả lời thỏa đáng. Cần thêm thông tin để xác định rõ ràng.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M03948.json`)_
+**Chan doan:** Khong ai tra loi; chi co chinh nguoi hoi nhan lai. Model tinh viec do la 'co nguoi dung toi'.  
+**Huong xu ly:** Noi ro trong prompt: tin cua chinh nguoi hoi khong tinh la co nguoi dung toi.  
 
-**GS-20 · `M18056`** — ky vong `need`, AI tra ve `done`  
+**GS-20 · `M18056`** — ky vong `need`, AI tra ve `done`  ·  nguyen nhan nhom **F**  
 Nhom gan nhan vi: *2 người hỏi cách xem XP trong cùng buổi chiều, không ai trả lời.*  
 AI lap luan: *Câu hỏi 'xem xp ở đâu' đã được trả lời trong tin nhắn của BOT, cung cấp thông tin rõ ràng về cách theo dõi hoặc tìm kiếm điểm XP.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M18056.json`)_
+**Chan doan:** Cau hoi giong het cua nguoi khac da duoc BOT tra loi 19 phut truoc trong cung kenh. Ca nhom va AI deu doc dung du lieu — khac nhau o dinh nghia san pham.  
+**Huong xu ly:** Nhom phai chot truoc CP4: xep need, check, hay them trang thai 'da co dap an, chi can tro'.  
 
 **GS-22 · `M15562`** — ky vong `done`, AI tra ve `check`  
 Nhom gan nhan vi: *(nhan chi ghi tin lam can cu: M45489)*  
 AI lap luan: *Câu hỏi về việc hợp tác giữa hai team non-tech chưa được trả lời trực tiếp. Có một số phản hồi liên quan nhưng không rõ ràng về việc có thể bắt tay làm project hay không. Cần thêm thông tin từ các thành viên khác để có kết luận chính xác.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M15562.json`)_
+_Chua chan doan — doc log `eval/logs/run-01/M15562.json` roi bo sung vao eval/phan_tich.json_  
 
-**GS-23 · `M20982`** — ky vong `done`, AI tra ve `need`  
+**GS-23 · `M20982`** — ky vong `done`, AI tra ve `need`  ·  nguyen nhan nhom **A**  
 Nhom gan nhan vi: *(nhan chi ghi tin lam can cu: M92726)*  
 AI lap luan: *Câu hỏi về việc điền hồ sơ năng lực và khả năng bị xem xét kết thúc đào tạo sớm chưa được trả lời. Không có phản hồi nào liên quan đến câu hỏi này trong các tin nhắn trong kênh. Các tin nhắn khác không liên quan đến câu hỏi cụ thể của người hỏi.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M20982.json`)_
+**Chan doan:** Co tra loi nhung model danh gia la chua du ro nen ha xuong check. Bang chung mong, ranh gioi done/check con mo.  
+**Huong xu ly:** Bo sung tieu chi 'du de nguoi hoi di tiep' vao dinh nghia done.  
 
 **GS-25 · `M83711`** — ky vong `done`, AI tra ve `check`  
 Nhom gan nhan vi: *(nhan chi ghi tin lam can cu: M81490)*  
 AI lap luan: *Có hai phản hồi liên quan đến câu hỏi, nhưng không rõ ràng liệu câu hỏi đã được giải đáp hoàn toàn hay chưa. Phản hồi đầu tiên chỉ hướng dẫn hỏi labcoach, trong khi phản hồi thứ hai xác nhận bài mới đã được up. Tuy nhiên, không có thông tin cụ thể về việc vlearn đã up bài mới hay chưa, nên không thể kết luận chắc chắn.*  
-Huong xu ly: _(dien tay sau khi doc log `eval/logs/run-01/M83711.json`)_
+_Chua chan doan — doc log `eval/logs/run-01/M83711.json` roi bo sung vao eval/phan_tich.json_  
+
+### Gom theo nhom nguyen nhan
+
+| Nhom | So case | Mo ta |
+|---|---|---|
+| **A** | 2 | Ranh gioi need/check: nhom coi reply lac de hoac '+1' la KHONG ai dung toi (need); model coi co reply la da dung toi (check). |
+| **B** | 1 | Ngu canh lan hoi thoai khac: kenh dong, cua so +/-30 phut chua day tin cua cuoc noi chuyen khac, model tuong do la cau tra loi. |
+| **C** | 3 | nogrounding bi lan at: khi co bat ky tin tra loi nao o gan, model bo qua buoc 1 va khong con hoi 'can cu co nam trong tam quan sat khong'. |
+| **D** | 1 | Cua so thoi gian: cau tra loi den ngoai +/-30 phut thi khong bao gio vao ngu canh. Day la gioi han thiet ke, khong sua duoc bang prompt. |
+| **E** | 1 | Model doc sai du lieu da duoc cung cap (vi du bo qua truong sau_bao_phut). |
+| **F** | 1 | Ranh gioi san pham chua dinh nghia: dap an da co san trong kenh cho cau hoi giong het cua nguoi khac. |
 
 
 ## 6. Doi chieu quality bar

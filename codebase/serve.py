@@ -4,14 +4,17 @@
     -> http://127.0.0.1:8765
 
 Duong dan:
-  /                     ban mock
+  /                     ban mock — nhan LUON do AI sinh, go /question_unanswer de chay
   GET  /api/digest      SSE — chay lenh /question_unanswer: rule loc -> goi LLM song song
   POST /api/decide      {"msg_id": "M18056"} -> goi LLM that cho mot tin
 """
 from __future__ import annotations
 
 import json
+import os
 import re
+import signal
+import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -167,8 +170,6 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json({"model": MODEL, "prompt": PROMPT_VERSION})
         if path in ("/", "/cp2-mock.html"):
             html = (BASE / "cp2-mock.html").read_text(encoding="utf-8")
-            if "ai=1" in self.path:
-                html = html.replace('src="labels.js"', 'src="local-data/ai-labels.js"')
             body = html.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -206,17 +207,38 @@ class Handler(SimpleHTTPRequestHandler):
         })
 
 
+def don_cong(port: int) -> None:
+    """Tat tien trinh serve.py cu dang giu cong — chi tat dung tien trinh cua minh."""
+    try:
+        ra = subprocess.run(["lsof", "-ti", f"tcp:{port}"], capture_output=True, text=True, timeout=5)
+    except Exception:
+        return
+    toi = os.getpid()
+    for dong in ra.stdout.split():
+        try:
+            pid = int(dong)
+        except ValueError:
+            continue
+        if pid == toi:
+            continue
+        lenh = subprocess.run(["ps", "-o", "command=", "-p", str(pid)],
+                              capture_output=True, text=True).stdout
+        if "serve.py" not in lenh:
+            print(f"  Cong {port} dang bi tien trinh khac giu (pid {pid}), khong phai serve.py.")
+            print(f"  Tu tat roi chay lai:  kill -9 {pid}")
+            raise SystemExit(1)
+        os.kill(pid, signal.SIGTERM)
+        print(f"  Da tat serve.py cu (pid {pid})", flush=True)
+        time.sleep(0.6)
+
+
 if __name__ == "__main__":
-    print(f"  model = {MODEL} · prompt = {PROMPT_VERSION}")
-    print(f"  nhan NGUOI gan : http://127.0.0.1:{PORT}/")
-    print(f"  nhan AI sinh   : http://127.0.0.1:{PORT}/?ai=1")
-    print("  Ctrl+C de dung")
+    don_cong(PORT)
+    print(f"  model = {MODEL} · prompt = {PROMPT_VERSION}", flush=True)
+    print(f"  mo trang : http://127.0.0.1:{PORT}/", flush=True)
+    print("  trong #ban-tin-cau-hoi go: /question_unanswer kenh:channel-11 ngay:13/09", flush=True)
+    print("  Ctrl+C de dung", flush=True)
     try:
         ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
-    except OSError as e:
-        if e.errno != 48:
-            raise
-        print(f"\n  Cong {PORT} dang co tien trinh khac giu. Tat no roi chay lai:")
-        print(f"    pkill -f codebase/serve.py")
-        print(f"    lsof -ti:{PORT} | xargs kill -9")
-        raise SystemExit(1)
+    except KeyboardInterrupt:
+        print("\n  Da dung server.")

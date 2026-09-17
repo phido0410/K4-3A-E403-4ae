@@ -1550,7 +1550,6 @@
     </div>
   </div>
 
-  <script src="labels.js"></script>
   <script src="local-data/k4-data.js"></script>
   <script>
     (function () {
@@ -1836,7 +1835,7 @@
       // ---------- Bản tin ----------
       function renderDigest(sc) {
         const w = h("div", "welcome");
-        w.append(h("div", "big", "#"), h("h2", null, "#ban-tin-cau-hoi"), h("p", null, "Mỗi sáng lúc 07:00, bot quét các kênh công khai của ngày hôm trước và đăng những câu hỏi chưa được trả lời sau 4 giờ. Không hiện tên học viên. Không xem được ảnh đính kèm, tin nhắn riêng và ticket — gặp các trường hợp này bot ghi \"không có căn cứ\"."));
+        w.append(h("div", "big", "#"), h("h2", null, "#ban-tin-cau-hoi"), h("p", null, "Gõ <b>/question_unanswer</b> vào ô bên dưới để bot quét kênh và gọi AI phân loại. Thêm <b>kenh:</b> và <b>ngay:</b> để giới hạn phạm vi. Không hiện tên học viên. Không xem được ảnh đính kèm, tin nhắn riêng và ticket — gặp các trường hợp này bot ghi \"không có căn cứ\"."));
         sc.append(w);
         const qs = questionsFor(state.guild);
         const days = [...new Set(msgs.filter((m) => m.guild === state.guild).map((m) => dayKey(m.at)))].sort();
@@ -1939,9 +1938,8 @@
         const ah = h("div", "h");
         ah.append(l.ai === "nogrounding" ? "AI không kết luận" : "AI gợi ý", h("span", "conf", ST[l.ai].conf));
         ai.append(ah, h("p", null, l.reason || (l.ai === "done" ? "Có tin trả lời đúng ý trong 4 giờ sau câu hỏi." : "")));
-        ai.append(h("p", "src", l.nguon === "AI"
-          ? "Kết quả do model sinh trong lượt chạy vừa rồi." + (l.ev && l.ev.length ? " Căn cứ: " + l.ev.join(", ") + "." : "")
-          : "Nhãn đọc tay của nhóm, đứng thay cho lời gọi AI. Gõ /question_unanswer để chạy AI thật."));
+        ai.append(h("p", "src", "Kết quả do model sinh trong lượt chạy vừa rồi." +
+          (l.ev && l.ev.length ? " Căn cứ: " + l.ev.join(", ") + "." : "")));
         body.append(ai);
 
         if (l.personal) {

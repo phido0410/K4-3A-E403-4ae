@@ -15,7 +15,7 @@ Lát cắt: **Một TA · cuối ngày muốn biết còn câu nào bỏ ngỏ �
 | File | Là gì | Có trong repo? |
 |---|---|---|
 | `cp2-mock.html` | Bản mock, giao diện mô phỏng Discord | ✅ |
-| `labels.js` | **142 tin đã gán nhãn tay**: 21 `need` · 8 `check` · 3 `nogrounding` · 110 `done`. Chỉ `msg_id` + nhãn + lý do nhóm viết | ✅ |
+| `labels.js` | **142 tin đã gán nhãn tay** — ground truth để chấm AI trong `eval/`, **không nạp vào giao diện** | ✅ |
 | `build_local_data.py` | Script dựng lại dữ liệu chạy mock, từ data pack trên máy | ✅ |
 | `local-data/k4-data.js` | Nguyên văn 1.092 tin nhắn thật | ❌ **Không bao giờ push** |
 
@@ -33,21 +33,26 @@ python -m venv .venv && .venv/bin/pip install -r codebase/requirements.txt
 .venv/bin/python codebase/serve.py                 # http://127.0.0.1:8765
 ```
 
-| Đường dẫn | Nhãn hiển thị do ai quyết định |
-|---|---|
-| `http://127.0.0.1:8765/` | **người** gán tay (`labels.js`) — bản CP2 |
-| `http://127.0.0.1:8765/?ai=1` | **AI** sinh (`local-data/ai-labels.js`) — bản CP3 |
+Mở `http://127.0.0.1:8765/`, vào kênh riêng **#ban-tin-cau-hoi** rồi gõ:
 
-Góc phải màn hình có bảng **Hỏi AI trực tiếp**: nhập mã tin rồi bấm Hỏi, server gọi model thật
-và trả kết quả kèm thời gian và số token. **API key nằm ở `.env` phía server, không bao giờ
-ra tới trình duyệt.**
+```
+/question_unanswer kenh:channel-11 ngay:13/09
+```
+
+Gõ `/` là hiện gợi ý, **Tab** để hoàn thành. Bot quét kênh, gọi AI phân loại từng câu,
+rồi dựng bản tin ngay trong kênh. **Mọi nhãn trên màn hình đều do AI sinh** — không có
+nhãn người gán nào được nạp vào giao diện.
+
+**API key nằm ở `.env` phía server, không bao giờ ra tới trình duyệt.**
+
+Server tự tắt bản cũ đang giữ cổng 8765 khi khởi động, nên chạy lại bao nhiêu lần cũng được.
+Dừng bằng **Ctrl+C**.
 
 ## Chạy kiểm thử
 
 ```bash
 .venv/bin/python codebase/run_eval.py --run run-05     # chạy trọn golden set
 .venv/bin/python codebase/run_eval.py --run run-04 --from-logs   # dựng lại báo cáo, không tốn API
-.venv/bin/python codebase/export_ai_labels.py --run run-04       # kết quả AI -> nhãn cho mock
 ```
 
 ## Phần nào thật, phần nào mock
